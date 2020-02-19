@@ -7,7 +7,7 @@ categories: update
 
 #### **A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution.**
 
-The plan is to try the DD-Net on our sparse-view data. Here is the original paper.
+The plan is to try the DD-Net on our sparse-view data.
 The original paper: <https://ieeexplore.ieee.org/document/8331861>
 The original project GitHub page: <https://github.com/zzc623/DD_Net>
 
