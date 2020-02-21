@@ -9,7 +9,9 @@ categories: update
 
 [TOC]
 
-Youtube video for the project<https://www.youtube.com/watch?v=Tyid7FKqMlE&t=21s>
+Youtube video for the project:  <https://www.youtube.com/watch?v=Tyid7FKqMlE&t=21s>
+
+GitHub link: <https://github.com/npovey/aws/tree/master/backup_AWS_S3>
 
 The project consists of two python programs. Backup.py and Restore.py One backs up and the other one restores the given directory. Must use python3 (not python).
 
