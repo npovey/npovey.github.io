@@ -13,6 +13,8 @@ Total training time 5 minutes.
 
 GitHub link: <https://github.com/npovey/research2020/tree/master/unet_15>
 
+youtube link: <https://youtu.be/kaE7jQqIFI8>
+
 
 
 
