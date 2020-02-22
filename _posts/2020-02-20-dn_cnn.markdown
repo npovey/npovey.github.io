@@ -607,11 +607,11 @@ plt.show()
 ```
 
 
-![png](output_43_0.png)
+![png](/2020-02-20-dncnn/output_43_0.png)
 
 
 
-![png](output_43_1.png)
+![png](/2020-02-20-dncnn/output_43_1.png)
 
 sparseview_60_test_dncnn_0.png
 
