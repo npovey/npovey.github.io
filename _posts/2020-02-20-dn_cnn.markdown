@@ -482,7 +482,7 @@ plt.show()
 ```
 
 
-![png](output_32_0.png)
+![png](/2020-02-20-dncnn/output_32_0.png)
 
 
 
@@ -569,11 +569,11 @@ plt.show()
 ```
 
 
-![png](output_40_0.png)
+![png](/2020-02-20-dncnn/output_40_0.png)
 
 
 
-![png](output_40_1.png)
+![png](/2020-02-20-dncnn/output_40_1.png)
 
 
 Output images
@@ -589,11 +589,11 @@ plt.show()
 ```
 
 
-![png](output_42_0.png)
+![png](/2020-02-20-dncnn/output_42_0.png)
 
 
 
-![png](output_42_1.png)
+![png](/2020-02-20-dncnn/output_42_1.png)
 
 
 
@@ -615,20 +615,20 @@ plt.show()
 
 sparseview_60_test_dncnn_0.png
 
-![sparseview_60_test_dncnn_0](/Users/np/Desktop/dn_cnn/sparseview_60_test_dncnn_0.png)
+![sparseview_60_test_dncnn_0](/2020-02-20-dncnn/sparseview_60_test_dncnn_0.png)
 
 
 
 reconstructed_60_test_dncnn_0.png
 
-![reconstructed_dncnn_0](/Users/np/Desktop/dn_cnn/reconstructed_dncnn_0.png)
+![reconstructed_dncnn_0](/2020-02-20-dncnn/reconstructed_dncnn_0.png)
 
 
 
 sparseview_60_test_dncnn_99.png
 
-![sparseview_60_test_dncnn_99](/Users/np/Desktop/dn_cnn/sparseview_60_test_dncnn_99.png)
+![sparseview_60_test_dncnn_99](/2020-02-20-dncnn/sparseview_60_test_dncnn_99.png)
 
 reconstructed_60_test_dncnn_99.png
 
-![reconstructed_dncnn_99](/Users/np/Desktop/dn_cnn/reconstructed_dncnn_99.png)
+![reconstructed_dncnn_99](/2020-02-20-dncnn/reconstructed_dncnn_99.png)

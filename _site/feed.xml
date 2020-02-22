@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-21T19:26:29-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">DnCNN model, similar results to UNet.</title><link href="http://localhost:4000/update/2020/02/20/dn_cnn.html" rel="alternate" type="text/html" title="DnCNN model, similar results to UNet." /><published>2020-02-20T13:34:33-08:00</published><updated>2020-02-20T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/20/dn_cnn</id><content type="html" xml:base="http://localhost:4000/update/2020/02/20/dn_cnn.html">&lt;p&gt;&lt;strong&gt;DnCnn model to remove artifacts from the sparseview images [time consuming model]&lt;/strong&gt;.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-21T19:29:51-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">DnCNN model, similar results to UNet.</title><link href="http://localhost:4000/update/2020/02/20/dn_cnn.html" rel="alternate" type="text/html" title="DnCNN model, similar results to UNet." /><published>2020-02-20T13:34:33-08:00</published><updated>2020-02-20T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/20/dn_cnn</id><content type="html" xml:base="http://localhost:4000/update/2020/02/20/dn_cnn.html">&lt;p&gt;&lt;strong&gt;DnCnn model to remove artifacts from the sparseview images [time consuming model]&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;This project uses Keras API and Tensorflow 1.15 to implement the original DnCNN model.
 Planning to upgrade code to tensorflow 2.X. Some part of code might be from Google course on Tensorflow with Laurence Moroney. This model takes 10 times more time than UNet model.&lt;/p&gt;
@@ -428,7 +428,7 @@ Epoch 20/20
 &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;output_32_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/output_32_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;Figure size 432x288 with 0 Axes&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -504,9 +504,9 @@ Epoch 20/20
 &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;output_40_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/output_40_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;output_40_1.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/output_40_1.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Output images&lt;/p&gt;
 
@@ -518,9 +518,9 @@ Epoch 20/20
 &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;output_42_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/output_42_0.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;output_42_1.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/output_42_1.png&quot; alt=&quot;png&quot; /&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mpimg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;imread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'/content/drive/My Drive/Colab Notebooks/dn_cnn/sparseview_60_test_dncnn_99.png'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;imgplot&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;imshow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -536,19 +536,19 @@ Epoch 20/20
 
 &lt;p&gt;sparseview_60_test_dncnn_0.png&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/Users/np/Desktop/dn_cnn/sparseview_60_test_dncnn_0.png&quot; alt=&quot;sparseview_60_test_dncnn_0&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/sparseview_60_test_dncnn_0.png&quot; alt=&quot;sparseview_60_test_dncnn_0&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;reconstructed_60_test_dncnn_0.png&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/Users/np/Desktop/dn_cnn/reconstructed_dncnn_0.png&quot; alt=&quot;reconstructed_dncnn_0&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/reconstructed_dncnn_0.png&quot; alt=&quot;reconstructed_dncnn_0&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;sparseview_60_test_dncnn_99.png&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/Users/np/Desktop/dn_cnn/sparseview_60_test_dncnn_99.png&quot; alt=&quot;sparseview_60_test_dncnn_99&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/sparseview_60_test_dncnn_99.png&quot; alt=&quot;sparseview_60_test_dncnn_99&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;reconstructed_60_test_dncnn_99.png&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/Users/np/Desktop/dn_cnn/reconstructed_dncnn_99.png&quot; alt=&quot;reconstructed_dncnn_99&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">DnCnn model to remove artifacts from the sparseview images [time consuming model].</summary></entry><entry><title type="html">Unet model implemented using Python, Google Colab, Tensorflow 1.15 and Keras API</title><link href="http://localhost:4000/update/2020/02/19/unet_15.html" rel="alternate" type="text/html" title="Unet model implemented using Python, Google Colab, Tensorflow 1.15 and Keras API " /><published>2020-02-19T13:34:33-08:00</published><updated>2020-02-19T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/19/unet_15</id><content type="html" xml:base="http://localhost:4000/update/2020/02/19/unet_15.html">&lt;p&gt;&lt;strong&gt;Unet model to remove artifacts from the sparseview images&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020-02-20-dncnn/reconstructed_dncnn_99.png&quot; alt=&quot;reconstructed_dncnn_99&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">DnCnn model to remove artifacts from the sparseview images [time consuming model].</summary></entry><entry><title type="html">Unet model implemented using Python, Google Colab, Tensorflow 1.15 and Keras API</title><link href="http://localhost:4000/update/2020/02/19/unet_15.html" rel="alternate" type="text/html" title="Unet model implemented using Python, Google Colab, Tensorflow 1.15 and Keras API " /><published>2020-02-19T13:34:33-08:00</published><updated>2020-02-19T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/19/unet_15</id><content type="html" xml:base="http://localhost:4000/update/2020/02/19/unet_15.html">&lt;p&gt;&lt;strong&gt;Unet model to remove artifacts from the sparseview images&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;This project uses Keras API and Tensorflow 1.15 to implement the original Unet model.
 Planning to upgrade code to tensorflow 2.X. Some part of code might be from Google course on Tensorflow with Laurence Moroney.
