@@ -1,10 +1,17 @@
+---
+layout: post
+title:  "DDNet model."
+date:   2020-2-21 14:34:33 -0700
+categories: update
+---
+
 **A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution**
 
-Didn't get good results. 
+Didn't get good results.
 
 I am trying to reimplement the paper below in keras
 
-paper: https://ieeexplore.ieee.org/document/8331861 
+paper: https://ieeexplore.ieee.org/document/8331861
 github: https://github.com/zzc623/DD_Net
 
 
@@ -14,7 +21,7 @@ drive.mount('/content/drive')
 ```
 
     Go to this URL in a browser: https://accounts.google.com/o/oauth2/auth?client_id=947318989803-6bn6qk8qdgf4n4g3pfee6491hc0brc4i.apps.googleusercontent.com&redirect_uri=urn%3aietf%3awg%3aoauth%3a2.0%3aoob&response_type=code&scope=email%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdocs.test%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdrive%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdrive.photos.readonly%20https%3a%2f%2fwww.googleapis.com%2fauth%2fpeopleapi.readonly
-    
+
     Enter your authorization code:
     ··········
     Mounted at /content/drive
@@ -45,7 +52,7 @@ from keras.layers import concatenate
 
 <p style="color: red;">
 The default version of TensorFlow in Colab will soon switch to TensorFlow 2.x.<br>
-We recommend you <a href="https://www.tensorflow.org/guide/migrate" target="_blank">upgrade</a> now 
+We recommend you <a href="https://www.tensorflow.org/guide/migrate" target="_blank">upgrade</a> now
 or ensure your notebook will continue to use TensorFlow 1.x via the <code>%tensorflow_version 1.x</code> magic:
 <a href="https://colab.research.google.com/notebooks/tensorflow_version.ipynb" target="_blank">more info</a>.</p>
 
@@ -208,17 +215,17 @@ print(ndct_test.shape)
 
 
 ```python
-# np.save('sparseview_60_train_600', ldct_train) # save the file as "sparseview_60_train.npy" 
-# np.save('ndct_train_600', ndct_train) # save the file as "ndct_train.npy" 
+# np.save('sparseview_60_train_600', ldct_train) # save the file as "sparseview_60_train.npy"
+# np.save('ndct_train_600', ndct_train) # save the file as "ndct_train.npy"
 
-# np.save('sparseview_60_test_100', ldct_test) # save the file as "sparseview_60_test.npy" 
-# np.save('ndct_test_100', ndct_test) # save the file as "ndct_test.npy" 
+# np.save('sparseview_60_test_100', ldct_test) # save the file as "sparseview_60_test.npy"
+# np.save('ndct_test_100', ndct_test) # save the file as "ndct_test.npy"
 
 
-np.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_train_600', ldct_train) # save the file as "sparseview_60_train.npy" 
-np.save('/content/drive/My Drive/Colab Notebooks/dd_net/ndct_train_600', ndct_train) # save the file as "ndct_train.npy" 
+np.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_train_600', ldct_train) # save the file as "sparseview_60_train.npy"
+np.save('/content/drive/My Drive/Colab Notebooks/dd_net/ndct_train_600', ndct_train) # save the file as "ndct_train.npy"
 
-np.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_100', ldct_test) # save the file as "sparseview_60_test.npy" 
+np.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_100', ldct_test) # save the file as "sparseview_60_test.npy"
 np.save('/content/drive/My Drive/Colab Notebooks/dd_net/ndct_test_100', ndct_test) # save the file as "ndct_test.npy"
 ```
 
@@ -244,7 +251,7 @@ def denseblock(input):
   d2_1 = Activation('relu')(d2_1)
   d2_1 = Conv2D(16, (5, 5), padding='same', use_bias=False, strides=(1, 1))(d2_1)
   d2_1 = concatenate([input, d2_1])
- 
+
   # - L2
   d2_2 = BatchNormalization()(d2_1)
   d2_2 = Activation('relu')(d2_2)
@@ -271,7 +278,7 @@ def denseblock(input):
 inputs = Input((None, None,1))
 # ---A1 Layer-----------------------
 a1 = Conv2D(16, (7, 7), padding='same', use_bias=False, strides=(1, 1))(inputs)
-a1 = MaxPooling2D((2, 2)) (a1) 
+a1 = MaxPooling2D((2, 2)) (a1)
 # images 256 X 256
 d1 = denseblock(a1)
 
@@ -280,7 +287,7 @@ a1 = Activation('relu')(a1)
 a1 = Conv2D(16, (1, 1), strides=(1, 1)) (a1)
 
 # ----A2 Layer---------------------
-a2 = MaxPooling2D((2, 2)) (a1) 
+a2 = MaxPooling2D((2, 2)) (a1)
 # images 128 X 128
 d2 = denseblock(a2)
 
@@ -289,7 +296,7 @@ a2 = Activation('relu')(a2)
 a2 = Conv2D(16, (1, 1), strides=(1, 1)) (a2)
 
 # # ----A3 Layer----------------------
-a3 = MaxPooling2D((2, 2)) (a2) 
+a3 = MaxPooling2D((2, 2)) (a2)
 # images 64 X 64
 d3 = denseblock(a3)
 
@@ -298,7 +305,7 @@ a3 = Activation('relu')(a3)
 a3 = Conv2D(16, (1, 1), strides=(1, 1)) (a3)
 
 # ----A4 Layer----------------------
-a4 = MaxPooling2D((2, 2)) (a3) 
+a4 = MaxPooling2D((2, 2)) (a3)
 # images 32 X 3
 d4 = denseblock(a4)
 
@@ -307,7 +314,7 @@ a4 = Activation('relu')(a4)
 a4 = Conv2D(16, (1, 1), strides=(1, 1)) (a4)
 
 # #----B1 Layer-----------------------
-b1 = UpSampling2D((2, 2)) (a4) 
+b1 = UpSampling2D((2, 2)) (a4)
 # images 64 X 64
 b1 = concatenate([b1, a3])
 
@@ -320,7 +327,7 @@ b1 = Activation('relu')(b1)
 b1 = BatchNormalization()(b1)
 
 # #----B2 Layer-----------------------
-b2 = UpSampling2D((2, 2)) (b1) 
+b2 = UpSampling2D((2, 2)) (b1)
 # images 128 X 128
 b2 = concatenate([b2, a2])
 
@@ -354,7 +361,7 @@ b4 = Conv2DTranspose(16, (5, 5),padding='same', strides=(1, 1)) (b4)
 b4 = Activation('relu')(b4)
 output_img = Conv2DTranspose(1, (1, 1), strides=(1, 1)) (b4)
 # output_img = Activation('relu')(b4)
-# ------ end B4 layer 
+# ------ end B4 layer
 
 subtracted = Subtract()([inputs, output_img])
 
@@ -903,4 +910,3 @@ plt.show()
 
 
 ![png](output_39_1.png)
-
