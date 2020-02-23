@@ -869,7 +869,7 @@ plt.show()
 ```
 
 
-![png](output_37_0.png)
+![png](/2020-02-21-ddnet/output_37_0.png)
 
 
 
