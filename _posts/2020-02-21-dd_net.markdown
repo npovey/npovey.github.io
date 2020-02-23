@@ -909,4 +909,4 @@ plt.show()
 
 
 
-![png](output_39_1.png)
+![png](/2020-02-21-ddnet/output_39_1.png)
