@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "DenseNet and Deconvolution."
-date:   2020-2-21 14:34:33 -0700
+date:   2020-02-21 14:34:33 -0700
 categories: update
 ---
 
