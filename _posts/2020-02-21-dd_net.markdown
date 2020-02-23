@@ -873,7 +873,7 @@ plt.show()
 
 
 
-![png](output_37_1.png)
+![png](/2020-02-21-ddnet/output_37_1.png)
 
 
 
@@ -887,11 +887,11 @@ plt.show()
 ```
 
 
-![png](output_38_0.png)
+![png](/2020-02-21-ddnet/output_38_0.png)
 
 
 
-![png](output_38_1.png)
+![png](/2020-02-21-ddnet/output_38_1.png)
 
 
 
@@ -905,7 +905,7 @@ plt.show()
 ```
 
 
-![png](output_39_0.png)
+![png](/2020-02-21-ddnet/output_39_0.png)
 
 
 
