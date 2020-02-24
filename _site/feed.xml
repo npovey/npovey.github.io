@@ -1,4 +1,345 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-22T23:29:01-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">DenseNet and Deconvolution.</title><link href="http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution.html" rel="alternate" type="text/html" title="DenseNet and Deconvolution." /><published>2020-02-21T13:34:33-08:00</published><updated>2020-02-21T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution</id><content type="html" xml:base="http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution.html">&lt;p&gt;&lt;strong&gt;A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution&lt;/strong&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-23T20:46:17-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</title><link href="http://localhost:4000/update/2020/02/23/EclipseWebServer.html" rel="alternate" type="text/html" title="Eclipse Project to Query PostgreSQL and Output Results on a Website" /><published>2020-02-23T13:34:33-08:00</published><updated>2020-02-23T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/23/EclipseWebServer</id><content type="html" xml:base="http://localhost:4000/update/2020/02/23/EclipseWebServer.html">&lt;h4 id=&quot;eclipse-project-to-query-postgresql-and-output-results-on-a-website&quot;&gt;Eclipse Project to Query PostgreSQL and Output Results on a Website&lt;/h4&gt;
+
+&lt;p&gt;The idea is to create a website as the one below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/idea.png&quot; alt=&quot;idea&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-1-setting-up-spark-with-gradle&quot;&gt;Step 1: Setting up Spark with Gradle&lt;/h5&gt;
+
+&lt;p&gt;Follow this tutorial: &lt;a href=&quot;http://sparkjava.com/tutorials/gradle-setup&quot;&gt;http://sparkjava.com/tutorials/gradle-setup&lt;/a&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-2-install-postgresql&quot;&gt;Step 2: Install PostgreSQL&lt;/h5&gt;
+
+&lt;p&gt;Follow the following link and install PostgreSQL&lt;a href=&quot;https://www.postgresql.org/download/&quot;&gt;https://www.postgresql.org/download/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-3-add-data-to-database&quot;&gt;Step 3: Add data to database&lt;/h5&gt;
+
+&lt;p&gt;Manually added countries. (Future work do it programatically)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;China:76943
+Diamond Princess:691
+South Korea:602
+Italy:157
+..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/postgre.png&quot; alt=&quot;postgre&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/insert.png&quot; alt=&quot;insert&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-4-add-end-point-hello-to-the-main-function&quot;&gt;Step 4: Add end point /hello to the main function&lt;/h5&gt;
+
+&lt;p&gt;This endpoint reads inputs to the form and gets the request&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/hello&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Enter country name&quot;&lt;/span&gt;
+        		&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; &amp;lt;form method = post&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  First name:&amp;lt;br&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  &amp;lt;input type=\&quot;text\&quot; name=\&quot;country\&quot;&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  &amp;lt;br&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  &amp;lt;input type=\&quot;submit\&quot; value=\&quot;Submit\&quot;&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  \n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;&amp;lt;/form&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/hello&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getCasesCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;queryParams&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-5-create-classes&quot;&gt;Step 5: Create classes&lt;/h5&gt;
+
+&lt;p&gt;The following 4 classes needed to create our webserver&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Country.java                                
+Sql2oModel.java                                 
+Main.java                                      
+Model.java                                     
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h6 id=&quot;mainjava&quot;&gt;Main.java&lt;/h6&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;crv19&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;Spark&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.*;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;java.util.UUID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.sql2o.Sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.sql2o.converters.UUIDConverter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.sql2o.quirks.PostgresQuirks&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//        Sql2o sql2o = new Sql2o(&quot;jdbc:postgresql://&quot; + options.dbHost + &quot;:&quot; + options.dbPort + &quot;/&quot; + options.database,&lt;/span&gt;
+
+        &lt;span class=&quot;nc&quot;&gt;Sql2o&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sql2o&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;jdbc:postgresql://&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;localhost&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;:&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;5432&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;crv19&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;blog_owner&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;np&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PostgresQuirks&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;// make sure we use default UUID converter.&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;converters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;UUID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UUIDConverter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Model&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Sql2oModel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/hello&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Enter country name&quot;&lt;/span&gt;
+        		&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; &amp;lt;form method = post&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  First name:&amp;lt;br&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  &amp;lt;input type=\&quot;text\&quot; name=\&quot;country\&quot;&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  &amp;lt;br&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  &amp;lt;input type=\&quot;submit\&quot; value=\&quot;Submit\&quot;&amp;gt;\n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;  \n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;
+        		&lt;span class=&quot;s&quot;&gt;&quot;&amp;lt;/form&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/hello&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getCasesCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;queryParams&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;    
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h6 id=&quot;countryjava&quot;&gt;Country.java&lt;/h6&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;crv19&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Country&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cases&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cases&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Model.java&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;crv19&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getCasesCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;countryName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;crv19&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;java.util.List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.sql2o.Connection&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.sql2o.Sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Sql2oModel&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Sql2o&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Sql2oModel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Sql2o&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sql2o&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getCasesCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;countryName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Connection&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sql2o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Country&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;countries&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;createQuery&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;select * from countries where name=:name &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+            		&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addParameter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;countryName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                    &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;executeAndFetch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Country&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//            countries.forEach((post) -&amp;gt; post.setCategories(getCategoriesFor(conn, post.getPost_uuid())));&lt;/span&gt;
+           &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;countries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        	   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+           &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        	   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;countries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+           &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-6-test-the-server&quot;&gt;Step 6: Test the server&lt;/h5&gt;
+
+&lt;p&gt;Connect to localhost with port number 4567. Port number is hardcoded.&lt;/p&gt;
+
+&lt;p&gt;Step1:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/idea.png&quot; alt=&quot;idea&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Step2: Query the PosgreSQL&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/query_entry.png&quot; alt=&quot;query_entry&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Step3: Output is shown below. The data was entered for Feb 23, 2020,&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/ans.png&quot; alt=&quot;ans&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;publish-project-to-aws&quot;&gt;Publish project to AWS&lt;/h4&gt;
+
+&lt;h5 id=&quot;step-7-copy-projet-to-aws&quot;&gt;Step 7: Copy projet to AWS&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; nps-MacBook-Air-2:~ np&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;scp &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; ~/.ssh/2019.pem &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; ~/eclipse-workspace/crv19_new ec2-user@ec2-52-41-181-26.us-west-2.compute.amazonaws.com:~/.
+Library.class                                  100%  330    14.6KB/s   00:00    
+Model.class                                    100%  145     7.8KB/s   00:00    
+Main&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;.class                                   100%  607    32.3KB/s   00:00    
+Country.class                                  100%  718    34.3KB/s   00:00    
+Sql2oModel.class                               100% 1589    74.0KB/s   00:00    
+Main.class                                     100% 2373    99.5KB/s   00:00    
+LibraryTest.class                              100%  630    24.9KB/s   00:00    
+.classpath                                     100%  446    18.8KB/s   00:00    
+gradle-wrapper.jar                             100%   53KB 246.8KB/s   00:00    
+gradle-wrapper.properties                      100%  200     8.4KB/s   00:00    
+gradlew                                        100% 5296   214.0KB/s   00:00    
+.gitignore                                     100%   16     0.7KB/s   00:00    
+org.eclipse.buildship.core.prefs               100%   54     2.4KB/s   00:00    
+.project                                       100%  595    23.1KB/s   00:00    
+build.gradle                                   100% 1289    67.9KB/s   00:00    
+taskHistory.bin                                100%   74KB 273.2KB/s   00:00    
+taskHistory.lock                               100%   17     0.7KB/s   00:00    
+fileContent.lock                               100%   17     0.8KB/s   00:00    
+annotation-processors.bin                      100%   18KB 301.5KB/s   00:00    
+last-build.bin                                 100%    1     0.1KB/s   00:00    
+fileHashes.lock                                100%   17     0.9KB/s   00:00    
+fileHashes.bin                                 100%   21KB 277.4KB/s   00:00    
+resourceHashesCache.bin                        100%   20KB 318.5KB/s   00:00    
+cache.properties                               100%   49     2.6KB/s   00:00    
+outputFiles.bin                                100%   18KB 287.1KB/s   00:00    
+buildOutputCleanup.lock                        100%   17     0.8KB/s   00:00    
+LibraryTest.class                              100%  630    29.2KB/s   00:00    
+Library.class                                  100%  330    14.9KB/s   00:00    
+Model.class                                    100%  145     7.7KB/s   00:00    
+Main&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;.class                                   100%  607    13.4KB/s   00:00    
+Country.class                                  100% 1702    74.4KB/s   00:00    
+Sql2oModel.class                               100% 1732    68.6KB/s   00:00    
+Main.class                                     100% 1994    97.0KB/s   00:00    
+crv19.jar                                      100% 4561   121.2KB/s   00:00    
+results.bin                                    100%   58     2.5KB/s   00:00    
+output.bin.idx                                 100%    1     0.1KB/s   00:00    
+output.bin                                     100%    0     0.0KB/s   00:00    
+TEST-LibraryTest.xml                           100%  385    20.1KB/s   00:00    
+MANIFEST.MF                                    100%   25     1.0KB/s   00:00    
+index.html                                     100% 2320    86.9KB/s   00:00    
+base-style.css                                 100% 2645   115.2KB/s   00:00    
+style.css                                      100% 1135    56.1KB/s   00:00    
+LibraryTest.html                               100% 1915    74.6KB/s   00:00    
+report.js                                      100% 5252   210.2KB/s   00:00    
+default-package.html                           100% 1974    85.7KB/s   00:00    
+gradlew.bat                                    100% 2260    82.2KB/s   00:00    
+settings.gradle                                100%  578    26.5KB/s   00:00    
+LibraryTest.java                               100%  360    19.4KB/s   00:00    
+Library.java                                   100%  166     8.6KB/s   00:00    
+Country.java                                   100%  293    12.8KB/s   00:00    
+Sql2oModel.java                                100%  953    41.0KB/s   00:00    
+Main.java                                      100% 1195    56.4KB/s   00:00    
+Model.java                                     100%   83     3.8KB/s   00:00    
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; nps-MacBook-Air-2:~ np&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-8-install-gradle-on-aws&quot;&gt;Step 8: Install Gradle on AWS&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-9-run-project&quot;&gt;Step 9: Run project&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-10-test&quot;&gt;Step 10: Test&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</summary></entry><entry><title type="html">EC2 instance on AWS</title><link href="http://localhost:4000/update/2020/02/22/aws_ec2.html" rel="alternate" type="text/html" title="EC2 instance on AWS" /><published>2020-02-22T13:34:33-08:00</published><updated>2020-02-22T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/22/aws_ec2</id><content type="html" xml:base="http://localhost:4000/update/2020/02/22/aws_ec2.html">&lt;h4 id=&quot;ec2-instance-on-aws&quot;&gt;EC2 instance on AWS&lt;/h4&gt;
+
+&lt;p&gt;[TOC]&lt;/p&gt;
+
+&lt;p&gt;Basic concept to understand is that when we get t2.micro or any other EC2 instance, it is an instance that we can stop, restart and terminate. When we terminate an instance we will still have a volume that all our files are living on. In the future we can attach another instance to a volume.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/aws.png&quot; alt=&quot;aws&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html&quot;&gt;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-1-navigate-to-ec2&quot;&gt;Step 1: Navigate to EC2&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/launch0.png&quot; alt=&quot;launch0&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step2-launch-and-instance&quot;&gt;Step2: Launch and instance&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/launch.png&quot; alt=&quot;launch&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-3-choose-an-amazon-machine-image&quot;&gt;Step 3: Choose an Amazon Machine Image&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/Users/np/Desktop/2020-02-22-aws-ec2/linux.png&quot; alt=&quot;linux&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-4-review-and-launch&quot;&gt;Step 4: Review and launch&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/t2_micro.png&quot; alt=&quot;t2_micro&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-5-launch&quot;&gt;Step 5: Launch&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/launch2.png&quot; alt=&quot;launch2&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-6-select-a-key&quot;&gt;Step 6: Select a key&lt;/h5&gt;
+
+&lt;p&gt;(generate key first if you don’t have one)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/key.png&quot; alt=&quot;key&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Done&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/done.png&quot; alt=&quot;done&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-7-view-instance&quot;&gt;Step 7: View instance.&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/2-2.png&quot; alt=&quot;2-2&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-8-click-on-launch-wizard-3&quot;&gt;Step 8: Click on launch-wizard-3&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/http.png&quot; alt=&quot;http&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-9-click-on-launch-wizard-3&quot;&gt;Step 9: Click on launch-wizard-3&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/http2.png&quot; alt=&quot;http2&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-10-edit-inbound-rules-and-save&quot;&gt;Step 10: Edit inbound rules and save&lt;/h5&gt;
+
+&lt;p&gt;Othewise nobody will be able to connect to the server.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/http3.png&quot; alt=&quot;http3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Save Rules&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/http4.png&quot; alt=&quot;http4&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-10-ssh-to-ec2-instance&quot;&gt;Step 10: ssh to EC2 instance&lt;/h5&gt;
+
+&lt;p&gt;From local machine ssh to the remote linux machine&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; nps-MacBook-Air-2:~ np&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; ~/.ssh/2019.pem ec2-user@ec2-18-236-168-29.us-west-2.compute.amazonaws.com
+
+       __|  __|_  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+       _|  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;     /   Amazon Linux 2 AMI
+      ___|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|___|
+
+https://aws.amazon.com/amazon-linux-2/
+No packages needed &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;security&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 14 packages available
+Run &lt;span class=&quot;s2&quot;&gt;&quot;sudo yum update&quot;&lt;/span&gt; to apply all updates.
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-11-install-nginx112&quot;&gt;Step 11: Install nginx1.12&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;amazon-linux-extras &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;nginx1.12
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-12-start-the-server&quot;&gt;Step 12: Start the server&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;service nginx start
+Redirecting to /bin/systemctl start nginx.service
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-13-go-to-the-browser-and-view-the-web-server&quot;&gt;Step 13: Go to the browser and view the web server&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/Users/np/Desktop/2020-02-22-aws-ec2/nginx.png&quot; alt=&quot;nginx&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;step-14-stop-the-server&quot;&gt;Step 14: Stop the server&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;service nginx stop
+Redirecting to /bin/systemctl stop nginx.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;step-14-install-spark&quot;&gt;Step 14: Install Spark&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">EC2 instance on AWS</summary></entry><entry><title type="html">DenseNet and Deconvolution.</title><link href="http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution.html" rel="alternate" type="text/html" title="DenseNet and Deconvolution." /><published>2020-02-21T13:34:33-08:00</published><updated>2020-02-21T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution</id><content type="html" xml:base="http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution.html">&lt;p&gt;&lt;strong&gt;A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;Didn’t get good results.&lt;/p&gt;
 

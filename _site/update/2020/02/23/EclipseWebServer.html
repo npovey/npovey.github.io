@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Eclipse Project to Query PostgreSQL and Output Results on a Website | girls can code</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Eclipse Project to Query PostgreSQL and Output Results on a Website" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Eclipse Project to Query PostgreSQL and Output Results on a Website" />
+<meta property="og:description" content="Eclipse Project to Query PostgreSQL and Output Results on a Website" />
+<link rel="canonical" href="http://localhost:4000/update/2020/02/23/EclipseWebServer.html" />
+<meta property="og:url" content="http://localhost:4000/update/2020/02/23/EclipseWebServer.html" />
+<meta property="og:site_name" content="girls can code" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-02-23T13:34:33-08:00" />
+<script type="application/ld+json">
+{"description":"Eclipse Project to Query PostgreSQL and Output Results on a Website","@type":"BlogPosting","url":"http://localhost:4000/update/2020/02/23/EclipseWebServer.html","headline":"Eclipse Project to Query PostgreSQL and Output Results on a Website","dateModified":"2020-02-23T13:34:33-08:00","datePublished":"2020-02-23T13:34:33-08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/02/23/EclipseWebServer.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="girls can code" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">girls can code</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Eclipse Project to Query PostgreSQL and Output Results on a Website</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-02-23T13:34:33-08:00" itemprop="datePublished">Feb 23, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h4 id="eclipse-project-to-query-postgresql-and-output-results-on-a-website">Eclipse Project to Query PostgreSQL and Output Results on a Website</h4>
+
+<p>The idea is to create a website as the one below.</p>
+
+<p><img src="/2020-02-23-eclipse_web_server/idea.png" alt="idea" /></p>
+
+<h5 id="step-1-setting-up-spark-with-gradle">Step 1: Setting up Spark with Gradle</h5>
+
+<p>Follow this tutorial: <a href="http://sparkjava.com/tutorials/gradle-setup">http://sparkjava.com/tutorials/gradle-setup</a></p>
+
+<h5 id="step-2-install-postgresql">Step 2: Install PostgreSQL</h5>
+
+<p>Follow the following link and install PostgreSQL<a href="https://www.postgresql.org/download/">https://www.postgresql.org/download/</a></p>
+
+<h5 id="step-3-add-data-to-database">Step 3: Add data to database</h5>
+
+<p>Manually added countries. (Future work do it programatically)</p>
+
+<pre><code class="language-txt">China:76943
+Diamond Princess:691
+South Korea:602
+Italy:157
+..
+</code></pre>
+
+<p><img src="/2020-02-23-eclipse_web_server/postgre.png" alt="postgre" /></p>
+
+<p><img src="/2020-02-23-eclipse_web_server/insert.png" alt="insert" /></p>
+
+<h5 id="step-4-add-end-point-hello-to-the-main-function">Step 4: Add end point /hello to the main function</h5>
+
+<p>This endpoint reads inputs to the form and gets the request</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="n">get</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">,</span> <span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="n">res</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="s">"Enter country name"</span>
+        		<span class="o">+</span> <span class="s">" &lt;form method = post&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"\n"</span> <span class="o">+</span>
+        		<span class="s">"  First name:&lt;br&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  &lt;input type=\"text\" name=\"country\"&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  &lt;br&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  &lt;input type=\"submit\" value=\"Submit\"&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  \n"</span> <span class="o">+</span>
+        		<span class="s">"&lt;/form&gt;"</span><span class="o">);</span>
+        <span class="n">post</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">,</span> <span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">model</span><span class="o">.</span><span class="na">getCasesCount</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">queryParams</span><span class="o">(</span><span class="s">"country"</span><span class="o">))+</span><span class="s">""</span><span class="o">);</span>
+</code></pre></div></div>
+
+<h5 id="step-5-create-classes">Step 5: Create classes</h5>
+
+<p>The following 4 classes needed to create our webserver</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Country.java                                
+Sql2oModel.java                                 
+Main.java                                      
+Model.java                                     
+</code></pre></div></div>
+
+<h6 id="mainjava">Main.java</h6>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">crv19</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">spark</span><span class="o">.</span><span class="na">Spark</span><span class="o">.*;</span>
+<span class="kn">import</span> <span class="nn">java.util.UUID</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.sql2o.Sql2o</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.sql2o.converters.UUIDConverter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.sql2o.quirks.PostgresQuirks</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">//        Sql2o sql2o = new Sql2o("jdbc:postgresql://" + options.dbHost + ":" + options.dbPort + "/" + options.database,</span>
+
+        <span class="nc">Sql2o</span> <span class="n">sql2o</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Sql2o</span><span class="o">(</span><span class="s">"jdbc:postgresql://"</span> <span class="o">+</span> <span class="s">"localhost"</span> <span class="o">+</span> <span class="s">":"</span> <span class="o">+</span> <span class="s">"5432"</span> <span class="o">+</span> <span class="s">"/"</span> <span class="o">+</span> <span class="s">"crv19"</span><span class="o">,</span>
+        		<span class="s">"blog_owner"</span><span class="o">,</span> <span class="s">"np"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">PostgresQuirks</span><span class="o">()</span> <span class="o">{</span>
+            <span class="o">{</span>
+                <span class="c1">// make sure we use default UUID converter.</span>
+                <span class="n">converters</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="no">UUID</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="k">new</span> <span class="nc">UUIDConverter</span><span class="o">());</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+        <span class="nc">Model</span> <span class="n">model</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Sql2oModel</span><span class="o">(</span><span class="n">sql2o</span><span class="o">);</span>
+        <span class="n">get</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">,</span> <span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="n">res</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="s">"Enter country name"</span>
+        		<span class="o">+</span> <span class="s">" &lt;form method = post&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"\n"</span> <span class="o">+</span>
+        		<span class="s">"  First name:&lt;br&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  &lt;input type=\"text\" name=\"country\"&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  &lt;br&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  &lt;input type=\"submit\" value=\"Submit\"&gt;\n"</span> <span class="o">+</span>
+        		<span class="s">"  \n"</span> <span class="o">+</span>
+        		<span class="s">"&lt;/form&gt;"</span><span class="o">);</span>
+        <span class="n">post</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">,</span> <span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">model</span><span class="o">.</span><span class="na">getCasesCount</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">queryParams</span><span class="o">(</span><span class="s">"country"</span><span class="o">))+</span><span class="s">""</span><span class="o">);</span>    
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h6 id="countryjava">Country.java</h6>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">crv19</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Country</span> <span class="o">{</span>
+	<span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">count</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getCount</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">count</span><span class="o">;</span>
+	<span class="o">}</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCount</span><span class="o">(</span><span class="kt">int</span> <span class="n">cases</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">count</span> <span class="o">=</span> <span class="n">cases</span><span class="o">;</span>
+	<span class="o">}</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+	<span class="o">}</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Model.java</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kn">package</span> <span class="nn">crv19</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Model</span> <span class="o">{</span>
+	<span class="kt">int</span> <span class="nf">getCasesCount</span><span class="o">(</span><span class="nc">String</span> <span class="n">countryName</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">crv19</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.sql2o.Connection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.sql2o.Sql2o</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Sql2oModel</span> <span class="kd">implements</span> <span class="nc">Model</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Sql2o</span> <span class="n">sql2o</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">Sql2oModel</span><span class="o">(</span><span class="nc">Sql2o</span> <span class="n">sql2o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sql2o</span> <span class="o">=</span> <span class="n">sql2o</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getCasesCount</span><span class="o">(</span><span class="nc">String</span> <span class="n">countryName</span><span class="o">)</span>  <span class="o">{</span>
+        <span class="k">try</span> <span class="o">(</span><span class="nc">Connection</span> <span class="n">conn</span> <span class="o">=</span> <span class="n">sql2o</span><span class="o">.</span><span class="na">open</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Country</span><span class="o">&gt;</span> <span class="n">countries</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="na">createQuery</span><span class="o">(</span><span class="s">"select * from countries where name=:name "</span><span class="o">)</span>
+            		<span class="o">.</span><span class="na">addParameter</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="n">countryName</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">executeAndFetch</span><span class="o">(</span><span class="nc">Country</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="c1">//            countries.forEach((post) -&gt; post.setCategories(getCategoriesFor(conn, post.getPost_uuid())));</span>
+           <span class="k">if</span><span class="o">(</span><span class="n">countries</span><span class="o">.</span><span class="na">size</span><span class="o">()==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        	   <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+           <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        	   <span class="k">return</span> <span class="n">countries</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">getCount</span><span class="o">();</span>
+           <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h5 id="step-6-test-the-server">Step 6: Test the server</h5>
+
+<p>Connect to localhost with port number 4567. Port number is hardcoded.</p>
+
+<p>Step1:</p>
+
+<p><img src="/2020-02-23-eclipse_web_server/idea.png" alt="idea" /></p>
+
+<p>Step2: Query the PosgreSQL</p>
+
+<p><img src="/2020-02-23-eclipse_web_server/query_entry.png" alt="query_entry" /></p>
+
+<p>Step3: Output is shown below. The data was entered for Feb 23, 2020,</p>
+
+<p><img src="/2020-02-23-eclipse_web_server/ans.png" alt="ans" /></p>
+
+<h4 id="publish-project-to-aws">Publish project to AWS</h4>
+
+<h5 id="step-7-copy-projet-to-aws">Step 7: Copy projet to AWS</h5>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>base<span class="o">)</span> nps-MacBook-Air-2:~ np<span class="nv">$ </span>scp <span class="nt">-i</span> ~/.ssh/2019.pem <span class="nt">-r</span> ~/eclipse-workspace/crv19_new ec2-user@ec2-52-41-181-26.us-west-2.compute.amazonaws.com:~/.
+Library.class                                  100%  330    14.6KB/s   00:00    
+Model.class                                    100%  145     7.8KB/s   00:00    
+Main<span class="nv">$1</span>.class                                   100%  607    32.3KB/s   00:00    
+Country.class                                  100%  718    34.3KB/s   00:00    
+Sql2oModel.class                               100% 1589    74.0KB/s   00:00    
+Main.class                                     100% 2373    99.5KB/s   00:00    
+LibraryTest.class                              100%  630    24.9KB/s   00:00    
+.classpath                                     100%  446    18.8KB/s   00:00    
+gradle-wrapper.jar                             100%   53KB 246.8KB/s   00:00    
+gradle-wrapper.properties                      100%  200     8.4KB/s   00:00    
+gradlew                                        100% 5296   214.0KB/s   00:00    
+.gitignore                                     100%   16     0.7KB/s   00:00    
+org.eclipse.buildship.core.prefs               100%   54     2.4KB/s   00:00    
+.project                                       100%  595    23.1KB/s   00:00    
+build.gradle                                   100% 1289    67.9KB/s   00:00    
+taskHistory.bin                                100%   74KB 273.2KB/s   00:00    
+taskHistory.lock                               100%   17     0.7KB/s   00:00    
+fileContent.lock                               100%   17     0.8KB/s   00:00    
+annotation-processors.bin                      100%   18KB 301.5KB/s   00:00    
+last-build.bin                                 100%    1     0.1KB/s   00:00    
+fileHashes.lock                                100%   17     0.9KB/s   00:00    
+fileHashes.bin                                 100%   21KB 277.4KB/s   00:00    
+resourceHashesCache.bin                        100%   20KB 318.5KB/s   00:00    
+cache.properties                               100%   49     2.6KB/s   00:00    
+outputFiles.bin                                100%   18KB 287.1KB/s   00:00    
+buildOutputCleanup.lock                        100%   17     0.8KB/s   00:00    
+LibraryTest.class                              100%  630    29.2KB/s   00:00    
+Library.class                                  100%  330    14.9KB/s   00:00    
+Model.class                                    100%  145     7.7KB/s   00:00    
+Main<span class="nv">$1</span>.class                                   100%  607    13.4KB/s   00:00    
+Country.class                                  100% 1702    74.4KB/s   00:00    
+Sql2oModel.class                               100% 1732    68.6KB/s   00:00    
+Main.class                                     100% 1994    97.0KB/s   00:00    
+crv19.jar                                      100% 4561   121.2KB/s   00:00    
+results.bin                                    100%   58     2.5KB/s   00:00    
+output.bin.idx                                 100%    1     0.1KB/s   00:00    
+output.bin                                     100%    0     0.0KB/s   00:00    
+TEST-LibraryTest.xml                           100%  385    20.1KB/s   00:00    
+MANIFEST.MF                                    100%   25     1.0KB/s   00:00    
+index.html                                     100% 2320    86.9KB/s   00:00    
+base-style.css                                 100% 2645   115.2KB/s   00:00    
+style.css                                      100% 1135    56.1KB/s   00:00    
+LibraryTest.html                               100% 1915    74.6KB/s   00:00    
+report.js                                      100% 5252   210.2KB/s   00:00    
+default-package.html                           100% 1974    85.7KB/s   00:00    
+gradlew.bat                                    100% 2260    82.2KB/s   00:00    
+settings.gradle                                100%  578    26.5KB/s   00:00    
+LibraryTest.java                               100%  360    19.4KB/s   00:00    
+Library.java                                   100%  166     8.6KB/s   00:00    
+Country.java                                   100%  293    12.8KB/s   00:00    
+Sql2oModel.java                                100%  953    41.0KB/s   00:00    
+Main.java                                      100% 1195    56.4KB/s   00:00    
+Model.java                                     100%   83     3.8KB/s   00:00    
+<span class="o">(</span>base<span class="o">)</span> nps-MacBook-Air-2:~ np<span class="err">$</span>
+</code></pre></div></div>
+
+<h5 id="step-8-install-gradle-on-aws">Step 8: Install Gradle on AWS</h5>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
+</code></pre></div></div>
+
+<h5 id="step-9-run-project">Step 9: Run project</h5>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
+</code></pre></div></div>
+
+<h5 id="step-10-test">Step 10: Test</h5>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
+</code></pre></div></div>
+
+  </div><a class="u-url" href="/update/2020/02/23/EclipseWebServer.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">girls can code</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">girls can code</li><li><a class="u-email" href="mailto:npovey2atgmail">npovey2atgmail</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
