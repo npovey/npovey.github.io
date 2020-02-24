@@ -1,4 +1,5 @@
 ---
+
 layout: post
 title:  "Eclipse Project to Query PostgreSQL and Output Results on a Website"
 date:   2020-2-23 14:34:33 -0700
@@ -15,6 +16,16 @@ The idea is to create a website as the one below.
 ##### Step 1: Setting up Spark with Gradle
 
 Follow this tutorial: <http://sparkjava.com/tutorials/gradle-setup>
+
+
+
+![eclipse_main](/2020-02-23-eclipse_web_server/eclipse_main.png)
+
+
+
+![eclipse_sql](/2020-02-23-eclipse_web_server/eclipse_sql.png)
+
+
 
 ##### Step 2: Install PostgreSQL
 
@@ -134,6 +145,8 @@ public interface Model {
 	int getCasesCount(String countryName);
 }
 ```
+
+Sql2oModel.java
 
 ```java
 package crv19;
