@@ -51,7 +51,7 @@
 
 <p><img src="/2020-02-23-eclipse_web_server/idea.png" alt="idea" /></p>
 
-<h5 id="step-1-setting-up-spark-with-gradle">Step 1: Setting up Spark with Gradle</h5>
+<h4 id="step-1-setting-up-spark-with-gradle">Step 1: Setting up Spark with Gradle</h4>
 
 <p>Follow this tutorial: <a href="http://sparkjava.com/tutorials/gradle-setup">http://sparkjava.com/tutorials/gradle-setup</a></p>
 
@@ -59,11 +59,11 @@
 
 <p><img src="/2020-02-23-eclipse_web_server/eclipse_sql.png" alt="eclipse_sql" /></p>
 
-<h5 id="step-2-install-postgresql">Step 2: Install PostgreSQL</h5>
+<h4 id="step-2-install-postgresql">Step 2: Install PostgreSQL</h4>
 
 <p>Follow the following link and install PostgreSQL<a href="https://www.postgresql.org/download/">https://www.postgresql.org/download/</a></p>
 
-<h5 id="step-3-add-data-to-database">Step 3: Add data to database</h5>
+<p>####Step 3: Add data to database</p>
 
 <p>Manually added countries. (Future work do it programatically)</p>
 
@@ -78,7 +78,7 @@ Italy:157
 
 <p><img src="/2020-02-23-eclipse_web_server/insert.png" alt="insert" /></p>
 
-<h5 id="step-4-add-end-point-hello-to-the-main-function">Step 4: Add end point /hello to the main function</h5>
+<p>####Step 4: Add end point /hello to the main function</p>
 
 <p>This endpoint reads inputs to the form and gets the request</p>
 
@@ -94,7 +94,7 @@ Italy:157
         <span class="n">post</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">,</span> <span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">model</span><span class="o">.</span><span class="na">getCasesCount</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">queryParams</span><span class="o">(</span><span class="s">"country"</span><span class="o">))+</span><span class="s">""</span><span class="o">);</span>
 </code></pre></div></div>
 
-<h5 id="step-5-create-classes">Step 5: Create classes</h5>
+<p>####Step 5: Create classes</p>
 
 <p>The following 4 classes needed to create our webserver</p>
 
@@ -197,7 +197,7 @@ Model.java
 <span class="o">}</span>
 </code></pre></div></div>
 
-<h5 id="step-6-test-the-server">Step 6: Test the server</h5>
+<p>####Step 6: Test the server</p>
 
 <p>Connect to localhost with port number 4567. Port number is hardcoded.</p>
 
@@ -205,7 +205,7 @@ Model.java
 
 <p><img src="/2020-02-23-eclipse_web_server/idea.png" alt="idea" /></p>
 
-<p>Step2: Query the PosgreSQL</p>
+<p>Step2:  Query the PosgreSQL</p>
 
 <p><img src="/2020-02-23-eclipse_web_server/query_entry.png" alt="query_entry" /></p>
 
@@ -215,7 +215,7 @@ Model.java
 
 <h4 id="publish-project-to-aws">Publish project to AWS</h4>
 
-<h5 id="step-7-copy-projet-to-aws">Step 7: Copy projet to AWS</h5>
+<p>####Step 7: Copy projet to AWS</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>base<span class="o">)</span> nps-MacBook-Air-2:~ np<span class="nv">$ </span>scp <span class="nt">-i</span> ~/.ssh/2019.pem <span class="nt">-r</span> ~/eclipse-workspace/crv19_new ec2-user@ec2-52-41-181-26.us-west-2.compute.amazonaws.com:~/.
 Library.class                                  100%  330    14.6KB/s   00:00    
@@ -274,17 +274,17 @@ Model.java                                     100%   83     3.8KB/s   00:00
 <span class="o">(</span>base<span class="o">)</span> nps-MacBook-Air-2:~ np<span class="err">$</span>
 </code></pre></div></div>
 
-<h5 id="step-8-install-gradle-on-aws">Step 8: Install Gradle on AWS</h5>
+<p>####Step 8: Install Gradle on AWS</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
 </code></pre></div></div>
 
-<h5 id="step-9-run-project">Step 9: Run project</h5>
+<p>####Step 9: Run project</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
 </code></pre></div></div>
 
-<h5 id="step-10-test">Step 10: Test</h5>
+<p>####Step 10: Test</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
 </code></pre></div></div>

@@ -13,7 +13,7 @@ The idea is to create a website as the one below.
 
 ![idea](/2020-02-23-eclipse_web_server/idea.png)
 
-##### Step 1: Setting up Spark with Gradle
+#### Step 1: Setting up Spark with Gradle
 
 Follow this tutorial: <http://sparkjava.com/tutorials/gradle-setup>
 
@@ -25,13 +25,11 @@ Follow this tutorial: <http://sparkjava.com/tutorials/gradle-setup>
 
 ![eclipse_sql](/2020-02-23-eclipse_web_server/eclipse_sql.png)
 
-
-
-##### Step 2: Install PostgreSQL
+#### Step 2: Install PostgreSQL
 
 Follow the following link and install PostgreSQL<https://www.postgresql.org/download/>
 
-##### Step 3: Add data to database
+####Step 3: Add data to database
 
 Manually added countries. (Future work do it programatically)
 
@@ -49,9 +47,7 @@ Italy:157
 
 ![insert](/2020-02-23-eclipse_web_server/insert.png)
 
-
-
-##### Step 4: Add end point /hello to the main function
+####Step 4: Add end point /hello to the main function
 
 This endpoint reads inputs to the form and gets the request
 
@@ -68,7 +64,7 @@ This endpoint reads inputs to the form and gets the request
         post("/hello", (request, response) -> model.getCasesCount(request.queryParams("country"))+"");
 ```
 
-##### Step 5: Create classes
+####Step 5: Create classes
 
 The following 4 classes needed to create our webserver
 
@@ -176,7 +172,7 @@ public class Sql2oModel implements Model {
 }
 ```
 
-##### Step 6: Test the server
+####Step 6: Test the server
 
 Connect to localhost with port number 4567. Port number is hardcoded.
 
@@ -184,7 +180,7 @@ Step1:
 
 ![idea](/2020-02-23-eclipse_web_server/idea.png)
 
-Step2: Query the PosgreSQL
+Step2:  Query the PosgreSQL
 
 ![query_entry](/2020-02-23-eclipse_web_server/query_entry.png)
 
@@ -194,7 +190,7 @@ Step3: Output is shown below. The data was entered for Feb 23, 2020,
 
 #### Publish project to AWS
 
-##### Step 7: Copy projet to AWS
+####Step 7: Copy projet to AWS
 
 ```bash
 (base) nps-MacBook-Air-2:~ np$ scp -i ~/.ssh/2019.pem -r ~/eclipse-workspace/crv19_new ec2-user@ec2-52-41-181-26.us-west-2.compute.amazonaws.com:~/.
@@ -254,19 +250,19 @@ Model.java                                     100%   83     3.8KB/s   00:00
 (base) nps-MacBook-Air-2:~ np$
 ```
 
-##### Step 8: Install Gradle on AWS
+####Step 8: Install Gradle on AWS
 
 ```bash
 future work
 ```
 
-##### Step 9: Run project
+####Step 9: Run project
 
 ```bash
 future work
 ```
 
-##### Step 10: Test
+####Step 10: Test
 
 ```bash
 future work

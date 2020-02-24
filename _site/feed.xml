@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-23T21:26:34-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</title><link href="http://localhost:4000/update/2020/02/23/EclipseWebServer.html" rel="alternate" type="text/html" title="Eclipse Project to Query PostgreSQL and Output Results on a Website" /><published>2020-02-23T13:34:33-08:00</published><updated>2020-02-23T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/23/EclipseWebServer</id><content type="html" xml:base="http://localhost:4000/update/2020/02/23/EclipseWebServer.html">&lt;h4 id=&quot;eclipse-project-to-query-postgresql-and-output-results-on-a-website&quot;&gt;Eclipse Project to Query PostgreSQL and Output Results on a Website&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-23T21:29:56-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</title><link href="http://localhost:4000/update/2020/02/23/EclipseWebServer.html" rel="alternate" type="text/html" title="Eclipse Project to Query PostgreSQL and Output Results on a Website" /><published>2020-02-23T13:34:33-08:00</published><updated>2020-02-23T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/23/EclipseWebServer</id><content type="html" xml:base="http://localhost:4000/update/2020/02/23/EclipseWebServer.html">&lt;h4 id=&quot;eclipse-project-to-query-postgresql-and-output-results-on-a-website&quot;&gt;Eclipse Project to Query PostgreSQL and Output Results on a Website&lt;/h4&gt;
 
 &lt;p&gt;The idea is to create a website as the one below.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/idea.png&quot; alt=&quot;idea&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-1-setting-up-spark-with-gradle&quot;&gt;Step 1: Setting up Spark with Gradle&lt;/h5&gt;
+&lt;h4 id=&quot;step-1-setting-up-spark-with-gradle&quot;&gt;Step 1: Setting up Spark with Gradle&lt;/h4&gt;
 
 &lt;p&gt;Follow this tutorial: &lt;a href=&quot;http://sparkjava.com/tutorials/gradle-setup&quot;&gt;http://sparkjava.com/tutorials/gradle-setup&lt;/a&gt;&lt;/p&gt;
 
@@ -12,11 +12,11 @@
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/eclipse_sql.png&quot; alt=&quot;eclipse_sql&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-2-install-postgresql&quot;&gt;Step 2: Install PostgreSQL&lt;/h5&gt;
+&lt;h4 id=&quot;step-2-install-postgresql&quot;&gt;Step 2: Install PostgreSQL&lt;/h4&gt;
 
 &lt;p&gt;Follow the following link and install PostgreSQL&lt;a href=&quot;https://www.postgresql.org/download/&quot;&gt;https://www.postgresql.org/download/&lt;/a&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-3-add-data-to-database&quot;&gt;Step 3: Add data to database&lt;/h5&gt;
+&lt;p&gt;####Step 3: Add data to database&lt;/p&gt;
 
 &lt;p&gt;Manually added countries. (Future work do it programatically)&lt;/p&gt;
 
@@ -31,7 +31,7 @@ Italy:157
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/insert.png&quot; alt=&quot;insert&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-4-add-end-point-hello-to-the-main-function&quot;&gt;Step 4: Add end point /hello to the main function&lt;/h5&gt;
+&lt;p&gt;####Step 4: Add end point /hello to the main function&lt;/p&gt;
 
 &lt;p&gt;This endpoint reads inputs to the form and gets the request&lt;/p&gt;
 
@@ -47,7 +47,7 @@ Italy:157
         &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/hello&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getCasesCount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;queryParams&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-5-create-classes&quot;&gt;Step 5: Create classes&lt;/h5&gt;
+&lt;p&gt;####Step 5: Create classes&lt;/p&gt;
 
 &lt;p&gt;The following 4 classes needed to create our webserver&lt;/p&gt;
 
@@ -150,7 +150,7 @@ Model.java
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-6-test-the-server&quot;&gt;Step 6: Test the server&lt;/h5&gt;
+&lt;p&gt;####Step 6: Test the server&lt;/p&gt;
 
 &lt;p&gt;Connect to localhost with port number 4567. Port number is hardcoded.&lt;/p&gt;
 
@@ -158,7 +158,7 @@ Model.java
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/idea.png&quot; alt=&quot;idea&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Step2: Query the PosgreSQL&lt;/p&gt;
+&lt;p&gt;Step2:  Query the PosgreSQL&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-23-eclipse_web_server/query_entry.png&quot; alt=&quot;query_entry&quot; /&gt;&lt;/p&gt;
 
@@ -168,7 +168,7 @@ Model.java
 
 &lt;h4 id=&quot;publish-project-to-aws&quot;&gt;Publish project to AWS&lt;/h4&gt;
 
-&lt;h5 id=&quot;step-7-copy-projet-to-aws&quot;&gt;Step 7: Copy projet to AWS&lt;/h5&gt;
+&lt;p&gt;####Step 7: Copy projet to AWS&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; nps-MacBook-Air-2:~ np&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;scp &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; ~/.ssh/2019.pem &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; ~/eclipse-workspace/crv19_new ec2-user@ec2-52-41-181-26.us-west-2.compute.amazonaws.com:~/.
 Library.class                                  100%  330    14.6KB/s   00:00    
@@ -227,17 +227,17 @@ Model.java                                     100%   83     3.8KB/s   00:00
 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; nps-MacBook-Air-2:~ np&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-8-install-gradle-on-aws&quot;&gt;Step 8: Install Gradle on AWS&lt;/h5&gt;
+&lt;p&gt;####Step 8: Install Gradle on AWS&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-9-run-project&quot;&gt;Step 9: Run project&lt;/h5&gt;
+&lt;p&gt;####Step 9: Run project&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-10-test&quot;&gt;Step 10: Test&lt;/h5&gt;
+&lt;p&gt;####Step 10: Test&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</summary></entry><entry><title type="html">EC2 instance on AWS</title><link href="http://localhost:4000/update/2020/02/22/aws_ec2.html" rel="alternate" type="text/html" title="EC2 instance on AWS" /><published>2020-02-22T13:34:33-08:00</published><updated>2020-02-22T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/22/aws_ec2</id><content type="html" xml:base="http://localhost:4000/update/2020/02/22/aws_ec2.html">&lt;h4 id=&quot;ec2-instance-on-aws&quot;&gt;EC2 instance on AWS&lt;/h4&gt;
