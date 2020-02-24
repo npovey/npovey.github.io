@@ -122,7 +122,7 @@ Redirecting to /bin/systemctl start nginx.service
 
 ##### Step 13: Go to the browser and view the web server
 
-![nginx](/Users/np/Desktop/2020-02-22-aws-ec2/nginx.png)
+![nginx](/2020-02-22-aws-ec2/nginx.png)
 
 ##### Step 14: Stop the server
 
