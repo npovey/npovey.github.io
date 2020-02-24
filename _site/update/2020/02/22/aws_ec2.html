@@ -69,11 +69,11 @@
 
 <p><img src="/2020-02-22-aws-ec2/t2_micro.png" alt="t2_micro" /></p>
 
-<h5 id="step-5-launch">Step 5: Launch</h5>
+<h4 id="step-5-launch">Step 5: Launch</h4>
 
 <p><img src="/2020-02-22-aws-ec2/launch2.png" alt="launch2" /></p>
 
-<h5 id="step-6-select-a-key">Step 6: Select a Key</h5>
+<h4 id="step-6-select-a-key">Step 6: Select a Key</h4>
 
 <p>(generate key first if you don’t have one)</p>
 
@@ -83,19 +83,19 @@
 
 <p><img src="/2020-02-22-aws-ec2/done.png" alt="done" /></p>
 
-<h5 id="step-7-view-instance">Step 7: View instance.</h5>
+<h4 id="step-7-view-instance">Step 7: View instance.</h4>
 
 <p><img src="/2020-02-22-aws-ec2/2-2.png" alt="2-2" /></p>
 
-<h5 id="step-8-click-on-launch-wizard-3">Step 8: Click on launch-wizard-3</h5>
+<h4 id="step-8-click-on-launch-wizard-3">Step 8: Click on launch-wizard-3</h4>
 
 <p><img src="/2020-02-22-aws-ec2/http.png" alt="http" /></p>
 
-<h5 id="step-9-click-on-launch-wizard-3">Step 9: Click on launch-wizard-3</h5>
+<h4 id="step-9-click-on-launch-wizard-3">Step 9: Click on launch-wizard-3</h4>
 
 <p><img src="/2020-02-22-aws-ec2/http2.png" alt="http2" /></p>
 
-<h5 id="step-10-edit-inbound-rules-and-save">Step 10: Edit inbound rules and save</h5>
+<h4 id="step-10-edit-inbound-rules-and-save">Step 10: Edit inbound rules and save</h4>
 
 <p>Othewise nobody will be able to connect to the server.</p>
 
@@ -105,7 +105,7 @@
 
 <p><img src="/2020-02-22-aws-ec2/http4.png" alt="http4" /></p>
 
-<h5 id="step-11-ssh-to-ec2-instance">Step 11: ssh to EC2 instance</h5>
+<h4 id="step-11-ssh-to-ec2-instance">Step 11: ssh to EC2 instance</h4>
 
 <p>From local machine ssh to the remote linux machine</p>
 
@@ -123,29 +123,29 @@ Run <span class="s2">"sudo yum update"</span> to apply all updates.
 
 </code></pre></div></div>
 
-<h5 id="step-12-install-nginx112">Step 12: Install nginx1.12</h5>
+<h4 id="step-12-install-nginx112">Step 12: Install nginx1.12</h4>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="nv">$ </span><span class="nb">sudo </span>amazon-linux-extras <span class="nb">install </span>nginx1.12
 </code></pre></div></div>
 
-<h5 id="step-13-start-the-server">Step 13: Start the server</h5>
+<h4 id="step-13-start-the-server">Step 13: Start the server</h4>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="nv">$ </span><span class="nb">sudo </span>service nginx start
 Redirecting to /bin/systemctl start nginx.service
 <span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="err">$</span>
 </code></pre></div></div>
 
-<h5 id="step-14-go-to-the-browser-and-view-the-web-server">Step 14: Go to the browser and view the web server</h5>
+<h4 id="step-14-go-to-the-browser-and-view-the-web-server">Step 14: Go to the browser and view the web server</h4>
 
 <p><img src="/2020-02-22-aws-ec2/nginx.png" alt="nginx" /></p>
 
-<h5 id="step-15-stop-the-server">Step 15: Stop the server</h5>
+<h4 id="step-15-stop-the-server">Step 15: Stop the server</h4>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="nv">$ </span><span class="nb">sudo </span>service nginx stop
 Redirecting to /bin/systemctl stop nginx.service
 </code></pre></div></div>
 
-<h5 id="step-16-install-spark">Step 16: Install Spark</h5>
+<h4 id="step-16-install-spark">Step 16: Install Spark</h4>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
 </code></pre></div></div>
