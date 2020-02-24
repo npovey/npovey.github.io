@@ -7,31 +7,28 @@ categories: update
 
 #### EC2 instance on AWS
 
-[TOC]
-
 Basic concept to understand is that when we get t2.micro or any other EC2 instance, it is an instance that we can stop, restart and terminate. When we terminate an instance we will still have a volume that all our files are living on. In the future we can attach another instance to a volume.
-
 
 
 ![aws](/2020-02-22-aws-ec2/aws.png)
 
 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html>
 
-##### Step 1: Navigate to EC2
+#### Step 1: Navigate to EC2
 
 ![launch0](/2020-02-22-aws-ec2/launch0.png)
 
-##### Step2: Launch and instance
+#### Step 2: Launch and instance
 
 ![launch](/2020-02-22-aws-ec2/launch.png)
 
-##### Step 3: Choose an Amazon Machine Image
+#### Step 3: Choose an Amazon Machine Image
 
 ![linux](/2020-02-22-aws-ec2/linux.png)
 
 
 
-##### Step 4: Review and launch
+#### Step 4: Review and Launch
 
 ![t2_micro](/2020-02-22-aws-ec2/t2_micro.png)
 
@@ -41,7 +38,7 @@ Basic concept to understand is that when we get t2.micro or any other EC2 instan
 
 ![launch2](/2020-02-22-aws-ec2/launch2.png)
 
-##### Step 6: Select a key
+##### Step 6: Select a Key
 
 (generate key first if you don't have one)
 
@@ -87,7 +84,7 @@ Save Rules
 
 ![http4](/2020-02-22-aws-ec2/http4.png)
 
-##### Step 10: ssh to EC2 instance
+##### Step 11: ssh to EC2 instance
 
 From local machine ssh to the remote linux machine
 
@@ -106,13 +103,13 @@ Run "sudo yum update" to apply all updates.
 
 ```
 
-##### Step 11: Install nginx1.12
+##### Step 12: Install nginx1.12
 
 ```bash
 [ec2-user@ip-172-31-22-27 ~]$ sudo amazon-linux-extras install nginx1.12
 ```
 
-##### Step 12: Start the server
+##### Step 13: Start the server
 
 ```bash
 [ec2-user@ip-172-31-22-27 ~]$ sudo service nginx start
@@ -120,18 +117,18 @@ Redirecting to /bin/systemctl start nginx.service
 [ec2-user@ip-172-31-22-27 ~]$
 ```
 
-##### Step 13: Go to the browser and view the web server
+##### Step 14: Go to the browser and view the web server
 
 ![nginx](/2020-02-22-aws-ec2/nginx.png)
 
-##### Step 14: Stop the server
+##### Step 15: Stop the server
 
 ```bash
 [ec2-user@ip-172-31-22-27 ~]$ sudo service nginx stop
 Redirecting to /bin/systemctl stop nginx.service
 ```
 
-##### Step 14: Install Spark
+##### Step 16: Install Spark 
 
 ```bash
 future work

@@ -47,27 +47,25 @@
   <div class="post-content e-content" itemprop="articleBody">
     <h4 id="ec2-instance-on-aws">EC2 instance on AWS</h4>
 
-<p>[TOC]</p>
-
 <p>Basic concept to understand is that when we get t2.micro or any other EC2 instance, it is an instance that we can stop, restart and terminate. When we terminate an instance we will still have a volume that all our files are living on. In the future we can attach another instance to a volume.</p>
 
 <p><img src="/2020-02-22-aws-ec2/aws.png" alt="aws" /></p>
 
 <p><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html">https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html</a></p>
 
-<h5 id="step-1-navigate-to-ec2">Step 1: Navigate to EC2</h5>
+<h4 id="step-1-navigate-to-ec2">Step 1: Navigate to EC2</h4>
 
 <p><img src="/2020-02-22-aws-ec2/launch0.png" alt="launch0" /></p>
 
-<h5 id="step2-launch-and-instance">Step2: Launch and instance</h5>
+<h4 id="step-2-launch-and-instance">Step 2: Launch and instance</h4>
 
 <p><img src="/2020-02-22-aws-ec2/launch.png" alt="launch" /></p>
 
-<h5 id="step-3-choose-an-amazon-machine-image">Step 3: Choose an Amazon Machine Image</h5>
+<h4 id="step-3-choose-an-amazon-machine-image">Step 3: Choose an Amazon Machine Image</h4>
 
 <p><img src="/2020-02-22-aws-ec2/linux.png" alt="linux" /></p>
 
-<h5 id="step-4-review-and-launch">Step 4: Review and launch</h5>
+<h4 id="step-4-review-and-launch">Step 4: Review and Launch</h4>
 
 <p><img src="/2020-02-22-aws-ec2/t2_micro.png" alt="t2_micro" /></p>
 
@@ -75,7 +73,7 @@
 
 <p><img src="/2020-02-22-aws-ec2/launch2.png" alt="launch2" /></p>
 
-<h5 id="step-6-select-a-key">Step 6: Select a key</h5>
+<h5 id="step-6-select-a-key">Step 6: Select a Key</h5>
 
 <p>(generate key first if you don’t have one)</p>
 
@@ -107,7 +105,7 @@
 
 <p><img src="/2020-02-22-aws-ec2/http4.png" alt="http4" /></p>
 
-<h5 id="step-10-ssh-to-ec2-instance">Step 10: ssh to EC2 instance</h5>
+<h5 id="step-11-ssh-to-ec2-instance">Step 11: ssh to EC2 instance</h5>
 
 <p>From local machine ssh to the remote linux machine</p>
 
@@ -125,29 +123,29 @@ Run <span class="s2">"sudo yum update"</span> to apply all updates.
 
 </code></pre></div></div>
 
-<h5 id="step-11-install-nginx112">Step 11: Install nginx1.12</h5>
+<h5 id="step-12-install-nginx112">Step 12: Install nginx1.12</h5>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="nv">$ </span><span class="nb">sudo </span>amazon-linux-extras <span class="nb">install </span>nginx1.12
 </code></pre></div></div>
 
-<h5 id="step-12-start-the-server">Step 12: Start the server</h5>
+<h5 id="step-13-start-the-server">Step 13: Start the server</h5>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="nv">$ </span><span class="nb">sudo </span>service nginx start
 Redirecting to /bin/systemctl start nginx.service
 <span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="err">$</span>
 </code></pre></div></div>
 
-<h5 id="step-13-go-to-the-browser-and-view-the-web-server">Step 13: Go to the browser and view the web server</h5>
+<h5 id="step-14-go-to-the-browser-and-view-the-web-server">Step 14: Go to the browser and view the web server</h5>
 
 <p><img src="/2020-02-22-aws-ec2/nginx.png" alt="nginx" /></p>
 
-<h5 id="step-14-stop-the-server">Step 14: Stop the server</h5>
+<h5 id="step-15-stop-the-server">Step 15: Stop the server</h5>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-22-27 ~]<span class="nv">$ </span><span class="nb">sudo </span>service nginx stop
 Redirecting to /bin/systemctl stop nginx.service
 </code></pre></div></div>
 
-<h5 id="step-14-install-spark">Step 14: Install Spark</h5>
+<h5 id="step-16-install-spark">Step 16: Install Spark</h5>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>future work
 </code></pre></div></div>

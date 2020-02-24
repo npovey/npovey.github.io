@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-23T21:03:40-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</title><link href="http://localhost:4000/update/2020/02/23/EclipseWebServer.html" rel="alternate" type="text/html" title="Eclipse Project to Query PostgreSQL and Output Results on a Website" /><published>2020-02-23T13:34:33-08:00</published><updated>2020-02-23T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/23/EclipseWebServer</id><content type="html" xml:base="http://localhost:4000/update/2020/02/23/EclipseWebServer.html">&lt;h4 id=&quot;eclipse-project-to-query-postgresql-and-output-results-on-a-website&quot;&gt;Eclipse Project to Query PostgreSQL and Output Results on a Website&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-02-23T21:21:40-08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</title><link href="http://localhost:4000/update/2020/02/23/EclipseWebServer.html" rel="alternate" type="text/html" title="Eclipse Project to Query PostgreSQL and Output Results on a Website" /><published>2020-02-23T13:34:33-08:00</published><updated>2020-02-23T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/23/EclipseWebServer</id><content type="html" xml:base="http://localhost:4000/update/2020/02/23/EclipseWebServer.html">&lt;h4 id=&quot;eclipse-project-to-query-postgresql-and-output-results-on-a-website&quot;&gt;Eclipse Project to Query PostgreSQL and Output Results on a Website&lt;/h4&gt;
 
 &lt;p&gt;The idea is to create a website as the one below.&lt;/p&gt;
 
@@ -242,27 +242,25 @@ Model.java                                     100%   83     3.8KB/s   00:00
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Eclipse Project to Query PostgreSQL and Output Results on a Website</summary></entry><entry><title type="html">EC2 instance on AWS</title><link href="http://localhost:4000/update/2020/02/22/aws_ec2.html" rel="alternate" type="text/html" title="EC2 instance on AWS" /><published>2020-02-22T13:34:33-08:00</published><updated>2020-02-22T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/22/aws_ec2</id><content type="html" xml:base="http://localhost:4000/update/2020/02/22/aws_ec2.html">&lt;h4 id=&quot;ec2-instance-on-aws&quot;&gt;EC2 instance on AWS&lt;/h4&gt;
 
-&lt;p&gt;[TOC]&lt;/p&gt;
-
 &lt;p&gt;Basic concept to understand is that when we get t2.micro or any other EC2 instance, it is an instance that we can stop, restart and terminate. When we terminate an instance we will still have a volume that all our files are living on. In the future we can attach another instance to a volume.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/aws.png&quot; alt=&quot;aws&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html&quot;&gt;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html&lt;/a&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-1-navigate-to-ec2&quot;&gt;Step 1: Navigate to EC2&lt;/h5&gt;
+&lt;h4 id=&quot;step-1-navigate-to-ec2&quot;&gt;Step 1: Navigate to EC2&lt;/h4&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/launch0.png&quot; alt=&quot;launch0&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step2-launch-and-instance&quot;&gt;Step2: Launch and instance&lt;/h5&gt;
+&lt;h4 id=&quot;step-2-launch-and-instance&quot;&gt;Step 2: Launch and instance&lt;/h4&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/launch.png&quot; alt=&quot;launch&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-3-choose-an-amazon-machine-image&quot;&gt;Step 3: Choose an Amazon Machine Image&lt;/h5&gt;
+&lt;h4 id=&quot;step-3-choose-an-amazon-machine-image&quot;&gt;Step 3: Choose an Amazon Machine Image&lt;/h4&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/linux.png&quot; alt=&quot;linux&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-4-review-and-launch&quot;&gt;Step 4: Review and launch&lt;/h5&gt;
+&lt;h4 id=&quot;step-4-review-and-launch&quot;&gt;Step 4: Review and Launch&lt;/h4&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/t2_micro.png&quot; alt=&quot;t2_micro&quot; /&gt;&lt;/p&gt;
 
@@ -270,7 +268,7 @@ Model.java                                     100%   83     3.8KB/s   00:00
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/launch2.png&quot; alt=&quot;launch2&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-6-select-a-key&quot;&gt;Step 6: Select a key&lt;/h5&gt;
+&lt;h5 id=&quot;step-6-select-a-key&quot;&gt;Step 6: Select a Key&lt;/h5&gt;
 
 &lt;p&gt;(generate key first if you don’t have one)&lt;/p&gt;
 
@@ -302,7 +300,7 @@ Model.java                                     100%   83     3.8KB/s   00:00
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/http4.png&quot; alt=&quot;http4&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-10-ssh-to-ec2-instance&quot;&gt;Step 10: ssh to EC2 instance&lt;/h5&gt;
+&lt;h5 id=&quot;step-11-ssh-to-ec2-instance&quot;&gt;Step 11: ssh to EC2 instance&lt;/h5&gt;
 
 &lt;p&gt;From local machine ssh to the remote linux machine&lt;/p&gt;
 
@@ -320,29 +318,29 @@ Run &lt;span class=&quot;s2&quot;&gt;&quot;sudo yum update&quot;&lt;/span&gt; to
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-11-install-nginx112&quot;&gt;Step 11: Install nginx1.12&lt;/h5&gt;
+&lt;h5 id=&quot;step-12-install-nginx112&quot;&gt;Step 12: Install nginx1.12&lt;/h5&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;amazon-linux-extras &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;nginx1.12
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-12-start-the-server&quot;&gt;Step 12: Start the server&lt;/h5&gt;
+&lt;h5 id=&quot;step-13-start-the-server&quot;&gt;Step 13: Start the server&lt;/h5&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;service nginx start
 Redirecting to /bin/systemctl start nginx.service
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-13-go-to-the-browser-and-view-the-web-server&quot;&gt;Step 13: Go to the browser and view the web server&lt;/h5&gt;
+&lt;h5 id=&quot;step-14-go-to-the-browser-and-view-the-web-server&quot;&gt;Step 14: Go to the browser and view the web server&lt;/h5&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-22-aws-ec2/nginx.png&quot; alt=&quot;nginx&quot; /&gt;&lt;/p&gt;
 
-&lt;h5 id=&quot;step-14-stop-the-server&quot;&gt;Step 14: Stop the server&lt;/h5&gt;
+&lt;h5 id=&quot;step-15-stop-the-server&quot;&gt;Step 15: Stop the server&lt;/h5&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ec2-user@ip-172-31-22-27 ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;service nginx stop
 Redirecting to /bin/systemctl stop nginx.service
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h5 id=&quot;step-14-install-spark&quot;&gt;Step 14: Install Spark&lt;/h5&gt;
+&lt;h5 id=&quot;step-16-install-spark&quot;&gt;Step 16: Install Spark&lt;/h5&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;future work
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">EC2 instance on AWS</summary></entry><entry><title type="html">DenseNet and Deconvolution.</title><link href="http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution.html" rel="alternate" type="text/html" title="DenseNet and Deconvolution." /><published>2020-02-21T13:34:33-08:00</published><updated>2020-02-21T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution</id><content type="html" xml:base="http://localhost:4000/update/2020/02/21/denseNet-and-deconvolution.html">&lt;p&gt;&lt;strong&gt;A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution&lt;/strong&gt;&lt;/p&gt;
