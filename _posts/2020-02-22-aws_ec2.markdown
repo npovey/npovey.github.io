@@ -27,7 +27,7 @@ Basic concept to understand is that when we get t2.micro or any other EC2 instan
 
 ##### Step 3: Choose an Amazon Machine Image
 
-![linux](/Users/np/Desktop/2020-02-22-aws-ec2/linux.png)
+![linux](/2020-02-22-aws-ec2/linux.png)
 
 
 
