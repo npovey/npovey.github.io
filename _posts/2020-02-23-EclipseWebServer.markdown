@@ -9,6 +9,10 @@ categories: update
 
 #### Eclipse Project to Query PostgreSQL and Output Results on a Website
 
+
+
+youtube link: <https://youtu.be/JEboJ6BTipw>
+
 The idea is to create a website as the one below.
 
 ![idea](/2020-02-23-eclipse_web_server/idea.png)

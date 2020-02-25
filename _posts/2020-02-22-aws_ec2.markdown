@@ -96,6 +96,7 @@ Run "sudo yum update" to apply all updates.
 
 #### Step 12: Install nginx1.12
 
+
 ```bash
 [ec2-user@ip-172-31-22-27 ~]$ sudo amazon-linux-extras install nginx1.12
 ```
@@ -111,6 +112,7 @@ Redirecting to /bin/systemctl start nginx.service
 #### Step 14: Go to the browser and view the web server
 
 ![nginx](/2020-02-22-aws-ec2/nginx.png)
+
 
 #### Step 15: Stop the server
 
