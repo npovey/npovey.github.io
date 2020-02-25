@@ -1,0 +1,1204 @@
+---
+
+layout: post
+title:  "DenseNet and Deconvolution Model Version 2"
+date:   2020-2-23 14:34:33 -0700
+categories: update
+---
+**A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution**
+
+UNet performed slightly better than this model.
+
+I am trying to reimplement the paper below in keras
+
+paper: https://ieeexplore.ieee.org/document/8331861
+github: https://github.com/zzc623/DD_Net
+
+![ddnet_paper](/2020-02-24-dd_net_v2/ddnet_paper.png)
+
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+```
+
+    Go to this URL in a browser: https://accounts.google.com/o/oauth2/auth?client_id=947318989803-6bn6qk8qdgf4n4g3pfee6491hc0brc4i.apps.googleusercontent.com&redirect_uri=urn%3aietf%3awg%3aoauth%3a2.0%3aoob&response_type=code&scope=email%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdocs.test%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdrive%20https%3a%2f%2fwww.googleapis.com%2fauth%2fdrive.photos.readonly%20https%3a%2f%2fwww.googleapis.com%2fauth%2fpeopleapi.readonly
+
+    Enter your authorization code:
+    ··········
+    Mounted at /content/drive
+
+
+paper: https://ieeexplore.ieee.org/document/8331861
+github: https://github.com/zzc623/DD_Net
+
+
+```python
+import os
+import keras
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from keras.layers import Conv2D, MaxPooling2D, Input, Dense, UpSampling2D
+from keras.layers import BatchNormalization, Activation, Dropout, Subtract
+from keras.models import Model
+from glob import glob
+from keras.layers.convolutional import Conv2DTranspose
+from keras.layers import concatenate
+from keras import optimizers
+```
+
+    Using TensorFlow backend.
+
+
+
+<p style="color: red;">
+The default version of TensorFlow in Colab will soon switch to TensorFlow 2.x.<br>
+We recommend you <a href="https://www.tensorflow.org/guide/migrate" target="_blank">upgrade</a> now
+or ensure your notebook will continue to use TensorFlow 1.x via the <code>%tensorflow_version 1.x</code> magic:
+<a href="https://colab.research.google.com/notebooks/tensorflow_version.ipynb" target="_blank">more info</a>.</p>
+
+
+
+
+```python
+# %tensorflow_version 1.x
+# import tensorflow as tf
+print(tf.__version__)
+```
+
+    1.15.0
+
+
+If we have weights we canload them: loaded_model.load_weights("model.h5")
+
+
+
+```python
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/train')))
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/train')))
+# # 3600
+# # 3600
+```
+
+
+```python
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/test/')))
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/test/')))
+# # # 354
+# # # 354
+```
+
+
+```python
+ndct = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/train/*'))
+ldct = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/train/*'))
+
+ndct_test = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/test/*'))
+ldct_test = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/test/*'))
+
+print(len(ndct))
+print(len(ldct))
+print(len(ndct_test))
+print(len(ldct_test))
+```
+
+    3600
+    3600
+    354
+    354
+
+
+The formulas below will be used to calculate the quality of the reconstruction. Higher PSNR generally indicates high quality of reconstruction.
+
+
+```python
+def cal_psnr(im1, im2):
+    # assert pixel value range is 0-255 and type is uint8
+    mse = ((im1.astype(np.float) - im2.astype(np.float)) ** 2).mean()
+    maxval = np.amax(im1)
+    psnr = 10 * np.log10(maxval ** 2 / mse)
+    return psnr
+
+def tf_psnr(im1, im2):
+    # assert pixel value range is 0-1
+    #mse = tf.losses.mean_squared_error(labels=im2 * 255.0, predictions=im1 * 255.0)
+    mse = tf.compat.v1.losses.mean_squared_error(labels=im2 * 255.0, predictions=im1 * 255.0)
+    return 10.0 * (tf.log(255.0 ** 2 / mse) / tf.log(10.0))
+```
+
+Using less data: #for i in range(0, 600). Have 3600 in all.
+Processing 3600 images takes aprox. 20 minutes to run. But once we create .npy aray we don't have to rerun this code in the future and we will have .npy form of our data. Colab has 11GB RAM limit.
+
+
+```python
+ndct_imgs_train = []
+# for i in range(0, len(ndct)):                                                                                                                                      
+for i in range(0, 600):
+    f = open(ndct[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ndct_imgs_train.append(a)
+    f.close()
+print("len(ndct_imgs_train)....: ",len(ndct_imgs_train))
+#len(ndct_imgs_train)....:  3600                                                                                                                                                         
+```
+
+
+Using different range to use less data to train #for i in range(0, 600). In all have 3600 images. It takes aprox. 20 minutes to process all 3600. But once we create .npy aray we don't have to rerun this code in the future and we will have .npy form of our data.
+
+
+```python
+ldct_imgs_train = []
+# for i in range(0, len(ldct)):
+for i in range(0, 600):
+    f = open(ldct[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ldct_imgs_train.append(a)
+    f.close()
+print("len(ldct_imgs_train)....: ",len(ldct_imgs_train))
+```
+
+only using 100 images to test
+
+
+```python
+ndct_imgs_test = []
+# for i in range(0, len(ndct_test)):
+for i in range(0, 100):
+    f = open(ndct_test[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ndct_imgs_test.append(a)
+    f.close()
+print("len(ndct_imgs_test)....: ",len(ndct_imgs_test))
+
+```
+
+only using 100 images to test
+
+
+```python
+# load the image
+ldct_imgs_test = []
+# for i in range(0, len(ldct_test)):
+for i in range(0, 100):
+    f = open(ldct_test[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ldct_imgs_test.append(a)
+    f.close()
+print("len(ldct_imgs_test)....: ",len(ldct_imgs_test))
+
+```
+
+Must reshape images to train
+
+
+```python
+ldct_train = np.asarray(ldct_imgs_train)
+ndct_train = np.asarray(ndct_imgs_train)
+
+ldct_train = ldct_train.reshape(600,512,512,1)
+ndct_train = ndct_train.reshape(600,512,512,1)
+
+ldct_test = np.asarray(ldct_imgs_test)
+ndct_test = np.asarray(ndct_imgs_test)
+
+# ldct_test = ldct_test.reshape(len(ldct_imgs_test),512,512,1)
+# ndct_test = ndct_test.reshape(len(ldct_imgs_test),512,512,1)
+
+ldct_test = ldct_test.reshape(100,512,512,1)
+ndct_test = ndct_test.reshape(100,512,512,1)
+
+print(ldct_train.shape)
+print(ndct_train.shape)
+print(ldct_test.shape)
+print(ndct_test.shape)
+
+```
+
+
+```python
+# np.save('sparseview_60_train_600', ldct_train) # save the file as "sparseview_60_train.npy"
+# np.save('ndct_train_600', ndct_train) # save the file as "ndct_train.npy"
+
+# np.save('sparseview_60_test_100', ldct_test) # save the file as "sparseview_60_test.npy"
+# np.save('ndct_test_100', ndct_test) # save the file as "ndct_test.npy"
+
+
+np.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_train_600', ldct_train) # save the file as "sparseview_60_train.npy"
+np.save('/content/drive/My Drive/Colab Notebooks/dd_net/ndct_train_600', ndct_train) # save the file as "ndct_train.npy"
+
+np.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_100', ldct_test) # save the file as "sparseview_60_test.npy"
+np.save('/content/drive/My Drive/Colab Notebooks/dd_net/ndct_test_100', ndct_test) # save the file as "ndct_test.npy"
+```
+
+
+```python
+sparseview_60_train = np.load('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_train_600.npy') # loads saved array into variable sparseview_60_train.
+ndct_train = np.load('/content/drive/My Drive/Colab Notebooks/dd_net/ndct_train_600.npy') # loads saved array into variable ndct_train.
+sparseview_60_test = np.load('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_100.npy') # loads saved array into variable sparseview_60_test.
+ndct_test = np.load('/content/drive/My Drive/Colab Notebooks/dd_net/ndct_test_100.npy') # loads saved array into variable ndct_test.
+
+# sparseview_60_train = np.load('sparseview_60_train_600.npy') # loads saved array into variable sparseview_60_train.
+# ndct_train = np.load('ndct_train_600.npy') # loads saved array into variable ndct_train.
+# sparseview_60_test = np.load('sparseview_60_test_100.npy') # loads saved array into variable sparseview_60_test.
+# ndct_test = np.load('ndct_test_100.npy') # loads saved array into variable ndct_test.
+
+```
+
+
+```python
+def denseblock(input):
+  # - L1
+  num_filters = 16
+  d2_1 = BatchNormalization()(input)
+  d2_1 = Activation('relu')(d2_1)
+  d2_1 = Conv2D(num_filters*4, (1, 1), padding='same', use_bias=True, strides=(1, 1))(d2_1)
+
+  d2_1 = BatchNormalization()(d2_1)
+  d2_1 = Activation('relu')(d2_1)
+  d2_1 = Conv2D(num_filters, (5, 5), padding='same', use_bias=True, strides=(1, 1))(d2_1)
+
+  d2_1 = concatenate([input, d2_1])
+
+  # - L2
+  d2_2 = BatchNormalization()(d2_1)
+  d2_2 = Activation('relu')(d2_2)
+  d2_2 = Conv2D(num_filters*4, (1, 1), padding='same', use_bias=True, strides=(1, 1))(d2_2)
+
+  d2_2 = BatchNormalization()(d2_2)
+  d2_2 = Activation('relu')(d2_2)
+  d2_2 = Conv2D(num_filters, (5, 5), padding='same', use_bias=True, strides=(1, 1))(d2_2)
+
+  d2_2 = concatenate([input, d2_1, d2_2])
+
+  # - L3
+  d2_3 = BatchNormalization()(d2_2)
+  d2_3 = Activation('relu')(d2_3)
+  d2_3 = Conv2D(num_filters*4, (1, 1), padding='same', use_bias=True, strides=(1, 1))(d2_3)
+
+  d2_3 = BatchNormalization()(d2_3)
+  d2_3 = Activation('relu')(d2_3)
+  d2_3 = Conv2D(num_filters, (5, 5), padding='same', use_bias=True, strides=(1, 1))(d2_3)
+
+  d2_3 = concatenate([input, d2_1, d2_2, d2_3])
+
+  # - L4
+  d2_4 = BatchNormalization()(d2_3)
+  d2_4 = Activation('relu')(d2_4)
+  d2_4 = Conv2D(num_filters*4, (1, 1), padding='same', use_bias=True, strides=(1, 1))(d2_4)
+
+  d2_4 = BatchNormalization()(d2_4)
+  d2_4 = Activation('relu')(d2_4)
+  d2_4 = Conv2D(num_filters, (5, 5), padding='same', use_bias=True, strides=(1, 1))(d2_4)
+
+  d2_4 = concatenate([input, d2_1, d2_2, d2_3, d2_4])
+  return d2_4
+```
+
+
+```python
+inputs = Input((None, None,1))
+num_filter = 16
+# ---A1 Layer-----------------------
+h_conv1 = Conv2D(16, (7, 7), padding='same', use_bias=True, strides=(1, 1))(inputs)
+a1 = MaxPooling2D((3, 3), strides=(2, 2), padding='same') (h_conv1)
+# images 256 X 256
+d1 = denseblock(a1)
+
+a1 = BatchNormalization()(d1)
+a1 = Activation('relu')(a1)
+h_conv1_T = Conv2D(16, (1, 1), strides=(1, 1), use_bias=True) (a1)
+
+# ----A2 Layer---------------------
+a2 = MaxPooling2D((2, 2),strides=(2, 2), padding='same') (h_conv1_T)
+# images 128 X 128 d
+d2 = denseblock(a2)
+
+a2 = BatchNormalization()(d2)
+a2 = Activation('relu')(a2)
+h_conv2_T = Conv2D(16, (1, 1), strides=(1, 1), use_bias=True) (a2)
+# images 128 X 128
+
+# # ----A3 Layer----------------------
+a3 = MaxPooling2D((2, 2), strides=(2, 2), padding='same') (h_conv2_T)
+# images 64 X 64
+d3 = denseblock(a3)
+
+a3 = BatchNormalization()(d3)
+a3 = Activation('relu')(a3)
+h_conv3_T = Conv2D(16, (1, 1), strides=(1, 1), use_bias=True) (a3)
+
+# ----A4 Layer----------------------
+a4 = MaxPooling2D((2, 2), strides=(2, 2), padding='same') (h_conv3_T)
+# images 32 X 3
+d4 = denseblock(a4)
+
+a4 = BatchNormalization()(d4)
+a4 = Activation('relu')(a4)
+h_conv4_T = Conv2D(16, (1, 1), strides=(1, 1), use_bias=True) (a4)
+
+# #----B1 Layer-----------------------
+b1 = UpSampling2D((2, 2), interpolation="nearest") (h_conv4_T)
+# images 64 X 64
+b1 = concatenate([b1, h_conv3_T])
+
+b1 = Conv2DTranspose(num_filter*2, (5, 5), padding='same', strides=(1, 1)) (b1)
+b1 = Activation('relu')(b1)
+b1 = BatchNormalization()(b1)
+
+b1 = Conv2DTranspose(16, (1, 1), padding='same', strides=(1, 1)) (b1)
+b1 = Activation('relu')(b1)
+b1 = BatchNormalization()(b1)
+
+# #----B2 Layer-----------------------
+b2 = UpSampling2D((2, 2), interpolation="nearest") (b1)
+# images 128 X 128
+b2 = concatenate([b2, h_conv2_T])
+
+b2 = Conv2DTranspose(num_filter*2, (5, 5), padding='same', strides=(1, 1)) (b2)
+b2 = Activation('relu')(b2)
+b2 = BatchNormalization()(b2)
+
+b2 = Conv2DTranspose(16, (1, 1), padding='same', strides=(1, 1)) (b2)
+b2 = Activation('relu')(b2)
+b2 = BatchNormalization()(b2)
+
+#----B3 Layer------------------------conv6
+b3 = UpSampling2D((2, 2),interpolation="nearest") (b2)
+# images 256 X 256
+b3 = concatenate([b3, h_conv1_T])
+
+b3 = Conv2DTranspose(num_filter*2, (5, 5), padding='same', strides=(1, 1)) (b3)
+b3 = Activation('relu')(b3)
+b3 = BatchNormalization()(b3)
+
+b3 = Conv2DTranspose(16, (1, 1), padding='same', strides=(1, 1)) (b3)
+b3 = Activation('relu')(b3)
+b3 = BatchNormalization()(b3)
+
+#----B4 Layer-------------------------
+b4 = UpSampling2D((2, 2),interpolation="nearest") (b3)
+# images 512 X 512
+b4 = concatenate([b4, h_conv1])
+b4 = Conv2DTranspose(num_filter*2, (5, 5),padding='same', strides=(1, 1)) (b4)
+b4 = Activation('relu')(b4)
+# b4 = BatchNormalization()(b4)
+
+output_img = Conv2DTranspose(1, (1, 1), strides=(1, 1)) (b4)
+# output_img = Activation('relu')(output_img) # in paper but DIDN'T CONVERGE
+# ------ end B4 layer
+
+subtracted = Subtract()([inputs, output_img])
+ddnet_model = Model(inputs=[inputs], outputs=[subtracted])
+ddnet_model.compile(optimizer='adam', loss='mse', metrics=[tf_psnr])
+
+```
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:66: The name tf.get_default_graph is deprecated. Please use tf.compat.v1.get_default_graph instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:541: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:4432: The name tf.random_uniform is deprecated. Please use tf.random.uniform instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:4267: The name tf.nn.max_pool is deprecated. Please use tf.nn.max_pool2d instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:190: The name tf.get_default_session is deprecated. Please use tf.compat.v1.get_default_session instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:197: The name tf.ConfigProto is deprecated. Please use tf.compat.v1.ConfigProto instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:203: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:207: The name tf.global_variables is deprecated. Please use tf.compat.v1.global_variables instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:216: The name tf.is_variable_initialized is deprecated. Please use tf.compat.v1.is_variable_initialized instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:223: The name tf.variables_initializer is deprecated. Please use tf.compat.v1.variables_initializer instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:2041: The name tf.nn.fused_batch_norm is deprecated. Please use tf.compat.v1.nn.fused_batch_norm instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:148: The name tf.placeholder_with_default is deprecated. Please use tf.compat.v1.placeholder_with_default instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:2239: The name tf.image.resize_nearest_neighbor is deprecated. Please use tf.compat.v1.image.resize_nearest_neighbor instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/optimizers.py:793: The name tf.train.Optimizer is deprecated. Please use tf.compat.v1.train.Optimizer instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/tensorflow_core/python/ops/losses/losses_impl.py:121: where (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.
+    Instructions for updating:
+    Use tf.where in 2.0, which has the same broadcast rule as np.where
+
+
+A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution
+
+
+```python
+ddnet_model.summary()
+```
+
+    Model: "model_1"
+    __________________________________________________________________________________________________
+    Layer (type)                    Output Shape         Param #     Connected to                     
+    ==================================================================================================
+    input_1 (InputLayer)            (None, None, None, 1 0                                            
+    __________________________________________________________________________________________________
+    conv2d_1 (Conv2D)               (None, None, None, 1 800         input_1[0][0]                    
+    __________________________________________________________________________________________________
+    max_pooling2d_1 (MaxPooling2D)  (None, None, None, 1 0           conv2d_1[0][0]                   
+    __________________________________________________________________________________________________
+    batch_normalization_1 (BatchNor (None, None, None, 1 64          max_pooling2d_1[0][0]            
+    __________________________________________________________________________________________________
+    activation_1 (Activation)       (None, None, None, 1 0           batch_normalization_1[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_2 (Conv2D)               (None, None, None, 6 1088        activation_1[0][0]               
+    __________________________________________________________________________________________________
+    batch_normalization_2 (BatchNor (None, None, None, 6 256         conv2d_2[0][0]                   
+    __________________________________________________________________________________________________
+    activation_2 (Activation)       (None, None, None, 6 0           batch_normalization_2[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_3 (Conv2D)               (None, None, None, 1 25616       activation_2[0][0]               
+    __________________________________________________________________________________________________
+    concatenate_1 (Concatenate)     (None, None, None, 3 0           max_pooling2d_1[0][0]            
+                                                                     conv2d_3[0][0]                   
+    __________________________________________________________________________________________________
+    batch_normalization_3 (BatchNor (None, None, None, 3 128         concatenate_1[0][0]              
+    __________________________________________________________________________________________________
+    activation_3 (Activation)       (None, None, None, 3 0           batch_normalization_3[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_4 (Conv2D)               (None, None, None, 6 2112        activation_3[0][0]               
+    __________________________________________________________________________________________________
+    batch_normalization_4 (BatchNor (None, None, None, 6 256         conv2d_4[0][0]                   
+    __________________________________________________________________________________________________
+    activation_4 (Activation)       (None, None, None, 6 0           batch_normalization_4[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_5 (Conv2D)               (None, None, None, 1 25616       activation_4[0][0]               
+    __________________________________________________________________________________________________
+    concatenate_2 (Concatenate)     (None, None, None, 6 0           max_pooling2d_1[0][0]            
+                                                                     concatenate_1[0][0]              
+                                                                     conv2d_5[0][0]                   
+    __________________________________________________________________________________________________
+    batch_normalization_5 (BatchNor (None, None, None, 6 256         concatenate_2[0][0]              
+    __________________________________________________________________________________________________
+    activation_5 (Activation)       (None, None, None, 6 0           batch_normalization_5[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_6 (Conv2D)               (None, None, None, 6 4160        activation_5[0][0]               
+    __________________________________________________________________________________________________
+    batch_normalization_6 (BatchNor (None, None, None, 6 256         conv2d_6[0][0]                   
+    __________________________________________________________________________________________________
+    activation_6 (Activation)       (None, None, None, 6 0           batch_normalization_6[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_7 (Conv2D)               (None, None, None, 1 25616       activation_6[0][0]               
+    __________________________________________________________________________________________________
+    concatenate_3 (Concatenate)     (None, None, None, 1 0           max_pooling2d_1[0][0]            
+                                                                     concatenate_1[0][0]              
+                                                                     concatenate_2[0][0]              
+                                                                     conv2d_7[0][0]                   
+    __________________________________________________________________________________________________
+    batch_normalization_7 (BatchNor (None, None, None, 1 512         concatenate_3[0][0]              
+    __________________________________________________________________________________________________
+    activation_7 (Activation)       (None, None, None, 1 0           batch_normalization_7[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_8 (Conv2D)               (None, None, None, 6 8256        activation_7[0][0]               
+    __________________________________________________________________________________________________
+    batch_normalization_8 (BatchNor (None, None, None, 6 256         conv2d_8[0][0]                   
+    __________________________________________________________________________________________________
+    activation_8 (Activation)       (None, None, None, 6 0           batch_normalization_8[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_9 (Conv2D)               (None, None, None, 1 25616       activation_8[0][0]               
+    __________________________________________________________________________________________________
+    concatenate_4 (Concatenate)     (None, None, None, 2 0           max_pooling2d_1[0][0]            
+                                                                     concatenate_1[0][0]              
+                                                                     concatenate_2[0][0]              
+                                                                     concatenate_3[0][0]              
+                                                                     conv2d_9[0][0]                   
+    __________________________________________________________________________________________________
+    batch_normalization_9 (BatchNor (None, None, None, 2 1024        concatenate_4[0][0]              
+    __________________________________________________________________________________________________
+    activation_9 (Activation)       (None, None, None, 2 0           batch_normalization_9[0][0]      
+    __________________________________________________________________________________________________
+    conv2d_10 (Conv2D)              (None, None, None, 1 4112        activation_9[0][0]               
+    __________________________________________________________________________________________________
+    max_pooling2d_2 (MaxPooling2D)  (None, None, None, 1 0           conv2d_10[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_10 (BatchNo (None, None, None, 1 64          max_pooling2d_2[0][0]            
+    __________________________________________________________________________________________________
+    activation_10 (Activation)      (None, None, None, 1 0           batch_normalization_10[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_11 (Conv2D)              (None, None, None, 6 1088        activation_10[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_11 (BatchNo (None, None, None, 6 256         conv2d_11[0][0]                  
+    __________________________________________________________________________________________________
+    activation_11 (Activation)      (None, None, None, 6 0           batch_normalization_11[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_12 (Conv2D)              (None, None, None, 1 25616       activation_11[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_5 (Concatenate)     (None, None, None, 3 0           max_pooling2d_2[0][0]            
+                                                                     conv2d_12[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_12 (BatchNo (None, None, None, 3 128         concatenate_5[0][0]              
+    __________________________________________________________________________________________________
+    activation_12 (Activation)      (None, None, None, 3 0           batch_normalization_12[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_13 (Conv2D)              (None, None, None, 6 2112        activation_12[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_13 (BatchNo (None, None, None, 6 256         conv2d_13[0][0]                  
+    __________________________________________________________________________________________________
+    activation_13 (Activation)      (None, None, None, 6 0           batch_normalization_13[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_14 (Conv2D)              (None, None, None, 1 25616       activation_13[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_6 (Concatenate)     (None, None, None, 6 0           max_pooling2d_2[0][0]            
+                                                                     concatenate_5[0][0]              
+                                                                     conv2d_14[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_14 (BatchNo (None, None, None, 6 256         concatenate_6[0][0]              
+    __________________________________________________________________________________________________
+    activation_14 (Activation)      (None, None, None, 6 0           batch_normalization_14[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_15 (Conv2D)              (None, None, None, 6 4160        activation_14[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_15 (BatchNo (None, None, None, 6 256         conv2d_15[0][0]                  
+    __________________________________________________________________________________________________
+    activation_15 (Activation)      (None, None, None, 6 0           batch_normalization_15[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_16 (Conv2D)              (None, None, None, 1 25616       activation_15[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_7 (Concatenate)     (None, None, None, 1 0           max_pooling2d_2[0][0]            
+                                                                     concatenate_5[0][0]              
+                                                                     concatenate_6[0][0]              
+                                                                     conv2d_16[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_16 (BatchNo (None, None, None, 1 512         concatenate_7[0][0]              
+    __________________________________________________________________________________________________
+    activation_16 (Activation)      (None, None, None, 1 0           batch_normalization_16[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_17 (Conv2D)              (None, None, None, 6 8256        activation_16[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_17 (BatchNo (None, None, None, 6 256         conv2d_17[0][0]                  
+    __________________________________________________________________________________________________
+    activation_17 (Activation)      (None, None, None, 6 0           batch_normalization_17[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_18 (Conv2D)              (None, None, None, 1 25616       activation_17[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_8 (Concatenate)     (None, None, None, 2 0           max_pooling2d_2[0][0]            
+                                                                     concatenate_5[0][0]              
+                                                                     concatenate_6[0][0]              
+                                                                     concatenate_7[0][0]              
+                                                                     conv2d_18[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_18 (BatchNo (None, None, None, 2 1024        concatenate_8[0][0]              
+    __________________________________________________________________________________________________
+    activation_18 (Activation)      (None, None, None, 2 0           batch_normalization_18[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_19 (Conv2D)              (None, None, None, 1 4112        activation_18[0][0]              
+    __________________________________________________________________________________________________
+    max_pooling2d_3 (MaxPooling2D)  (None, None, None, 1 0           conv2d_19[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_19 (BatchNo (None, None, None, 1 64          max_pooling2d_3[0][0]            
+    __________________________________________________________________________________________________
+    activation_19 (Activation)      (None, None, None, 1 0           batch_normalization_19[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_20 (Conv2D)              (None, None, None, 6 1088        activation_19[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_20 (BatchNo (None, None, None, 6 256         conv2d_20[0][0]                  
+    __________________________________________________________________________________________________
+    activation_20 (Activation)      (None, None, None, 6 0           batch_normalization_20[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_21 (Conv2D)              (None, None, None, 1 25616       activation_20[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_9 (Concatenate)     (None, None, None, 3 0           max_pooling2d_3[0][0]            
+                                                                     conv2d_21[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_21 (BatchNo (None, None, None, 3 128         concatenate_9[0][0]              
+    __________________________________________________________________________________________________
+    activation_21 (Activation)      (None, None, None, 3 0           batch_normalization_21[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_22 (Conv2D)              (None, None, None, 6 2112        activation_21[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_22 (BatchNo (None, None, None, 6 256         conv2d_22[0][0]                  
+    __________________________________________________________________________________________________
+    activation_22 (Activation)      (None, None, None, 6 0           batch_normalization_22[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_23 (Conv2D)              (None, None, None, 1 25616       activation_22[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_10 (Concatenate)    (None, None, None, 6 0           max_pooling2d_3[0][0]            
+                                                                     concatenate_9[0][0]              
+                                                                     conv2d_23[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_23 (BatchNo (None, None, None, 6 256         concatenate_10[0][0]             
+    __________________________________________________________________________________________________
+    activation_23 (Activation)      (None, None, None, 6 0           batch_normalization_23[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_24 (Conv2D)              (None, None, None, 6 4160        activation_23[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_24 (BatchNo (None, None, None, 6 256         conv2d_24[0][0]                  
+    __________________________________________________________________________________________________
+    activation_24 (Activation)      (None, None, None, 6 0           batch_normalization_24[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_25 (Conv2D)              (None, None, None, 1 25616       activation_24[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_11 (Concatenate)    (None, None, None, 1 0           max_pooling2d_3[0][0]            
+                                                                     concatenate_9[0][0]              
+                                                                     concatenate_10[0][0]             
+                                                                     conv2d_25[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_25 (BatchNo (None, None, None, 1 512         concatenate_11[0][0]             
+    __________________________________________________________________________________________________
+    activation_25 (Activation)      (None, None, None, 1 0           batch_normalization_25[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_26 (Conv2D)              (None, None, None, 6 8256        activation_25[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_26 (BatchNo (None, None, None, 6 256         conv2d_26[0][0]                  
+    __________________________________________________________________________________________________
+    activation_26 (Activation)      (None, None, None, 6 0           batch_normalization_26[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_27 (Conv2D)              (None, None, None, 1 25616       activation_26[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_12 (Concatenate)    (None, None, None, 2 0           max_pooling2d_3[0][0]            
+                                                                     concatenate_9[0][0]              
+                                                                     concatenate_10[0][0]             
+                                                                     concatenate_11[0][0]             
+                                                                     conv2d_27[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_27 (BatchNo (None, None, None, 2 1024        concatenate_12[0][0]             
+    __________________________________________________________________________________________________
+    activation_27 (Activation)      (None, None, None, 2 0           batch_normalization_27[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_28 (Conv2D)              (None, None, None, 1 4112        activation_27[0][0]              
+    __________________________________________________________________________________________________
+    max_pooling2d_4 (MaxPooling2D)  (None, None, None, 1 0           conv2d_28[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_28 (BatchNo (None, None, None, 1 64          max_pooling2d_4[0][0]            
+    __________________________________________________________________________________________________
+    activation_28 (Activation)      (None, None, None, 1 0           batch_normalization_28[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_29 (Conv2D)              (None, None, None, 6 1088        activation_28[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_29 (BatchNo (None, None, None, 6 256         conv2d_29[0][0]                  
+    __________________________________________________________________________________________________
+    activation_29 (Activation)      (None, None, None, 6 0           batch_normalization_29[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_30 (Conv2D)              (None, None, None, 1 25616       activation_29[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_13 (Concatenate)    (None, None, None, 3 0           max_pooling2d_4[0][0]            
+                                                                     conv2d_30[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_30 (BatchNo (None, None, None, 3 128         concatenate_13[0][0]             
+    __________________________________________________________________________________________________
+    activation_30 (Activation)      (None, None, None, 3 0           batch_normalization_30[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_31 (Conv2D)              (None, None, None, 6 2112        activation_30[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_31 (BatchNo (None, None, None, 6 256         conv2d_31[0][0]                  
+    __________________________________________________________________________________________________
+    activation_31 (Activation)      (None, None, None, 6 0           batch_normalization_31[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_32 (Conv2D)              (None, None, None, 1 25616       activation_31[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_14 (Concatenate)    (None, None, None, 6 0           max_pooling2d_4[0][0]            
+                                                                     concatenate_13[0][0]             
+                                                                     conv2d_32[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_32 (BatchNo (None, None, None, 6 256         concatenate_14[0][0]             
+    __________________________________________________________________________________________________
+    activation_32 (Activation)      (None, None, None, 6 0           batch_normalization_32[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_33 (Conv2D)              (None, None, None, 6 4160        activation_32[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_33 (BatchNo (None, None, None, 6 256         conv2d_33[0][0]                  
+    __________________________________________________________________________________________________
+    activation_33 (Activation)      (None, None, None, 6 0           batch_normalization_33[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_34 (Conv2D)              (None, None, None, 1 25616       activation_33[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_15 (Concatenate)    (None, None, None, 1 0           max_pooling2d_4[0][0]            
+                                                                     concatenate_13[0][0]             
+                                                                     concatenate_14[0][0]             
+                                                                     conv2d_34[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_34 (BatchNo (None, None, None, 1 512         concatenate_15[0][0]             
+    __________________________________________________________________________________________________
+    activation_34 (Activation)      (None, None, None, 1 0           batch_normalization_34[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_35 (Conv2D)              (None, None, None, 6 8256        activation_34[0][0]              
+    __________________________________________________________________________________________________
+    batch_normalization_35 (BatchNo (None, None, None, 6 256         conv2d_35[0][0]                  
+    __________________________________________________________________________________________________
+    activation_35 (Activation)      (None, None, None, 6 0           batch_normalization_35[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_36 (Conv2D)              (None, None, None, 1 25616       activation_35[0][0]              
+    __________________________________________________________________________________________________
+    concatenate_16 (Concatenate)    (None, None, None, 2 0           max_pooling2d_4[0][0]            
+                                                                     concatenate_13[0][0]             
+                                                                     concatenate_14[0][0]             
+                                                                     concatenate_15[0][0]             
+                                                                     conv2d_36[0][0]                  
+    __________________________________________________________________________________________________
+    batch_normalization_36 (BatchNo (None, None, None, 2 1024        concatenate_16[0][0]             
+    __________________________________________________________________________________________________
+    activation_36 (Activation)      (None, None, None, 2 0           batch_normalization_36[0][0]     
+    __________________________________________________________________________________________________
+    conv2d_37 (Conv2D)              (None, None, None, 1 4112        activation_36[0][0]              
+    __________________________________________________________________________________________________
+    up_sampling2d_1 (UpSampling2D)  (None, None, None, 1 0           conv2d_37[0][0]                  
+    __________________________________________________________________________________________________
+    concatenate_17 (Concatenate)    (None, None, None, 3 0           up_sampling2d_1[0][0]            
+                                                                     conv2d_28[0][0]                  
+    __________________________________________________________________________________________________
+    conv2d_transpose_1 (Conv2DTrans (None, None, None, 3 25632       concatenate_17[0][0]             
+    __________________________________________________________________________________________________
+    activation_37 (Activation)      (None, None, None, 3 0           conv2d_transpose_1[0][0]         
+    __________________________________________________________________________________________________
+    batch_normalization_37 (BatchNo (None, None, None, 3 128         activation_37[0][0]              
+    __________________________________________________________________________________________________
+    conv2d_transpose_2 (Conv2DTrans (None, None, None, 1 528         batch_normalization_37[0][0]     
+    __________________________________________________________________________________________________
+    activation_38 (Activation)      (None, None, None, 1 0           conv2d_transpose_2[0][0]         
+    __________________________________________________________________________________________________
+    batch_normalization_38 (BatchNo (None, None, None, 1 64          activation_38[0][0]              
+    __________________________________________________________________________________________________
+    up_sampling2d_2 (UpSampling2D)  (None, None, None, 1 0           batch_normalization_38[0][0]     
+    __________________________________________________________________________________________________
+    concatenate_18 (Concatenate)    (None, None, None, 3 0           up_sampling2d_2[0][0]            
+                                                                     conv2d_19[0][0]                  
+    __________________________________________________________________________________________________
+    conv2d_transpose_3 (Conv2DTrans (None, None, None, 3 25632       concatenate_18[0][0]             
+    __________________________________________________________________________________________________
+    activation_39 (Activation)      (None, None, None, 3 0           conv2d_transpose_3[0][0]         
+    __________________________________________________________________________________________________
+    batch_normalization_39 (BatchNo (None, None, None, 3 128         activation_39[0][0]              
+    __________________________________________________________________________________________________
+    conv2d_transpose_4 (Conv2DTrans (None, None, None, 1 528         batch_normalization_39[0][0]     
+    __________________________________________________________________________________________________
+    activation_40 (Activation)      (None, None, None, 1 0           conv2d_transpose_4[0][0]         
+    __________________________________________________________________________________________________
+    batch_normalization_40 (BatchNo (None, None, None, 1 64          activation_40[0][0]              
+    __________________________________________________________________________________________________
+    up_sampling2d_3 (UpSampling2D)  (None, None, None, 1 0           batch_normalization_40[0][0]     
+    __________________________________________________________________________________________________
+    concatenate_19 (Concatenate)    (None, None, None, 3 0           up_sampling2d_3[0][0]            
+                                                                     conv2d_10[0][0]                  
+    __________________________________________________________________________________________________
+    conv2d_transpose_5 (Conv2DTrans (None, None, None, 3 25632       concatenate_19[0][0]             
+    __________________________________________________________________________________________________
+    activation_41 (Activation)      (None, None, None, 3 0           conv2d_transpose_5[0][0]         
+    __________________________________________________________________________________________________
+    batch_normalization_41 (BatchNo (None, None, None, 3 128         activation_41[0][0]              
+    __________________________________________________________________________________________________
+    conv2d_transpose_6 (Conv2DTrans (None, None, None, 1 528         batch_normalization_41[0][0]     
+    __________________________________________________________________________________________________
+    activation_42 (Activation)      (None, None, None, 1 0           conv2d_transpose_6[0][0]         
+    __________________________________________________________________________________________________
+    batch_normalization_42 (BatchNo (None, None, None, 1 64          activation_42[0][0]              
+    __________________________________________________________________________________________________
+    up_sampling2d_4 (UpSampling2D)  (None, None, None, 1 0           batch_normalization_42[0][0]     
+    __________________________________________________________________________________________________
+    concatenate_20 (Concatenate)    (None, None, None, 3 0           up_sampling2d_4[0][0]            
+                                                                     conv2d_1[0][0]                   
+    __________________________________________________________________________________________________
+    conv2d_transpose_7 (Conv2DTrans (None, None, None, 3 25632       concatenate_20[0][0]             
+    __________________________________________________________________________________________________
+    activation_43 (Activation)      (None, None, None, 3 0           conv2d_transpose_7[0][0]         
+    __________________________________________________________________________________________________
+    conv2d_transpose_8 (Conv2DTrans (None, None, None, 1 33          activation_43[0][0]              
+    __________________________________________________________________________________________________
+    subtract_1 (Subtract)           (None, None, None, 1 0           input_1[0][0]                    
+                                                                     conv2d_transpose_8[0][0]         
+    ==================================================================================================
+    Total params: 606,321
+    Trainable params: 600,017
+    Non-trainable params: 6,304
+    __________________________________________________________________________________________________
+
+
+
+```python
+history=ddnet_model.fit(sparseview_60_train, ndct_train, validation_split=0.1, batch_size=10, epochs=100)
+
+```
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1033: The name tf.assign_add is deprecated. Please use tf.compat.v1.assign_add instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1020: The name tf.assign is deprecated. Please use tf.compat.v1.assign instead.
+
+    Train on 540 samples, validate on 60 samples
+    Epoch 1/100
+    540/540 [==============================] - 43s 80ms/step - loss: 0.0280 - tf_psnr: 21.2017 - val_loss: 0.0075 - val_tf_psnr: 21.2391
+    Epoch 2/100
+    540/540 [==============================] - 26s 49ms/step - loss: 0.0019 - tf_psnr: 27.2900 - val_loss: 0.0018 - val_tf_psnr: 27.3542
+    Epoch 3/100
+    540/540 [==============================] - 26s 49ms/step - loss: 0.0014 - tf_psnr: 28.5661 - val_loss: 0.0013 - val_tf_psnr: 28.8296
+    Epoch 4/100
+    540/540 [==============================] - 26s 49ms/step - loss: 0.0011 - tf_psnr: 29.5215 - val_loss: 0.0013 - val_tf_psnr: 29.0090
+    Epoch 5/100
+    540/540 [==============================] - 26s 49ms/step - loss: 0.0010 - tf_psnr: 29.9749 - val_loss: 0.0010 - val_tf_psnr: 29.8063
+    Epoch 6/100
+    540/540 [==============================] - 26s 49ms/step - loss: 0.0011 - tf_psnr: 29.6950 - val_loss: 8.8809e-04 - val_tf_psnr: 30.5203
+    Epoch 7/100
+    540/540 [==============================] - 26s 49ms/step - loss: 0.0011 - tf_psnr: 29.8324 - val_loss: 0.0018 - val_tf_psnr: 27.3881
+    Epoch 8/100
+    540/540 [==============================] - 26s 49ms/step - loss: 9.7362e-04 - tf_psnr: 30.1941 - val_loss: 7.9895e-04 - val_tf_psnr: 30.9795
+    Epoch 9/100
+    540/540 [==============================] - 26s 49ms/step - loss: 8.2528e-04 - tf_psnr: 30.8696 - val_loss: 7.3486e-04 - val_tf_psnr: 31.3439
+    Epoch 10/100
+    540/540 [==============================] - 26s 49ms/step - loss: 7.5115e-04 - tf_psnr: 31.2677 - val_loss: 7.1803e-04 - val_tf_psnr: 31.4459
+    Epoch 11/100
+    540/540 [==============================] - 26s 49ms/step - loss: 8.1593e-04 - tf_psnr: 30.9633 - val_loss: 7.8475e-04 - val_tf_psnr: 31.0650
+    Epoch 12/100
+    540/540 [==============================] - 26s 49ms/step - loss: 7.6514e-04 - tf_psnr: 31.2249 - val_loss: 5.9724e-04 - val_tf_psnr: 32.2474
+    Epoch 13/100
+    540/540 [==============================] - 26s 49ms/step - loss: 6.6273e-04 - tf_psnr: 31.8184 - val_loss: 5.6468e-04 - val_tf_psnr: 32.4912
+    Epoch 14/100
+    540/540 [==============================] - 26s 49ms/step - loss: 7.3347e-04 - tf_psnr: 31.4385 - val_loss: 7.6936e-04 - val_tf_psnr: 31.1439
+    Epoch 15/100
+    540/540 [==============================] - 26s 49ms/step - loss: 6.9742e-04 - tf_psnr: 31.6504 - val_loss: 5.4058e-04 - val_tf_psnr: 32.6876
+    Epoch 16/100
+    540/540 [==============================] - 26s 49ms/step - loss: 8.2124e-04 - tf_psnr: 31.0641 - val_loss: 5.3755e-04 - val_tf_psnr: 32.7044
+    Epoch 17/100
+    540/540 [==============================] - 26s 49ms/step - loss: 7.1717e-04 - tf_psnr: 31.5721 - val_loss: 5.0459e-04 - val_tf_psnr: 32.9812
+    Epoch 18/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.4516e-04 - tf_psnr: 32.6510 - val_loss: 4.7683e-04 - val_tf_psnr: 33.2336
+    Epoch 19/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.5237e-04 - tf_psnr: 32.5945 - val_loss: 4.8046e-04 - val_tf_psnr: 33.1914
+    Epoch 20/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.7488e-04 - tf_psnr: 32.4477 - val_loss: 7.0300e-04 - val_tf_psnr: 31.5445
+    Epoch 21/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.9892e-04 - tf_psnr: 32.3263 - val_loss: 4.8432e-04 - val_tf_psnr: 33.1533
+    Epoch 22/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.6773e-04 - tf_psnr: 32.5223 - val_loss: 4.0766e-04 - val_tf_psnr: 33.9022
+    Epoch 23/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.7343e-04 - tf_psnr: 32.4803 - val_loss: 4.9867e-04 - val_tf_psnr: 33.0359
+    Epoch 24/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.2029e-04 - tf_psnr: 32.8887 - val_loss: 4.1754e-04 - val_tf_psnr: 33.7978
+    Epoch 25/100
+    540/540 [==============================] - 26s 49ms/step - loss: 5.1400e-04 - tf_psnr: 32.9858 - val_loss: 4.8430e-04 - val_tf_psnr: 33.1594
+    Epoch 26/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.9536e-04 - tf_psnr: 33.1164 - val_loss: 4.1719e-04 - val_tf_psnr: 33.7993
+    Epoch 27/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.8681e-04 - tf_psnr: 33.1766 - val_loss: 3.8200e-04 - val_tf_psnr: 34.1862
+    Epoch 28/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.5471e-04 - tf_psnr: 33.4699 - val_loss: 4.0245e-04 - val_tf_psnr: 33.9595
+    Epoch 29/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.7532e-04 - tf_psnr: 33.3320 - val_loss: 3.6850e-04 - val_tf_psnr: 34.3388
+    Epoch 30/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.2976e-04 - tf_psnr: 33.7415 - val_loss: 3.5544e-04 - val_tf_psnr: 34.5017
+    Epoch 31/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.7445e-04 - tf_psnr: 34.2973 - val_loss: 3.5161e-04 - val_tf_psnr: 34.5458
+    Epoch 32/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.1256e-04 - tf_psnr: 33.9205 - val_loss: 3.4630e-04 - val_tf_psnr: 34.6239
+    Epoch 33/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.8373e-04 - tf_psnr: 34.2091 - val_loss: 3.3894e-04 - val_tf_psnr: 34.7115
+    Epoch 34/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.7360e-04 - tf_psnr: 34.3421 - val_loss: 4.5653e-04 - val_tf_psnr: 33.4073
+    Epoch 35/100
+    540/540 [==============================] - 26s 48ms/step - loss: 3.8419e-04 - tf_psnr: 34.2131 - val_loss: 4.2897e-04 - val_tf_psnr: 33.6842
+    Epoch 36/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.0863e-04 - tf_psnr: 33.9573 - val_loss: 4.4508e-04 - val_tf_psnr: 33.5211
+    Epoch 37/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.9134e-04 - tf_psnr: 34.1043 - val_loss: 3.7600e-04 - val_tf_psnr: 34.2608
+    Epoch 38/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.2303e-04 - tf_psnr: 33.8016 - val_loss: 4.1222e-04 - val_tf_psnr: 33.8547
+    Epoch 39/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.7695e-04 - tf_psnr: 34.3062 - val_loss: 3.5216e-04 - val_tf_psnr: 34.5391
+    Epoch 40/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.4057e-04 - tf_psnr: 34.7122 - val_loss: 3.1190e-04 - val_tf_psnr: 35.0734
+    Epoch 41/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.6780e-04 - tf_psnr: 34.3927 - val_loss: 4.7632e-04 - val_tf_psnr: 33.2255
+    Epoch 42/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.7832e-04 - tf_psnr: 34.2659 - val_loss: 3.3005e-04 - val_tf_psnr: 34.8223
+    Epoch 43/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.8456e-04 - tf_psnr: 33.5204 - val_loss: 0.0012 - val_tf_psnr: 29.3339
+    Epoch 44/100
+    540/540 [==============================] - 26s 49ms/step - loss: 4.1001e-04 - tf_psnr: 34.1469 - val_loss: 3.0927e-04 - val_tf_psnr: 35.1152
+    Epoch 45/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.5253e-04 - tf_psnr: 34.6016 - val_loss: 3.7163e-04 - val_tf_psnr: 34.3030
+    Epoch 46/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.7146e-04 - tf_psnr: 34.4000 - val_loss: 4.9450e-04 - val_tf_psnr: 33.0694
+    Epoch 47/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.8757e-04 - tf_psnr: 34.2648 - val_loss: 3.0528e-04 - val_tf_psnr: 35.1773
+    Epoch 48/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.8734e-04 - tf_psnr: 35.4420 - val_loss: 2.7628e-04 - val_tf_psnr: 35.6151
+    Epoch 49/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.0102e-04 - tf_psnr: 35.2569 - val_loss: 2.6695e-04 - val_tf_psnr: 35.7558
+    Epoch 50/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.9944e-04 - tf_psnr: 35.2682 - val_loss: 3.3417e-04 - val_tf_psnr: 34.7941
+    Epoch 51/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.3042e-04 - tf_psnr: 34.8676 - val_loss: 3.6515e-04 - val_tf_psnr: 34.3759
+    Epoch 52/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.2407e-04 - tf_psnr: 34.9452 - val_loss: 3.1161e-04 - val_tf_psnr: 35.0818
+    Epoch 53/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.4927e-04 - tf_psnr: 34.6836 - val_loss: 3.1465e-04 - val_tf_psnr: 35.0449
+    Epoch 54/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.8681e-04 - tf_psnr: 35.4498 - val_loss: 3.1488e-04 - val_tf_psnr: 35.0326
+    Epoch 55/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.9092e-04 - tf_psnr: 35.3946 - val_loss: 3.0132e-04 - val_tf_psnr: 35.2409
+    Epoch 56/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.6628e-04 - tf_psnr: 35.7641 - val_loss: 3.1757e-04 - val_tf_psnr: 35.0018
+    Epoch 57/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.4802e-04 - tf_psnr: 34.6686 - val_loss: 3.3183e-04 - val_tf_psnr: 34.7981
+    Epoch 58/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.9418e-04 - tf_psnr: 35.3574 - val_loss: 2.8899e-04 - val_tf_psnr: 35.4286
+    Epoch 59/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.8491e-04 - tf_psnr: 35.5120 - val_loss: 3.0041e-04 - val_tf_psnr: 35.2706
+    Epoch 60/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.7682e-04 - tf_psnr: 35.6094 - val_loss: 2.6075e-04 - val_tf_psnr: 35.8742
+    Epoch 61/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.5840e-04 - tf_psnr: 35.8941 - val_loss: 2.5724e-04 - val_tf_psnr: 35.9425
+    Epoch 62/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.8665e-04 - tf_psnr: 35.4623 - val_loss: 2.9329e-04 - val_tf_psnr: 35.3503
+    Epoch 63/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.8515e-04 - tf_psnr: 35.4931 - val_loss: 3.0674e-04 - val_tf_psnr: 35.1669
+    Epoch 64/100
+    540/540 [==============================] - 26s 49ms/step - loss: 3.1575e-04 - tf_psnr: 35.0711 - val_loss: 2.6852e-04 - val_tf_psnr: 35.7359
+    Epoch 65/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.6189e-04 - tf_psnr: 35.8535 - val_loss: 2.8497e-04 - val_tf_psnr: 35.4618
+    Epoch 66/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.6955e-04 - tf_psnr: 35.7327 - val_loss: 3.1691e-04 - val_tf_psnr: 35.0373
+    Epoch 67/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.8370e-04 - tf_psnr: 35.5343 - val_loss: 2.4236e-04 - val_tf_psnr: 36.2066
+    Epoch 68/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.5478e-04 - tf_psnr: 35.9745 - val_loss: 2.4796e-04 - val_tf_psnr: 36.1104
+    Epoch 69/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.8271e-04 - tf_psnr: 35.5821 - val_loss: 2.9078e-04 - val_tf_psnr: 35.3868
+    Epoch 70/100
+    540/540 [==============================] - 26s 48ms/step - loss: 3.2817e-04 - tf_psnr: 34.9521 - val_loss: 2.6680e-04 - val_tf_psnr: 35.7780
+    Epoch 71/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.8813e-04 - tf_psnr: 35.4786 - val_loss: 3.0792e-04 - val_tf_psnr: 35.1429
+    Epoch 72/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.5403e-04 - tf_psnr: 35.9827 - val_loss: 2.5393e-04 - val_tf_psnr: 36.0012
+    Epoch 73/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.4149e-04 - tf_psnr: 36.1899 - val_loss: 2.4901e-04 - val_tf_psnr: 36.0830
+    Epoch 74/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.3129e-04 - tf_psnr: 36.3773 - val_loss: 2.4793e-04 - val_tf_psnr: 36.1201
+    Epoch 75/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.9249e-04 - tf_psnr: 35.5059 - val_loss: 3.3721e-04 - val_tf_psnr: 34.7488
+    Epoch 76/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.6651e-04 - tf_psnr: 35.7920 - val_loss: 2.5249e-04 - val_tf_psnr: 36.0162
+    Epoch 77/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.6189e-04 - tf_psnr: 35.8730 - val_loss: 3.0696e-04 - val_tf_psnr: 35.1525
+    Epoch 78/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.3019e-04 - tf_psnr: 36.4130 - val_loss: 2.5425e-04 - val_tf_psnr: 35.9807
+    Epoch 79/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.2941e-04 - tf_psnr: 36.4208 - val_loss: 2.5265e-04 - val_tf_psnr: 36.0124
+    Epoch 80/100
+    540/540 [==============================] - 26s 49ms/step - loss: 2.2735e-04 - tf_psnr: 36.4574 - val_loss: 2.6618e-04 - val_tf_psnr: 35.7907
+    Epoch 81/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.5631e-04 - tf_psnr: 35.9504 - val_loss: 2.4669e-04 - val_tf_psnr: 36.1197
+    Epoch 82/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.3399e-04 - tf_psnr: 36.3353 - val_loss: 2.3497e-04 - val_tf_psnr: 36.3390
+    Epoch 83/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.4020e-04 - tf_psnr: 36.2282 - val_loss: 3.6146e-04 - val_tf_psnr: 34.4420
+    Epoch 84/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.4922e-04 - tf_psnr: 36.0688 - val_loss: 2.5018e-04 - val_tf_psnr: 36.0507
+    Epoch 85/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.2389e-04 - tf_psnr: 36.5251 - val_loss: 2.4655e-04 - val_tf_psnr: 36.1217
+    Epoch 86/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.3999e-04 - tf_psnr: 36.2380 - val_loss: 2.4482e-04 - val_tf_psnr: 36.1537
+    Epoch 87/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.5460e-04 - tf_psnr: 35.9957 - val_loss: 2.6136e-04 - val_tf_psnr: 35.8773
+    Epoch 88/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.1452e-04 - tf_psnr: 36.7124 - val_loss: 2.3646e-04 - val_tf_psnr: 36.3289
+    Epoch 89/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.0984e-04 - tf_psnr: 36.7986 - val_loss: 2.4461e-04 - val_tf_psnr: 36.1807
+    Epoch 90/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.1961e-04 - tf_psnr: 36.6152 - val_loss: 2.3673e-04 - val_tf_psnr: 36.3248
+    Epoch 91/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.1523e-04 - tf_psnr: 36.6929 - val_loss: 2.4572e-04 - val_tf_psnr: 36.1452
+    Epoch 92/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.8878e-04 - tf_psnr: 35.5544 - val_loss: 2.9032e-04 - val_tf_psnr: 35.3993
+    Epoch 93/100
+    540/540 [==============================] - 26s 48ms/step - loss: 3.0156e-04 - tf_psnr: 35.2996 - val_loss: 3.7494e-04 - val_tf_psnr: 34.2842
+    Epoch 94/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.2183e-04 - tf_psnr: 36.5679 - val_loss: 2.4650e-04 - val_tf_psnr: 36.1272
+    Epoch 95/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.0715e-04 - tf_psnr: 36.8539 - val_loss: 2.2339e-04 - val_tf_psnr: 36.5729
+    Epoch 96/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.1323e-04 - tf_psnr: 36.7401 - val_loss: 2.1736e-04 - val_tf_psnr: 36.7067
+    Epoch 97/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.0388e-04 - tf_psnr: 36.9348 - val_loss: 2.3284e-04 - val_tf_psnr: 36.3830
+    Epoch 98/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.0425e-04 - tf_psnr: 36.9245 - val_loss: 2.4491e-04 - val_tf_psnr: 36.1792
+    Epoch 99/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.1531e-04 - tf_psnr: 36.6909 - val_loss: 2.4497e-04 - val_tf_psnr: 36.1846
+    Epoch 100/100
+    540/540 [==============================] - 26s 48ms/step - loss: 2.1190e-04 - tf_psnr: 36.7692 - val_loss: 2.4295e-04 - val_tf_psnr: 36.2184
+
+
+Save weights for the future reuse.
+
+
+```python
+ddnet_model.save_weights("/content/drive/My Drive/Colab Notebooks/dd_net/model.h5")
+```
+
+Plotting PSNR values to see the trend.
+
+
+```python
+import matplotlib.pyplot as plt
+acc = history.history['tf_psnr']
+val_acc = history.history['val_tf_psnr']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(acc))
+
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+plt.legend(loc=0)
+plt.figure()
+plt.show()
+```
+
+
+![png](output_31_0.png)
+
+
+
+    <Figure size 432x288 with 0 Axes>
+
+
+
+```python
+reconstructed = ddnet_model.predict(sparseview_60_test)
+psnr = cal_psnr(ndct_test, reconstructed)
+print("psnr 40 epochs.....",psnr)
+```
+
+    psnr 40 epochs..... 33.99149254705274
+
+
+psnr 40 epochs..... 33.3782823500309
+
+
+
+
+```python
+from PIL import Image
+
+a = reconstructed[0].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_0.png')
+result.save('/content/drive/My Drive/Colab Notebooks/dd_net/reconstructed_ddnet_0.png')
+
+a = reconstructed[99].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_99.png')
+result.save('/content/drive/My Drive/Colab Notebooks/dd_net/reconstructed_ddnet_99.png')
+```
+
+
+```python
+a = sparseview_60_test[0].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_0.png')
+result.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_ddnet_0.png')
+
+a = sparseview_60_test[99].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_99.png')
+result.save('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_ddnet_99.png')
+```
+
+
+```python
+
+```
+
+
+```python
+# Plot training & validation accuracy values
+plt.plot(history.history['tf_psnr'])
+plt.plot(history.history['val_tf_psnr'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.show()
+
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.show()
+```
+
+
+![png](/2020-02-24-dd_net_v2/output_37_0.png)
+
+
+
+![png](/2020-02-24-dd_net_v2/output_37_1.png)
+
+
+
+```python
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_ddnet_0.png')
+imgplot = plt.imshow(img)
+plt.show()
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/dd_net/reconstructed_ddnet_0.png')
+imgplot = plt.imshow(img)
+plt.show()
+```
+
+
+![png](/2020-02-24-dd_net_v2/output_38_0.png)
+
+
+
+![png](/2020-02-24-dd_net_v2/output_38_1.png)
+
+
+
+```python
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/dd_net/sparseview_60_test_ddnet_99.png')
+imgplot = plt.imshow(img)
+plt.show()
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/dd_net/reconstructed_ddnet_99.png')
+imgplot = plt.imshow(img)
+plt.show()
+```
+
+
+![png](/2020-02-24-dd_net_v2/output_39_0.png)
+
+
+
+![png](/2020-02-24-dd_net_v2/output_39_1.png)
+
+
+
+
+
+Images
+
+sparseview_60_0
+
+![sparseview_60_test_ddnet_0](/2020-02-24-dd_net_v2/sparseview_60_test_ddnet_0.png)
+
+Reconstructed sparseview_60_0
+
+![reconstructed_ddnet_0](/2020-02-24-dd_net_v2/reconstructed_ddnet_0.png)
+
+sparseview_60_99
+
+![sparseview_60_test_ddnet_99](/2020-02-24-dd_net_v2/sparseview_60_test_ddnet_99.png)
+
+Reconstructed sparseview_60_99
+
+![reconstructed_ddnet_99](/2020-02-24-dd_net_v2/reconstructed_ddnet_99.png)
