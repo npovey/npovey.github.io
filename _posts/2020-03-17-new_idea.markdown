@@ -1,0 +1,983 @@
+---
+
+layout: post
+title:  "Two UNet models, one channel and two channels each"
+date:   2020-2-23 14:34:33 -0700
+categories: update
+---
+
+
+**A Sparse-View CT Reconstruction Method Based on 2 UNET models**
+
+##### Didn't produce promising results
+
+
+
+
+```python
+The idea was that we use 2 UNet models.
+1. We train one first
+2. cancatenate training data with denoised data from the first UNet
+3. Feed 2 channels to a second UNet Model
+4. Use both unets to reconstruct the test data
+Results:
+    After first UNet Avg PSNR 37.69669481448519
+    After second UNet AVG PSNR 37.73871974685735
+The results were not very promising. Planning to improve on it.
+
+
+```
+
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+```
+
+
+
+
+```python
+import os
+import keras
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from keras.layers import Conv2D, MaxPooling2D, Input, Dense, UpSampling2D
+from keras.layers import BatchNormalization, Activation, Dropout, Subtract
+from keras.models import Model
+from glob import glob
+from keras.layers.convolutional import Conv2DTranspose
+from keras.layers import concatenate
+from keras import optimizers
+from keras.optimizers import Adam
+```
+
+    Using TensorFlow backend.
+
+
+
+<p style="color: red;">
+The default version of TensorFlow in Colab will soon switch to TensorFlow 2.x.<br>
+We recommend you <a href="https://www.tensorflow.org/guide/migrate" target="_blank">upgrade</a> now
+or ensure your notebook will continue to use TensorFlow 1.x via the <code>%tensorflow_version 1.x</code> magic:
+<a href="https://colab.research.google.com/notebooks/tensorflow_version.ipynb" target="_blank">more info</a>.</p>
+
+
+
+
+```python
+# %tensorflow_version 1.x
+# import tensorflow as tf
+print(tf.__version__)
+```
+
+    1.15.0
+
+```python
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/train')))
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/train')))
+# # 3600
+# # 3600
+```
+
+
+```python
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/test/')))
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/test/')))
+# # # 354
+# # # 354
+```
+
+
+```python
+ndct = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/train/*'))
+ldct = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/train/*'))
+
+ndct_test = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/test/*'))
+ldct_test = sorted(glob('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/test/*'))
+
+print(len(ndct))
+print(len(ldct))
+print(len(ndct_test))
+print(len(ldct_test))
+```
+
+    3600
+    3600
+    354
+    354
+
+
+The formulas below will be used to calculate the quality of the reconstruction. Higher PSNR generally indicates high quality of reconstruction.
+
+
+```python
+def cal_psnr(im1, im2):
+    # assert pixel value range is 0-255 and type is uint8
+    mse = ((im1.astype(np.float) - im2.astype(np.float)) ** 2).mean()
+    maxval = np.amax(im1)
+    psnr = 10 * np.log10(maxval ** 2 / mse)
+    return psnr
+
+def tf_psnr(im1, im2):
+    # assert pixel value range is 0-1
+    #mse = tf.losses.mean_squared_error(labels=im2 * 255.0, predictions=im1 * 255.0)
+    mse = tf.compat.v1.losses.mean_squared_error(labels=im2 * 255.0, predictions=im1 * 255.0)
+    return 10.0 * (tf.log(255.0 ** 2 / mse) / tf.log(10.0))
+```
+
+Using less data: #for i in range(0, 600). Have 3600 in all.
+Processing 3600 images takes aprox. 20 minutes to run. But once we create .npy aray we don't have to rerun this code in the future and we will have .npy form of our data. Colab has 11GB RAM limit.
+
+
+```python
+ndct_imgs_train = []
+for i in range(0, len(ndct)):                                                                                                                                      
+#for i in range(0, 600):
+    f = open(ndct[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ndct_imgs_train.append(a)
+    f.close()
+print("len(ndct_imgs_train)....: ",len(ndct_imgs_train))
+#len(ndct_imgs_train)....:  3600                                                                                                                                                         
+```
+
+    len(ndct_imgs_train)....:  3600
+
+
+
+```python
+ndct_train = np.asarray(ndct_imgs_train)
+ndct_train = ndct_train.reshape(3600,512,512,1)
+np.save('/content/drive/My Drive/Colab Notebooks/new_idea/ndct_train_3600', ndct_train) # save the file as "ndct_train_3600.npy"
+```
+
+
+```python
+
+```
+
+
+Using different range to use less data to train #for i in range(0, 600). In all have 3600 images. It takes aprox. 20 minutes to process all 3600. But once we create .npy aray we don't have to rerun this code in the future and we will have .npy form of our data.
+
+
+```python
+ldct_imgs_train = []
+for i in range(0, len(ldct)):
+#for i in range(0, 600):
+    f = open(ldct[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ldct_imgs_train.append(a)
+    f.close()
+print("len(ldct_imgs_train)....: ",len(ldct_imgs_train))
+```
+
+    len(ldct_imgs_train)....:  3600
+
+
+
+```python
+ldct_train = np.asarray(ldct_imgs_train)
+ldct_train = ldct_train.reshape(3600,512,512,1)
+np.save('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_train_3600', ldct_train) # save the file as "sparseview_60_train_3600.npy"
+
+```
+
+only using 100 images to test
+
+
+```python
+ndct_imgs_test = []
+for i in range(0, len(ndct_test)):
+# for i in range(0, 100):
+    f = open(ndct_test[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ndct_imgs_test.append(a)
+    f.close()
+print("len(ndct_imgs_test)....: ",len(ndct_imgs_test))
+
+```
+
+    len(ndct_imgs_test)....:  354
+
+
+
+```python
+ndct_test = np.asarray(ndct_imgs_test)
+ndct_test = ndct_test.reshape(354,512,512,1)
+np.save('/content/drive/My Drive/Colab Notebooks/new_idea/ndct_test_354', ndct_test) # save the file as "ndct_test.npy"
+```
+
+only using 100 images to test
+
+
+```python
+# load the image
+ldct_imgs_test = []
+for i in range(0, len(ldct_test)):
+# for i in range(0, 100):
+    f = open(ldct_test[i],'rb')
+    a = np.fromfile(f, np.float32)
+    ldct_imgs_test.append(a)
+    f.close()
+print("len(ldct_imgs_test)....: ",len(ldct_imgs_test))
+
+```
+
+    len(ldct_imgs_test)....:  354
+
+
+
+```python
+ldct_test = np.asarray(ldct_imgs_test)
+ldct_test = ldct_test.reshape(354,512,512,1)
+np.save('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_354', ldct_test) # save the file as "sparseview_60_test.npy"
+
+```
+
+
+```python
+ldct_train = np.load('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_train_3600.npy') # loads saved array into variable sparseview_60_train.
+```
+
+
+```python
+ndct_train = np.load('/content/drive/My Drive/Colab Notebooks/new_idea/ndct_train_3600.npy') # loads saved array into variable ndct_train.
+
+```
+
+
+```python
+ldct_test = np.load('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_354.npy') # loads saved array into variable sparseview_60_test.
+
+```
+
+
+```python
+ndct_test = np.load('/content/drive/My Drive/Colab Notebooks/new_idea/ndct_test_354.npy') # loads saved array into variable ndct_test.
+
+```
+
+Must reshape images to train
+
+
+```python
+ldct_train = np.asarray(ldct_imgs_train)
+ndct_train = np.asarray(ndct_imgs_train)
+
+ldct_train = ldct_train.reshape(600,512,512,1)
+ndct_train = ndct_train.reshape(600,512,512,1)
+
+ldct_test = np.asarray(ldct_imgs_test)
+ndct_test = np.asarray(ndct_imgs_test)
+
+# ldct_test = ldct_test.reshape(len(ldct_imgs_test),512,512,1)
+# ndct_test = ndct_test.reshape(len(ldct_imgs_test),512,512,1)
+
+ldct_test = ldct_test.reshape(100,512,512,1)
+ndct_test = ndct_test.reshape(100,512,512,1)
+
+print(ldct_train.shape)
+print(ndct_train.shape)
+print(ldct_test.shape)
+print(ndct_test.shape)
+
+```
+
+    (600, 512, 512, 1)
+    (600, 512, 512, 1)
+    (100, 512, 512, 1)
+    (100, 512, 512, 1)
+
+##### First UNet to train.
+
+
+```python
+
+inputs = Input((None, None,1))
+c1 = Conv2D(8, (3, 3), activation='relu', padding='same') (inputs)
+c1 = Conv2D(8, (3, 3), activation='relu', padding='same') (c1)
+p1 = MaxPooling2D((2, 2)) (c1)
+
+c2 = Conv2D(16, (3, 3), activation='relu', padding='same') (p1)
+c2 = Conv2D(16, (3, 3), activation='relu', padding='same') (c2)
+p2 = MaxPooling2D((2, 2)) (c2)
+
+c3 = Conv2D(32, (3, 3), activation='relu', padding='same') (p2)
+c3 = Conv2D(32, (3, 3), activation='relu', padding='same') (c3)
+p3 = MaxPooling2D((2, 2)) (c3)
+
+c4 = Conv2D(64, (3, 3), activation='relu', padding='same') (p3)
+c4 = Conv2D(64, (3, 3), activation='relu', padding='same') (c4)
+p4 = MaxPooling2D(pool_size=(2, 2)) (c4)
+
+c5 = Conv2D(128, (3, 3), activation='relu', padding='same') (p4)
+c5 = Conv2D(128, (3, 3), activation='relu', padding='same') (c5)
+
+u6 = Conv2DTranspose(64, (2, 2), strides=(2, 2), padding='same') (c5)
+u6 = concatenate([u6, c4])
+c6 = Conv2D(64, (3, 3), activation='relu', padding='same') (u6)
+c6 = Conv2D(64, (3, 3), activation='relu', padding='same') (c6)
+
+u7 = Conv2DTranspose(32, (2, 2), strides=(2, 2), padding='same') (c6)
+u7 = concatenate([u7, c3])
+c7 = Conv2D(32, (3, 3), activation='relu', padding='same') (u7)
+c7 = Conv2D(32, (3, 3), activation='relu', padding='same') (c7)
+
+u8 = Conv2DTranspose(16, (2, 2), strides=(2, 2), padding='same') (c7)
+u8 = concatenate([u8, c2])
+c8 = Conv2D(16, (3, 3), activation='relu', padding='same') (u8)
+c8 = Conv2D(16, (3, 3), activation='relu', padding='same') (c8)
+
+u9 = Conv2DTranspose(8, (2, 2), strides=(2, 2), padding='same') (c8)
+u9 = concatenate([u9, c1])
+c9 = Conv2D(8, (3, 3), activation='relu', padding='same') (u9)
+c9 = Conv2D(8, (3, 3), activation='relu', padding='same') (c9)
+output_img = Conv2D(1, (3, 3), padding='same') (c9)
+denoised_image = keras.layers.Subtract()([inputs, output_img])
+unet_model = Model(inputs=[inputs], outputs=[denoised_image])
+unet_model.compile(optimizer= 'adam', loss='mse', metrics=[tf_psnr])
+```
+
+
+```python
+unet_model.summary()
+```
+
+
+```python
+es = keras.callbacks.EarlyStopping(monitor='val_loss',
+                              min_delta=0,
+                              patience=5,
+                              verbose=0, mode='auto')
+```
+
+
+```python
+history=unet_model.fit(ldct_train, ndct_train, validation_split=0.1, batch_size=20, epochs=100, callbacks =[es])
+```
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1033: The name tf.assign_add is deprecated. Please use tf.compat.v1.assign_add instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1020: The name tf.assign is deprecated. Please use tf.compat.v1.assign instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:3005: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+    Train on 3240 samples, validate on 360 samples
+    Epoch 1/100
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:190: The name tf.get_default_session is deprecated. Please use tf.compat.v1.get_default_session instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:197: The name tf.ConfigProto is deprecated. Please use tf.compat.v1.ConfigProto instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:207: The name tf.global_variables is deprecated. Please use tf.compat.v1.global_variables instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:216: The name tf.is_variable_initialized is deprecated. Please use tf.compat.v1.is_variable_initialized instead.
+
+    WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:223: The name tf.variables_initializer is deprecated. Please use tf.compat.v1.variables_initializer instead.
+
+    3240/3240 [==============================] - 52s 16ms/step - loss: 7.7048e-04 - tf_psnr: 31.4804 - val_loss: 4.3303e-04 - val_tf_psnr: 33.7088
+    Epoch 2/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 3.8901e-04 - tf_psnr: 34.1393 - val_loss: 3.2031e-04 - val_tf_psnr: 35.0171
+    Epoch 3/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 2.9320e-04 - tf_psnr: 35.3457 - val_loss: 2.6575e-04 - val_tf_psnr: 35.8361
+    Epoch 4/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 2.5344e-04 - tf_psnr: 35.9755 - val_loss: 2.4150e-04 - val_tf_psnr: 36.2497
+    Epoch 5/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 2.3022e-04 - tf_psnr: 36.3911 - val_loss: 2.4950e-04 - val_tf_psnr: 36.0952
+    Epoch 6/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 2.1732e-04 - tf_psnr: 36.6462 - val_loss: 2.3003e-04 - val_tf_psnr: 36.4655
+    Epoch 7/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 2.0371e-04 - tf_psnr: 36.9202 - val_loss: 2.1188e-04 - val_tf_psnr: 36.8266
+    Epoch 8/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.9627e-04 - tf_psnr: 37.0844 - val_loss: 2.2196e-04 - val_tf_psnr: 36.6161
+    Epoch 9/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.8830e-04 - tf_psnr: 37.2653 - val_loss: 1.9891e-04 - val_tf_psnr: 37.1046
+    Epoch 10/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.8285e-04 - tf_psnr: 37.3927 - val_loss: 1.9869e-04 - val_tf_psnr: 37.0905
+    Epoch 11/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.7636e-04 - tf_psnr: 37.5490 - val_loss: 1.9422e-04 - val_tf_psnr: 37.2080
+    Epoch 12/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.7227e-04 - tf_psnr: 37.6516 - val_loss: 1.9111e-04 - val_tf_psnr: 37.2722
+    Epoch 13/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.6771e-04 - tf_psnr: 37.7666 - val_loss: 1.9058e-04 - val_tf_psnr: 37.2804
+    Epoch 14/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.6444e-04 - tf_psnr: 37.8551 - val_loss: 1.8667e-04 - val_tf_psnr: 37.3671
+    Epoch 15/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.6101e-04 - tf_psnr: 37.9435 - val_loss: 1.9904e-04 - val_tf_psnr: 37.0841
+    Epoch 16/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.5835e-04 - tf_psnr: 38.0169 - val_loss: 1.8485e-04 - val_tf_psnr: 37.4164
+    Epoch 17/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.5419e-04 - tf_psnr: 38.1306 - val_loss: 1.9395e-04 - val_tf_psnr: 37.1968
+    Epoch 18/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.5361e-04 - tf_psnr: 38.1504 - val_loss: 1.8514e-04 - val_tf_psnr: 37.4039
+    Epoch 19/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.5153e-04 - tf_psnr: 38.2060 - val_loss: 2.0618e-04 - val_tf_psnr: 36.9248
+    Epoch 20/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.4852e-04 - tf_psnr: 38.2960 - val_loss: 1.8025e-04 - val_tf_psnr: 37.5303
+    Epoch 21/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.4686e-04 - tf_psnr: 38.3444 - val_loss: 1.8222e-04 - val_tf_psnr: 37.4741
+    Epoch 22/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.4585e-04 - tf_psnr: 38.3717 - val_loss: 1.8267e-04 - val_tf_psnr: 37.4705
+    Epoch 23/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.4234e-04 - tf_psnr: 38.4769 - val_loss: 1.7893e-04 - val_tf_psnr: 37.5570
+    Epoch 24/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.4295e-04 - tf_psnr: 38.4612 - val_loss: 1.7711e-04 - val_tf_psnr: 37.6044
+    Epoch 25/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.3992e-04 - tf_psnr: 38.5515 - val_loss: 1.7688e-04 - val_tf_psnr: 37.6050
+    Epoch 26/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.3895e-04 - tf_psnr: 38.5830 - val_loss: 1.7389e-04 - val_tf_psnr: 37.6879
+    Epoch 27/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.3675e-04 - tf_psnr: 38.6529 - val_loss: 1.7448e-04 - val_tf_psnr: 37.6757
+    Epoch 28/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.3715e-04 - tf_psnr: 38.6393 - val_loss: 1.9051e-04 - val_tf_psnr: 37.2893
+    Epoch 29/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.3478e-04 - tf_psnr: 38.7145 - val_loss: 1.7553e-04 - val_tf_psnr: 37.6471
+    Epoch 30/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.3399e-04 - tf_psnr: 38.7393 - val_loss: 1.7569e-04 - val_tf_psnr: 37.6487
+    Epoch 31/100
+    3240/3240 [==============================] - 34s 11ms/step - loss: 1.3400e-04 - tf_psnr: 38.7413 - val_loss: 1.7482e-04 - val_tf_psnr: 37.6701
+
+
+
+```python
+reconstructed = unet_model.predict(ldct_test)
+psnr = cal_psnr(ndct_test, reconstructed)
+print("psnr .....",psnr)
+```
+
+    psnr ..... 37.69669481448519
+
+
+
+```python
+unet_model.save_weights("/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_1.h5")
+# unet_model.load_weights("unet_model_1.h5")
+```
+
+
+```python
+unet_model.load_weights("/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_1.h5")
+```
+
+
+```python
+reconstructed = unet_model.predict(ldct_test)
+psnr = cal_psnr(ndct_test, reconstructed)
+print("psnr .....",psnr)
+```
+
+    psnr ..... 37.69669481448519
+
+##### Plotting PSNR values to see the trend.
+
+
+```python
+import matplotlib.pyplot as plt
+acc = history.history['tf_psnr']
+val_acc = history.history['val_tf_psnr']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(acc))
+
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+plt.legend(loc=0)
+plt.figure()
+plt.show()
+```
+
+
+![png](/2020-03-17-new_idea/output_43_0.png)
+
+
+
+    <Figure size 432x288 with 0 Axes>
+
+
+
+
+```python
+from PIL import Image
+
+a = reconstructed[0].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_0.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_0.png')
+
+a = reconstructed[99].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_99.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_99.png')
+```
+
+
+```python
+a = ldct_test[0].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_0.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_0.png')
+
+a = ldct_test[99].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_99.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_99.png')
+```
+
+
+```python
+
+```
+
+
+```python
+# Plot training & validation accuracy values
+plt.plot(history.history['tf_psnr'])
+plt.plot(history.history['val_tf_psnr'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.show()
+
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.show()
+```
+
+
+![png](/2020-03-17-new_idea/output_48_0.png)
+
+
+
+![png](/2020-03-17-new_idea/output_48_1.png)
+
+
+
+```python
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_0.png')
+imgplot = plt.imshow(img)
+plt.show()
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_0.png')
+imgplot = plt.imshow(img)
+plt.show()
+```
+
+
+![png](/2020-03-17-new_idea/output_49_0.png)
+
+
+
+![png](/2020-03-17-new_idea/output_49_1.png)
+
+
+
+![sparseview_60_test_ddnet_0](/2020-03-17-new_idea/sparseview_60_test_ddnet_0.png)
+
+
+
+
+
+![reconstructed_ddnet_0](/2020-03-17-new_idea/reconstructed_ddnet_0.png)
+
+```python
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_99.png')
+imgplot = plt.imshow(img)
+plt.show()
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_99.png')
+imgplot = plt.imshow(img)
+plt.show()
+```
+
+
+![png](output_50_0.png)
+
+
+
+![png](output_50_1.png)
+
+
+
+
+
+![sparseview_60_test_ddnet_99](/2020-03-17-new_idea/sparseview_60_test_ddnet_99.png)
+
+
+
+![reconstructed_ddnet_99](/2020-03-17-new_idea/reconstructed_ddnet_99.png)
+
+
+**Second part of the model**
+must concatenate original data with reconstructed data
+
+
+
+```python
+# unet_model.save_weights("unet_model_1.h5")
+```
+
+
+```python
+# unet_model.load_weights("model.h5")
+```
+
+##### Need matrix 3600 images that were cleaned using first UNet
+
+
+```python
+recon_train_set = unet_model.predict(ldct_train)
+```
+
+
+```python
+np.save('/content/drive/My Drive/Colab Notebooks/new_idea/recon_train_set', recon_train_set) # save the file as "recon_train_set.npy"
+
+```
+
+
+```python
+recon_train_set = np.load('/content/drive/My Drive/Colab Notebooks/new_idea/recon_train_set.npy') # loads saved array into recon_train_set.
+
+```
+
+
+```python
+two_channel_matrix = np.concatenate((recon_train_set, ldct_train), axis=3)
+
+```
+
+
+```python
+np.save('/content/drive/My Drive/Colab Notebooks/new_idea/two_channel_matrix', two_channel_matrix) # save the file as "recon_train_set.npy"
+
+# two_channel_matrix = np.load('/content/drive/My Drive/Colab Notebooks/new_idea/two_channel_matrix.npy') # loads saved array into recon_train_set.
+
+```
+
+
+```python
+def sliced(x):
+ return x[:,:,:,1:2]
+```
+
+##### Second UNET has 2 channels
+
+
+```python
+#train model with 2 chanels
+inputs = Input((None, None,2))
+c1 = Conv2D(8, (3, 3), activation='relu', padding='same') (inputs)
+c1 = Conv2D(8, (3, 3), activation='relu', padding='same') (c1)
+p1 = MaxPooling2D((2, 2)) (c1)
+
+c2 = Conv2D(16, (3, 3), activation='relu', padding='same') (p1)
+c2 = Conv2D(16, (3, 3), activation='relu', padding='same') (c2)
+p2 = MaxPooling2D((2, 2)) (c2)
+
+c3 = Conv2D(32, (3, 3), activation='relu', padding='same') (p2)
+c3 = Conv2D(32, (3, 3), activation='relu', padding='same') (c3)
+p3 = MaxPooling2D((2, 2)) (c3)
+
+c4 = Conv2D(64, (3, 3), activation='relu', padding='same') (p3)
+c4 = Conv2D(64, (3, 3), activation='relu', padding='same') (c4)
+p4 = MaxPooling2D(pool_size=(2, 2)) (c4)
+
+c5 = Conv2D(128, (3, 3), activation='relu', padding='same') (p4)
+c5 = Conv2D(128, (3, 3), activation='relu', padding='same') (c5)
+
+u6 = Conv2DTranspose(64, (2, 2), strides=(2, 2), padding='same') (c5)
+u6 = concatenate([u6, c4])
+c6 = Conv2D(64, (3, 3), activation='relu', padding='same') (u6)
+c6 = Conv2D(64, (3, 3), activation='relu', padding='same') (c6)
+
+u7 = Conv2DTranspose(32, (2, 2), strides=(2, 2), padding='same') (c6)
+u7 = concatenate([u7, c3])
+c7 = Conv2D(32, (3, 3), activation='relu', padding='same') (u7)
+c7 = Conv2D(32, (3, 3), activation='relu', padding='same') (c7)
+
+u8 = Conv2DTranspose(16, (2, 2), strides=(2, 2), padding='same') (c7)
+u8 = concatenate([u8, c2])
+c8 = Conv2D(16, (3, 3), activation='relu', padding='same') (u8)
+c8 = Conv2D(16, (3, 3), activation='relu', padding='same') (c8)
+
+u9 = Conv2DTranspose(8, (2, 2), strides=(2, 2), padding='same') (c8)
+u9 = concatenate([u9, c1])
+c9 = Conv2D(8, (3, 3), activation='relu', padding='same') (u9)
+c9 = Conv2D(8, (3, 3), activation='relu', padding='same') (c9)
+output_img = Conv2D(1, (3, 3), padding='same') (c9) #2 channels
+
+print(output_img)
+print(inputs)
+
+s = keras.layers.Lambda(lambda x: sliced(x))(inputs)
+print(s)
+print(output_img)
+
+noise = keras.layers.Subtract()([s, output_img])
+
+print(noise)
+unet_model2 = Model(inputs=[inputs], outputs=[noise])
+unet_model2.compile(optimizer= 'adam', loss='mse', metrics=[tf_psnr])
+
+
+
+```
+
+    Tensor("conv2d_57/BiasAdd:0", shape=(?, ?, ?, 1), dtype=float32)
+    Tensor("input_3:0", shape=(?, ?, ?, 2), dtype=float32)
+    -----------------
+    -----------------
+    Tensor("lambda_1/strided_slice:0", shape=(?, ?, ?, 1), dtype=float32)
+    Tensor("conv2d_57/BiasAdd:0", shape=(?, ?, ?, 1), dtype=float32)
+    Tensor("subtract_3/sub:0", shape=(?, ?, ?, 1), dtype=float32)
+
+
+
+```python
+unet_model2.summary()
+```
+
+Ask why the same number of parameters as the first one?
+
+
+```python
+history=unet_model2.fit(two_channel_matrix, ndct_train, validation_split=0.1, batch_size=20, epochs=100, callbacks =[es])
+
+```
+
+    Train on 3240 samples, validate on 360 samples
+    Epoch 1/100
+    3240/3240 [==============================] - 40s 12ms/step - loss: 5.5299e-04 - tf_psnr: 34.0690 - val_loss: 2.2301e-04 - val_tf_psnr: 36.6335
+    Epoch 2/100
+    3240/3240 [==============================] - 38s 12ms/step - loss: 1.7058e-04 - tf_psnr: 37.7025 - val_loss: 2.0112e-04 - val_tf_psnr: 37.0598
+    Epoch 3/100
+    3240/3240 [==============================] - 38s 12ms/step - loss: 1.5103e-04 - tf_psnr: 38.2230 - val_loss: 1.8514e-04 - val_tf_psnr: 37.4245
+    Epoch 4/100
+    3240/3240 [==============================] - 38s 12ms/step - loss: 1.4493e-04 - tf_psnr: 38.4023 - val_loss: 1.8211e-04 - val_tf_psnr: 37.4944
+    Epoch 5/100
+    3240/3240 [==============================] - 38s 12ms/step - loss: 1.4072e-04 - tf_psnr: 38.5357 - val_loss: 3.3022e-04 - val_tf_psnr: 34.8510
+    Epoch 6/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.4096e-04 - tf_psnr: 38.5464 - val_loss: 1.7854e-04 - val_tf_psnr: 37.5808
+    Epoch 7/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3592e-04 - tf_psnr: 38.6781 - val_loss: 1.7788e-04 - val_tf_psnr: 37.5967
+    Epoch 8/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3595e-04 - tf_psnr: 38.6868 - val_loss: 1.7684e-04 - val_tf_psnr: 37.6224
+    Epoch 9/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3401e-04 - tf_psnr: 38.7389 - val_loss: 1.7585e-04 - val_tf_psnr: 37.6471
+    Epoch 10/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3377e-04 - tf_psnr: 38.7499 - val_loss: 1.7561e-04 - val_tf_psnr: 37.6527
+    Epoch 11/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3284e-04 - tf_psnr: 38.7768 - val_loss: 1.7597e-04 - val_tf_psnr: 37.6428
+    Epoch 12/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3300e-04 - tf_psnr: 38.7710 - val_loss: 1.7468e-04 - val_tf_psnr: 37.6759
+    Epoch 13/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3192e-04 - tf_psnr: 38.8089 - val_loss: 1.7625e-04 - val_tf_psnr: 37.6353
+    Epoch 14/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3234e-04 - tf_psnr: 38.7964 - val_loss: 1.7818e-04 - val_tf_psnr: 37.5857
+    Epoch 15/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3064e-04 - tf_psnr: 38.8524 - val_loss: 1.8839e-04 - val_tf_psnr: 37.3357
+    Epoch 16/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3160e-04 - tf_psnr: 38.8195 - val_loss: 1.7357e-04 - val_tf_psnr: 37.7039
+    Epoch 17/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3020e-04 - tf_psnr: 38.8632 - val_loss: 1.7328e-04 - val_tf_psnr: 37.7112
+    Epoch 18/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3085e-04 - tf_psnr: 38.8420 - val_loss: 1.7355e-04 - val_tf_psnr: 37.7039
+    Epoch 19/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.2982e-04 - tf_psnr: 38.8767 - val_loss: 1.7266e-04 - val_tf_psnr: 37.7271
+    Epoch 20/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.3055e-04 - tf_psnr: 38.8558 - val_loss: 1.7392e-04 - val_tf_psnr: 37.6948
+    Epoch 21/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.2954e-04 - tf_psnr: 38.8852 - val_loss: 1.7343e-04 - val_tf_psnr: 37.7072
+    Epoch 22/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.2988e-04 - tf_psnr: 38.8775 - val_loss: 1.7325e-04 - val_tf_psnr: 37.7117
+    Epoch 23/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.2950e-04 - tf_psnr: 38.8883 - val_loss: 1.7271e-04 - val_tf_psnr: 37.7250
+    Epoch 24/100
+    3240/3240 [==============================] - 37s 12ms/step - loss: 1.2925e-04 - tf_psnr: 38.8947 - val_loss: 1.7307e-04 - val_tf_psnr: 37.7156
+
+
+
+```python
+unet_model2.save_weights("/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_2.h5")
+```
+
+
+```python
+unet_model2.load_weights("/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_2.h5")
+```
+
+To predict we should use both models
+1. predict with first model
+2. predict with second model
+
+
+```python
+reconstructed = unet_model.predict(ldct_test)
+psnr = cal_psnr(ndct_test, reconstructed)
+print("psnr 40 epochs.....",psnr)
+```
+
+    psnr 40 epochs..... 37.69669481448519
+
+concatenate the denoised images from the first model and our original data
+
+```python
+two_channel_results = np.concatenate((reconstructed, ldct_test), axis=3)
+```
+
+
+```python
+final_results = unet_model2.predict(two_channel_results)
+```
+
+
+```python
+
+psnr = cal_psnr(ndct_test, final_results)
+print("psnr .....",psnr)
+```
+
+    psnr ..... 37.73871974685735
+
+
+
+```python
+# Plot training & validation accuracy values
+plt.plot(history.history['tf_psnr'])
+plt.plot(history.history['val_tf_psnr'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.show()
+
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.show()
+```
+
+
+![png](/2020-03-17-new_idea/output_75_0.png)
+
+
+
+![png](/2020-03-17-new_idea/output_75_1.png)
+
+
+
+```python
+from PIL import Image
+
+a = reconstructed[0].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_0.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_0_sec_model.png')
+
+a = reconstructed[99].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_99.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_99_sec_model.png')
+```
+
+
+```python
+a = ldct_test[0].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_0.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_0_sec_mod.png')
+
+a = ldct_test[99].reshape(512, 512)
+scalef = np.amax(a)
+a = np.clip(255 * a/scalef, 0, 255).astype('uint8')
+#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+result = Image.fromarray((a).astype(np.uint8))
+# result.save('unet_15_600_99.png')
+result.save('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_99_sec_mod.png')
+```
+
+
+```python
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_0_sec_mod.png')
+imgplot = plt.imshow(img)
+plt.show()
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_0_sec_model.png')
+imgplot = plt.imshow(img)
+plt.show()
+```
+
+
+![png](/2020-03-17-new_idea/output_78_0.png)
+
+
+
+![png](/2020-03-17-new_idea/output_78_1.png)
+
+
+
+
+
+![sparseview_60_test_0_sec_mod](/2020-03-17-new_idea/sparseview_60_test_0_sec_mod.png)
+
+
+
+![reconstructed_0_sec_model](/2020-03-17-new_idea/reconstructed_0_sec_model.png)
+
+
+
+```python
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_99_sec_mod.png')
+imgplot = plt.imshow(img)
+plt.show()
+img=mpimg.imread('/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_99_sec_model.png')
+imgplot = plt.imshow(img)
+plt.show()
+```
+
+
+![png](/2020-03-17-new_idea/output_79_0.png)
+
+
+
+![png](/2020-03-17-new_idea/output_79_1.png)
+
+Final cleaned images
+
+![sparseview_60_test_99_sec_mod](/2020-03-17-new_idea/sparseview_60_test_99_sec_mod.png)
+
+
+
+![reconstructed_99_sec_model](/2020-03-17-new_idea/reconstructed_99_sec_model.png)

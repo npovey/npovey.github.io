@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Two UNet models, one channel and two channels each | girls can code</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Two UNet models, one channel and two channels each" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A Sparse-View CT Reconstruction Method Based on 2 UNET models" />
+<meta property="og:description" content="A Sparse-View CT Reconstruction Method Based on 2 UNET models" />
+<link rel="canonical" href="http://localhost:4000/update/2020/02/23/new_idea.html" />
+<meta property="og:url" content="http://localhost:4000/update/2020/02/23/new_idea.html" />
+<meta property="og:site_name" content="girls can code" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-02-23T13:34:33-08:00" />
+<script type="application/ld+json">
+{"description":"A Sparse-View CT Reconstruction Method Based on 2 UNET models","@type":"BlogPosting","url":"http://localhost:4000/update/2020/02/23/new_idea.html","headline":"Two UNet models, one channel and two channels each","dateModified":"2020-02-23T13:34:33-08:00","datePublished":"2020-02-23T13:34:33-08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/02/23/new_idea.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="girls can code" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">girls can code</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Two UNet models, one channel and two channels each</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-02-23T13:34:33-08:00" itemprop="datePublished">Feb 23, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><strong>A Sparse-View CT Reconstruction Method Based on 2 UNET models</strong></p>
+
+<h5 id="didnt-produce-promising-results">Didn’t produce promising results</h5>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">The</span> <span class="n">idea</span> <span class="n">was</span> <span class="n">that</span> <span class="n">we</span> <span class="n">use</span> <span class="mi">2</span> <span class="n">UNet</span> <span class="n">models</span><span class="o">.</span>
+<span class="mf">1.</span> <span class="n">We</span> <span class="n">train</span> <span class="n">one</span> <span class="n">first</span>
+<span class="mf">2.</span> <span class="n">cancatenate</span> <span class="n">training</span> <span class="n">data</span> <span class="k">with</span> <span class="n">denoised</span> <span class="n">data</span> <span class="k">from</span> <span class="n">the</span> <span class="n">first</span> <span class="n">UNet</span>
+<span class="mf">3.</span> <span class="n">Feed</span> <span class="mi">2</span> <span class="n">channels</span> <span class="n">to</span> <span class="n">a</span> <span class="n">second</span> <span class="n">UNet</span> <span class="n">Model</span>
+<span class="mf">4.</span> <span class="n">Use</span> <span class="n">both</span> <span class="n">unets</span> <span class="n">to</span> <span class="n">reconstruct</span> <span class="n">the</span> <span class="n">test</span> <span class="n">data</span>
+<span class="n">Results</span><span class="p">:</span>
+    <span class="n">After</span> <span class="n">first</span> <span class="n">UNet</span> <span class="n">Avg</span> <span class="n">PSNR</span> <span class="mf">37.69669481448519</span>
+    <span class="n">After</span> <span class="n">second</span> <span class="n">UNet</span> <span class="n">AVG</span> <span class="n">PSNR</span> <span class="mf">37.73871974685735</span>
+<span class="n">The</span> <span class="n">results</span> <span class="n">were</span> <span class="ow">not</span> <span class="n">very</span> <span class="n">promising</span><span class="o">.</span> <span class="n">Planning</span> <span class="n">to</span> <span class="n">improve</span> <span class="n">on</span> <span class="n">it</span><span class="o">.</span>
+
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">drive</span>
+<span class="n">drive</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s">'/content/drive'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">keras</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="n">mpimg</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPooling2D</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">UpSampling2D</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">BatchNormalization</span><span class="p">,</span> <span class="n">Activation</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Subtract</span>
+<span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">from</span> <span class="nn">keras.layers.convolutional</span> <span class="kn">import</span> <span class="n">Conv2DTranspose</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">concatenate</span>
+<span class="kn">from</span> <span class="nn">keras</span> <span class="kn">import</span> <span class="n">optimizers</span>
+<span class="kn">from</span> <span class="nn">keras.optimizers</span> <span class="kn">import</span> <span class="n">Adam</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Using TensorFlow backend.
+</code></pre></div></div>
+
+<p style="color: red;">
+The default version of TensorFlow in Colab will soon switch to TensorFlow 2.x.<br />
+We recommend you <a href="https://www.tensorflow.org/guide/migrate" target="_blank">upgrade</a> now
+or ensure your notebook will continue to use TensorFlow 1.x via the <code>%tensorflow_version 1.x</code> magic:
+<a href="https://colab.research.google.com/notebooks/tensorflow_version.ipynb" target="_blank">more info</a>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># %tensorflow_version 1.x
+# import tensorflow as tf
+</span><span class="k">print</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.15.0
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/train')))
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/train')))
+# # 3600
+# # 3600
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/test/')))
+# print(len(os.listdir('/content/drive/My Drive/Colab Notebooks/CT_data/ndct/test/')))
+# # # 354
+# # # 354
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ndct</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/CT_data/ndct/train/*'</span><span class="p">))</span>
+<span class="n">ldct</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/train/*'</span><span class="p">))</span>
+
+<span class="n">ndct_test</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/CT_data/ndct/test/*'</span><span class="p">))</span>
+<span class="n">ldct_test</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/CT_data/sparseview_60/test/*'</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ndct</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ldct</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ndct_test</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ldct_test</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3600
+3600
+354
+354
+</code></pre></div></div>
+
+<p>The formulas below will be used to calculate the quality of the reconstruction. Higher PSNR generally indicates high quality of reconstruction.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">cal_psnr</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">im2</span><span class="p">):</span>
+    <span class="c1"># assert pixel value range is 0-255 and type is uint8
+</span>    <span class="n">mse</span> <span class="o">=</span> <span class="p">((</span><span class="n">im1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="n">im2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="nb">float</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">maxval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">im1</span><span class="p">)</span>
+    <span class="n">psnr</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">maxval</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">mse</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">psnr</span>
+
+<span class="k">def</span> <span class="nf">tf_psnr</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">im2</span><span class="p">):</span>
+    <span class="c1"># assert pixel value range is 0-1
+</span>    <span class="c1">#mse = tf.losses.mean_squared_error(labels=im2 * 255.0, predictions=im1 * 255.0)
+</span>    <span class="n">mse</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">compat</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">im2</span> <span class="o">*</span> <span class="mf">255.0</span><span class="p">,</span> <span class="n">predictions</span><span class="o">=</span><span class="n">im1</span> <span class="o">*</span> <span class="mf">255.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">255.0</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">mse</span><span class="p">)</span> <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10.0</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>Using less data: #for i in range(0, 600). Have 3600 in all.
+Processing 3600 images takes aprox. 20 minutes to run. But once we create .npy aray we don’t have to rerun this code in the future and we will have .npy form of our data. Colab has 11GB RAM limit.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ndct_imgs_train</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndct</span><span class="p">)):</span>                                                                                                                                      
+<span class="c1">#for i in range(0, 600):
+</span>    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ndct</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s">'rb'</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ndct_imgs_train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"len(ndct_imgs_train)....: "</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ndct_imgs_train</span><span class="p">))</span>
+<span class="c1">#len(ndct_imgs_train)....:  3600                                                                                                                                                         
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>len(ndct_imgs_train)....:  3600
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ndct_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ndct_imgs_train</span><span class="p">)</span>
+<span class="n">ndct_train</span> <span class="o">=</span> <span class="n">ndct_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3600</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/ndct_train_3600'</span><span class="p">,</span> <span class="n">ndct_train</span><span class="p">)</span> <span class="c1"># save the file as "ndct_train_3600.npy"
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<p>Using different range to use less data to train #for i in range(0, 600). In all have 3600 images. It takes aprox. 20 minutes to process all 3600. But once we create .npy aray we don’t have to rerun this code in the future and we will have .npy form of our data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ldct_imgs_train</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ldct</span><span class="p">)):</span>
+<span class="c1">#for i in range(0, 600):
+</span>    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ldct</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s">'rb'</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ldct_imgs_train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"len(ldct_imgs_train)....: "</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ldct_imgs_train</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>len(ldct_imgs_train)....:  3600
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ldct_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ldct_imgs_train</span><span class="p">)</span>
+<span class="n">ldct_train</span> <span class="o">=</span> <span class="n">ldct_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3600</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_train_3600'</span><span class="p">,</span> <span class="n">ldct_train</span><span class="p">)</span> <span class="c1"># save the file as "sparseview_60_train_3600.npy"
+</span>
+</code></pre></div></div>
+
+<p>only using 100 images to test</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ndct_imgs_test</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndct_test</span><span class="p">)):</span>
+<span class="c1"># for i in range(0, 100):
+</span>    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ndct_test</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s">'rb'</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ndct_imgs_test</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"len(ndct_imgs_test)....: "</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ndct_imgs_test</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>len(ndct_imgs_test)....:  354
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ndct_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ndct_imgs_test</span><span class="p">)</span>
+<span class="n">ndct_test</span> <span class="o">=</span> <span class="n">ndct_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">354</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/ndct_test_354'</span><span class="p">,</span> <span class="n">ndct_test</span><span class="p">)</span> <span class="c1"># save the file as "ndct_test.npy"
+</span></code></pre></div></div>
+
+<p>only using 100 images to test</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># load the image
+</span><span class="n">ldct_imgs_test</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ldct_test</span><span class="p">)):</span>
+<span class="c1"># for i in range(0, 100):
+</span>    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ldct_test</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="s">'rb'</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ldct_imgs_test</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"len(ldct_imgs_test)....: "</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ldct_imgs_test</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>len(ldct_imgs_test)....:  354
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ldct_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ldct_imgs_test</span><span class="p">)</span>
+<span class="n">ldct_test</span> <span class="o">=</span> <span class="n">ldct_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">354</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_354'</span><span class="p">,</span> <span class="n">ldct_test</span><span class="p">)</span> <span class="c1"># save the file as "sparseview_60_test.npy"
+</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ldct_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_train_3600.npy'</span><span class="p">)</span> <span class="c1"># loads saved array into variable sparseview_60_train.
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ndct_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/ndct_train_3600.npy'</span><span class="p">)</span> <span class="c1"># loads saved array into variable ndct_train.
+</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ldct_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_354.npy'</span><span class="p">)</span> <span class="c1"># loads saved array into variable sparseview_60_test.
+</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ndct_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/ndct_test_354.npy'</span><span class="p">)</span> <span class="c1"># loads saved array into variable ndct_test.
+</span>
+</code></pre></div></div>
+
+<p>Must reshape images to train</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ldct_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ldct_imgs_train</span><span class="p">)</span>
+<span class="n">ndct_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ndct_imgs_train</span><span class="p">)</span>
+
+<span class="n">ldct_train</span> <span class="o">=</span> <span class="n">ldct_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ndct_train</span> <span class="o">=</span> <span class="n">ndct_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ldct_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ldct_imgs_test</span><span class="p">)</span>
+<span class="n">ndct_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ndct_imgs_test</span><span class="p">)</span>
+
+<span class="c1"># ldct_test = ldct_test.reshape(len(ldct_imgs_test),512,512,1)
+# ndct_test = ndct_test.reshape(len(ldct_imgs_test),512,512,1)
+</span>
+<span class="n">ldct_test</span> <span class="o">=</span> <span class="n">ldct_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ndct_test</span> <span class="o">=</span> <span class="n">ndct_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">ldct_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ndct_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ldct_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ndct_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(600, 512, 512, 1)
+(600, 512, 512, 1)
+(100, 512, 512, 1)
+(100, 512, 512, 1)
+</code></pre></div></div>
+
+<h5 id="first-unet-to-train">First UNet to train.</h5>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+
+<span class="n">c2</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+
+<span class="n">c3</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+<span class="n">c3</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c3</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c3</span><span class="p">)</span>
+
+<span class="n">c4</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p3</span><span class="p">)</span>
+<span class="n">c4</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c4</span><span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c4</span><span class="p">)</span>
+
+<span class="n">c5</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p4</span><span class="p">)</span>
+<span class="n">c5</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c5</span><span class="p">)</span>
+
+<span class="n">u6</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c5</span><span class="p">)</span>
+<span class="n">u6</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u6</span><span class="p">,</span> <span class="n">c4</span><span class="p">])</span>
+<span class="n">c6</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u6</span><span class="p">)</span>
+<span class="n">c6</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c6</span><span class="p">)</span>
+
+<span class="n">u7</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c6</span><span class="p">)</span>
+<span class="n">u7</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u7</span><span class="p">,</span> <span class="n">c3</span><span class="p">])</span>
+<span class="n">c7</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u7</span><span class="p">)</span>
+<span class="n">c7</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c7</span><span class="p">)</span>
+
+<span class="n">u8</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c7</span><span class="p">)</span>
+<span class="n">u8</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u8</span><span class="p">,</span> <span class="n">c2</span><span class="p">])</span>
+<span class="n">c8</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u8</span><span class="p">)</span>
+<span class="n">c8</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c8</span><span class="p">)</span>
+
+<span class="n">u9</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c8</span><span class="p">)</span>
+<span class="n">u9</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u9</span><span class="p">,</span> <span class="n">c1</span><span class="p">])</span>
+<span class="n">c9</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u9</span><span class="p">)</span>
+<span class="n">c9</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c9</span><span class="p">)</span>
+<span class="n">output_img</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c9</span><span class="p">)</span>
+<span class="n">denoised_image</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Subtract</span><span class="p">()([</span><span class="n">inputs</span><span class="p">,</span> <span class="n">output_img</span><span class="p">])</span>
+<span class="n">unet_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">denoised_image</span><span class="p">])</span>
+<span class="n">unet_model</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span> <span class="s">'adam'</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">'mse'</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">tf_psnr</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">unet_model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">es</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s">'val_loss'</span><span class="p">,</span>
+                              <span class="n">min_delta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                              <span class="n">patience</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                              <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">'auto'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">history</span><span class="o">=</span><span class="n">unet_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ldct_train</span><span class="p">,</span> <span class="n">ndct_train</span><span class="p">,</span> <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callbacks</span> <span class="o">=</span><span class="p">[</span><span class="n">es</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1033: The name tf.assign_add is deprecated. Please use tf.compat.v1.assign_add instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1020: The name tf.assign is deprecated. Please use tf.compat.v1.assign instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:3005: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+Train on 3240 samples, validate on 360 samples
+Epoch 1/100
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:190: The name tf.get_default_session is deprecated. Please use tf.compat.v1.get_default_session instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:197: The name tf.ConfigProto is deprecated. Please use tf.compat.v1.ConfigProto instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:207: The name tf.global_variables is deprecated. Please use tf.compat.v1.global_variables instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:216: The name tf.is_variable_initialized is deprecated. Please use tf.compat.v1.is_variable_initialized instead.
+
+WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:223: The name tf.variables_initializer is deprecated. Please use tf.compat.v1.variables_initializer instead.
+
+3240/3240 [==============================] - 52s 16ms/step - loss: 7.7048e-04 - tf_psnr: 31.4804 - val_loss: 4.3303e-04 - val_tf_psnr: 33.7088
+Epoch 2/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 3.8901e-04 - tf_psnr: 34.1393 - val_loss: 3.2031e-04 - val_tf_psnr: 35.0171
+Epoch 3/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 2.9320e-04 - tf_psnr: 35.3457 - val_loss: 2.6575e-04 - val_tf_psnr: 35.8361
+Epoch 4/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 2.5344e-04 - tf_psnr: 35.9755 - val_loss: 2.4150e-04 - val_tf_psnr: 36.2497
+Epoch 5/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 2.3022e-04 - tf_psnr: 36.3911 - val_loss: 2.4950e-04 - val_tf_psnr: 36.0952
+Epoch 6/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 2.1732e-04 - tf_psnr: 36.6462 - val_loss: 2.3003e-04 - val_tf_psnr: 36.4655
+Epoch 7/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 2.0371e-04 - tf_psnr: 36.9202 - val_loss: 2.1188e-04 - val_tf_psnr: 36.8266
+Epoch 8/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.9627e-04 - tf_psnr: 37.0844 - val_loss: 2.2196e-04 - val_tf_psnr: 36.6161
+Epoch 9/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.8830e-04 - tf_psnr: 37.2653 - val_loss: 1.9891e-04 - val_tf_psnr: 37.1046
+Epoch 10/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.8285e-04 - tf_psnr: 37.3927 - val_loss: 1.9869e-04 - val_tf_psnr: 37.0905
+Epoch 11/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.7636e-04 - tf_psnr: 37.5490 - val_loss: 1.9422e-04 - val_tf_psnr: 37.2080
+Epoch 12/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.7227e-04 - tf_psnr: 37.6516 - val_loss: 1.9111e-04 - val_tf_psnr: 37.2722
+Epoch 13/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.6771e-04 - tf_psnr: 37.7666 - val_loss: 1.9058e-04 - val_tf_psnr: 37.2804
+Epoch 14/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.6444e-04 - tf_psnr: 37.8551 - val_loss: 1.8667e-04 - val_tf_psnr: 37.3671
+Epoch 15/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.6101e-04 - tf_psnr: 37.9435 - val_loss: 1.9904e-04 - val_tf_psnr: 37.0841
+Epoch 16/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.5835e-04 - tf_psnr: 38.0169 - val_loss: 1.8485e-04 - val_tf_psnr: 37.4164
+Epoch 17/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.5419e-04 - tf_psnr: 38.1306 - val_loss: 1.9395e-04 - val_tf_psnr: 37.1968
+Epoch 18/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.5361e-04 - tf_psnr: 38.1504 - val_loss: 1.8514e-04 - val_tf_psnr: 37.4039
+Epoch 19/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.5153e-04 - tf_psnr: 38.2060 - val_loss: 2.0618e-04 - val_tf_psnr: 36.9248
+Epoch 20/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.4852e-04 - tf_psnr: 38.2960 - val_loss: 1.8025e-04 - val_tf_psnr: 37.5303
+Epoch 21/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.4686e-04 - tf_psnr: 38.3444 - val_loss: 1.8222e-04 - val_tf_psnr: 37.4741
+Epoch 22/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.4585e-04 - tf_psnr: 38.3717 - val_loss: 1.8267e-04 - val_tf_psnr: 37.4705
+Epoch 23/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.4234e-04 - tf_psnr: 38.4769 - val_loss: 1.7893e-04 - val_tf_psnr: 37.5570
+Epoch 24/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.4295e-04 - tf_psnr: 38.4612 - val_loss: 1.7711e-04 - val_tf_psnr: 37.6044
+Epoch 25/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.3992e-04 - tf_psnr: 38.5515 - val_loss: 1.7688e-04 - val_tf_psnr: 37.6050
+Epoch 26/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.3895e-04 - tf_psnr: 38.5830 - val_loss: 1.7389e-04 - val_tf_psnr: 37.6879
+Epoch 27/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.3675e-04 - tf_psnr: 38.6529 - val_loss: 1.7448e-04 - val_tf_psnr: 37.6757
+Epoch 28/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.3715e-04 - tf_psnr: 38.6393 - val_loss: 1.9051e-04 - val_tf_psnr: 37.2893
+Epoch 29/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.3478e-04 - tf_psnr: 38.7145 - val_loss: 1.7553e-04 - val_tf_psnr: 37.6471
+Epoch 30/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.3399e-04 - tf_psnr: 38.7393 - val_loss: 1.7569e-04 - val_tf_psnr: 37.6487
+Epoch 31/100
+3240/3240 [==============================] - 34s 11ms/step - loss: 1.3400e-04 - tf_psnr: 38.7413 - val_loss: 1.7482e-04 - val_tf_psnr: 37.6701
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">unet_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ldct_test</span><span class="p">)</span>
+<span class="n">psnr</span> <span class="o">=</span> <span class="n">cal_psnr</span><span class="p">(</span><span class="n">ndct_test</span><span class="p">,</span> <span class="n">reconstructed</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"psnr ....."</span><span class="p">,</span><span class="n">psnr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psnr ..... 37.69669481448519
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">unet_model</span><span class="o">.</span><span class="n">save_weights</span><span class="p">(</span><span class="s">"/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_1.h5"</span><span class="p">)</span>
+<span class="c1"># unet_model.load_weights("unet_model_1.h5")
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">unet_model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="s">"/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_1.h5"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">unet_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ldct_test</span><span class="p">)</span>
+<span class="n">psnr</span> <span class="o">=</span> <span class="n">cal_psnr</span><span class="p">(</span><span class="n">ndct_test</span><span class="p">,</span> <span class="n">reconstructed</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"psnr ....."</span><span class="p">,</span><span class="n">psnr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psnr ..... 37.69669481448519
+</code></pre></div></div>
+
+<h5 id="plotting-psnr-values-to-see-the-trend">Plotting PSNR values to see the trend.</h5>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="n">acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'tf_psnr'</span><span class="p">]</span>
+<span class="n">val_acc</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'val_tf_psnr'</span><span class="p">]</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'loss'</span><span class="p">]</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'val_loss'</span><span class="p">]</span>
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acc</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="s">'r'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">'Training accuracy'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_acc</span><span class="p">,</span> <span class="s">'b'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">'Validation accuracy'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">'Training and validation accuracy'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/2020-03-17-new_idea/output_43_0.png" alt="png" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Figure size 432x288 with 0 Axes&gt;
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">reconstructed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_0.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_0.png'</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">reconstructed</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_99.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_99.png'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="n">ldct_test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_0.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_0.png'</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">ldct_test</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_99.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_99.png'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Plot training &amp; validation accuracy values
+</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'tf_psnr'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'val_tf_psnr'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">'Model accuracy'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">'Accuracy'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">'Epoch'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s">'Train'</span><span class="p">,</span> <span class="s">'Test'</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s">'upper left'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Plot training &amp; validation loss values
+</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'loss'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'val_loss'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">'Model loss'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">'Loss'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">'Epoch'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s">'Train'</span><span class="p">,</span> <span class="s">'Test'</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s">'upper left'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/2020-03-17-new_idea/output_48_0.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/output_48_1.png" alt="png" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_0.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_0.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/2020-03-17-new_idea/output_49_0.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/output_49_1.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/sparseview_60_test_ddnet_0.png" alt="sparseview_60_test_ddnet_0" /></p>
+
+<p><img src="/2020-03-17-new_idea/reconstructed_ddnet_0.png" alt="reconstructed_ddnet_0" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_ddnet_99.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_ddnet_99.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="output_50_0.png" alt="png" /></p>
+
+<p><img src="output_50_1.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/sparseview_60_test_ddnet_99.png" alt="sparseview_60_test_ddnet_99" /></p>
+
+<p><img src="/2020-03-17-new_idea/reconstructed_ddnet_99.png" alt="reconstructed_ddnet_99" /></p>
+
+<p><strong>Second part of the model</strong>
+must concatenate original data with reconstructed data</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># unet_model.save_weights("unet_model_1.h5")
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># unet_model.load_weights("model.h5")
+</span></code></pre></div></div>
+
+<h5 id="need-matrix-3600-images-that-were-cleaned-using-first-unet">Need matrix 3600 images that were cleaned using first UNet</h5>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">recon_train_set</span> <span class="o">=</span> <span class="n">unet_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ldct_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/recon_train_set'</span><span class="p">,</span> <span class="n">recon_train_set</span><span class="p">)</span> <span class="c1"># save the file as "recon_train_set.npy"
+</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">recon_train_set</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/recon_train_set.npy'</span><span class="p">)</span> <span class="c1"># loads saved array into recon_train_set.
+</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">two_channel_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">recon_train_set</span><span class="p">,</span> <span class="n">ldct_train</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/two_channel_matrix'</span><span class="p">,</span> <span class="n">two_channel_matrix</span><span class="p">)</span> <span class="c1"># save the file as "recon_train_set.npy"
+</span>
+<span class="c1"># two_channel_matrix = np.load('/content/drive/My Drive/Colab Notebooks/new_idea/two_channel_matrix.npy') # loads saved array into recon_train_set.
+</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">sliced</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+ <span class="k">return</span> <span class="n">x</span><span class="p">[:,:,:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+</code></pre></div></div>
+
+<h5 id="second-unet-has-2-channels">Second UNET has 2 channels</h5>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#train model with 2 chanels
+</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+
+<span class="n">c2</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+
+<span class="n">c3</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+<span class="n">c3</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c3</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c3</span><span class="p">)</span>
+
+<span class="n">c4</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p3</span><span class="p">)</span>
+<span class="n">c4</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c4</span><span class="p">)</span>
+<span class="n">p4</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">(</span><span class="n">c4</span><span class="p">)</span>
+
+<span class="n">c5</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">p4</span><span class="p">)</span>
+<span class="n">c5</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c5</span><span class="p">)</span>
+
+<span class="n">u6</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c5</span><span class="p">)</span>
+<span class="n">u6</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u6</span><span class="p">,</span> <span class="n">c4</span><span class="p">])</span>
+<span class="n">c6</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u6</span><span class="p">)</span>
+<span class="n">c6</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c6</span><span class="p">)</span>
+
+<span class="n">u7</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c6</span><span class="p">)</span>
+<span class="n">u7</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u7</span><span class="p">,</span> <span class="n">c3</span><span class="p">])</span>
+<span class="n">c7</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u7</span><span class="p">)</span>
+<span class="n">c7</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c7</span><span class="p">)</span>
+
+<span class="n">u8</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c7</span><span class="p">)</span>
+<span class="n">u8</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u8</span><span class="p">,</span> <span class="n">c2</span><span class="p">])</span>
+<span class="n">c8</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u8</span><span class="p">)</span>
+<span class="n">c8</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c8</span><span class="p">)</span>
+
+<span class="n">u9</span> <span class="o">=</span> <span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c8</span><span class="p">)</span>
+<span class="n">u9</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">([</span><span class="n">u9</span><span class="p">,</span> <span class="n">c1</span><span class="p">])</span>
+<span class="n">c9</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">u9</span><span class="p">)</span>
+<span class="n">c9</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c9</span><span class="p">)</span>
+<span class="n">output_img</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span> <span class="p">(</span><span class="n">c9</span><span class="p">)</span> <span class="c1">#2 channels
+</span>
+<span class="k">print</span><span class="p">(</span><span class="n">output_img</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">sliced</span><span class="p">(</span><span class="n">x</span><span class="p">))(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">output_img</span><span class="p">)</span>
+
+<span class="n">noise</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Subtract</span><span class="p">()([</span><span class="n">s</span><span class="p">,</span> <span class="n">output_img</span><span class="p">])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span>
+<span class="n">unet_model2</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">noise</span><span class="p">])</span>
+<span class="n">unet_model2</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span> <span class="s">'adam'</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">'mse'</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">tf_psnr</span><span class="p">])</span>
+
+
+
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">Tensor("conv2d_57/BiasAdd:0", shape=(?, ?, ?, 1), dtype=float32)
+Tensor("input_3:0", shape=(?, ?, ?, 2), dtype=float32)
+</span><span class="gd">-----------------
+-----------------
+</span><span class="p">Tensor("lambda_1/strided_slice:0", shape=(?, ?, ?, 1), dtype=float32)
+Tensor("conv2d_57/BiasAdd:0", shape=(?, ?, ?, 1), dtype=float32)
+Tensor("subtract_3/sub:0", shape=(?, ?, ?, 1), dtype=float32)
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">unet_model2</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Ask why the same number of parameters as the first one?</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">history</span><span class="o">=</span><span class="n">unet_model2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">two_channel_matrix</span><span class="p">,</span> <span class="n">ndct_train</span><span class="p">,</span> <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">callbacks</span> <span class="o">=</span><span class="p">[</span><span class="n">es</span><span class="p">])</span>
+
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Train on 3240 samples, validate on 360 samples
+Epoch 1/100
+3240/3240 [==============================] - 40s 12ms/step - loss: 5.5299e-04 - tf_psnr: 34.0690 - val_loss: 2.2301e-04 - val_tf_psnr: 36.6335
+Epoch 2/100
+3240/3240 [==============================] - 38s 12ms/step - loss: 1.7058e-04 - tf_psnr: 37.7025 - val_loss: 2.0112e-04 - val_tf_psnr: 37.0598
+Epoch 3/100
+3240/3240 [==============================] - 38s 12ms/step - loss: 1.5103e-04 - tf_psnr: 38.2230 - val_loss: 1.8514e-04 - val_tf_psnr: 37.4245
+Epoch 4/100
+3240/3240 [==============================] - 38s 12ms/step - loss: 1.4493e-04 - tf_psnr: 38.4023 - val_loss: 1.8211e-04 - val_tf_psnr: 37.4944
+Epoch 5/100
+3240/3240 [==============================] - 38s 12ms/step - loss: 1.4072e-04 - tf_psnr: 38.5357 - val_loss: 3.3022e-04 - val_tf_psnr: 34.8510
+Epoch 6/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.4096e-04 - tf_psnr: 38.5464 - val_loss: 1.7854e-04 - val_tf_psnr: 37.5808
+Epoch 7/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3592e-04 - tf_psnr: 38.6781 - val_loss: 1.7788e-04 - val_tf_psnr: 37.5967
+Epoch 8/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3595e-04 - tf_psnr: 38.6868 - val_loss: 1.7684e-04 - val_tf_psnr: 37.6224
+Epoch 9/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3401e-04 - tf_psnr: 38.7389 - val_loss: 1.7585e-04 - val_tf_psnr: 37.6471
+Epoch 10/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3377e-04 - tf_psnr: 38.7499 - val_loss: 1.7561e-04 - val_tf_psnr: 37.6527
+Epoch 11/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3284e-04 - tf_psnr: 38.7768 - val_loss: 1.7597e-04 - val_tf_psnr: 37.6428
+Epoch 12/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3300e-04 - tf_psnr: 38.7710 - val_loss: 1.7468e-04 - val_tf_psnr: 37.6759
+Epoch 13/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3192e-04 - tf_psnr: 38.8089 - val_loss: 1.7625e-04 - val_tf_psnr: 37.6353
+Epoch 14/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3234e-04 - tf_psnr: 38.7964 - val_loss: 1.7818e-04 - val_tf_psnr: 37.5857
+Epoch 15/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3064e-04 - tf_psnr: 38.8524 - val_loss: 1.8839e-04 - val_tf_psnr: 37.3357
+Epoch 16/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3160e-04 - tf_psnr: 38.8195 - val_loss: 1.7357e-04 - val_tf_psnr: 37.7039
+Epoch 17/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3020e-04 - tf_psnr: 38.8632 - val_loss: 1.7328e-04 - val_tf_psnr: 37.7112
+Epoch 18/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3085e-04 - tf_psnr: 38.8420 - val_loss: 1.7355e-04 - val_tf_psnr: 37.7039
+Epoch 19/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.2982e-04 - tf_psnr: 38.8767 - val_loss: 1.7266e-04 - val_tf_psnr: 37.7271
+Epoch 20/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.3055e-04 - tf_psnr: 38.8558 - val_loss: 1.7392e-04 - val_tf_psnr: 37.6948
+Epoch 21/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.2954e-04 - tf_psnr: 38.8852 - val_loss: 1.7343e-04 - val_tf_psnr: 37.7072
+Epoch 22/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.2988e-04 - tf_psnr: 38.8775 - val_loss: 1.7325e-04 - val_tf_psnr: 37.7117
+Epoch 23/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.2950e-04 - tf_psnr: 38.8883 - val_loss: 1.7271e-04 - val_tf_psnr: 37.7250
+Epoch 24/100
+3240/3240 [==============================] - 37s 12ms/step - loss: 1.2925e-04 - tf_psnr: 38.8947 - val_loss: 1.7307e-04 - val_tf_psnr: 37.7156
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">unet_model2</span><span class="o">.</span><span class="n">save_weights</span><span class="p">(</span><span class="s">"/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_2.h5"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">unet_model2</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="s">"/content/drive/My Drive/Colab Notebooks/new_idea/unet_model_2.h5"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>To predict we should use both models</p>
+<ol>
+  <li>predict with first model</li>
+  <li>predict with second model</li>
+</ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">unet_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ldct_test</span><span class="p">)</span>
+<span class="n">psnr</span> <span class="o">=</span> <span class="n">cal_psnr</span><span class="p">(</span><span class="n">ndct_test</span><span class="p">,</span> <span class="n">reconstructed</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"psnr 40 epochs....."</span><span class="p">,</span><span class="n">psnr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psnr 40 epochs..... 37.69669481448519
+</code></pre></div></div>
+
+<p>concatenate the denoised images from the first model and our original data</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">two_channel_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">reconstructed</span><span class="p">,</span> <span class="n">ldct_test</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_results</span> <span class="o">=</span> <span class="n">unet_model2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">two_channel_results</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="n">psnr</span> <span class="o">=</span> <span class="n">cal_psnr</span><span class="p">(</span><span class="n">ndct_test</span><span class="p">,</span> <span class="n">final_results</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"psnr ....."</span><span class="p">,</span><span class="n">psnr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psnr ..... 37.73871974685735
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Plot training &amp; validation accuracy values
+</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'tf_psnr'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'val_tf_psnr'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">'Model accuracy'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">'Accuracy'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">'Epoch'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s">'Train'</span><span class="p">,</span> <span class="s">'Test'</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s">'upper left'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Plot training &amp; validation loss values
+</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'loss'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s">'val_loss'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">'Model loss'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">'Loss'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">'Epoch'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s">'Train'</span><span class="p">,</span> <span class="s">'Test'</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s">'upper left'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/2020-03-17-new_idea/output_75_0.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/output_75_1.png" alt="png" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">reconstructed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_0.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_0_sec_model.png'</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">reconstructed</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_99.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_99_sec_model.png'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="n">ldct_test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_0.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_0_sec_mod.png'</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">ldct_test</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+<span class="n">scalef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="n">a</span><span class="o">/</span><span class="n">scalef</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+<span class="c1">#result = Image.fromarray((a * 255).astype(np.uint8))                                                                                                
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="c1"># result.save('unet_15_600_99.png')
+</span><span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_99_sec_mod.png'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_0_sec_mod.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_0_sec_model.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/2020-03-17-new_idea/output_78_0.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/output_78_1.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/sparseview_60_test_0_sec_mod.png" alt="sparseview_60_test_0_sec_mod" /></p>
+
+<p><img src="/2020-03-17-new_idea/reconstructed_0_sec_model.png" alt="reconstructed_0_sec_model" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/sparseview_60_test_99_sec_mod.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">img</span><span class="o">=</span><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s">'/content/drive/My Drive/Colab Notebooks/new_idea/reconstructed_99_sec_model.png'</span><span class="p">)</span>
+<span class="n">imgplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/2020-03-17-new_idea/output_79_0.png" alt="png" /></p>
+
+<p><img src="/2020-03-17-new_idea/output_79_1.png" alt="png" /></p>
+
+<p>Final cleaned images</p>
+
+<p><img src="/2020-03-17-new_idea/sparseview_60_test_99_sec_mod.png" alt="sparseview_60_test_99_sec_mod" /></p>
+
+<p><img src="/2020-03-17-new_idea/reconstructed_99_sec_model.png" alt="reconstructed_99_sec_model" /></p>
+
+  </div><a class="u-url" href="/update/2020/02/23/new_idea.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">girls can code</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">girls can code</li><li><a class="u-email" href="mailto:npovey2atgmail">npovey2atgmail</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
