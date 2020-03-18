@@ -12,18 +12,13 @@ categories: update
 ##### Didn't produce promising results
 The idea was that we use 2 UNet models.
 1. We train first UNet
-
 2. Cancatenate training data with denoised data from the first UNet
-
 3. Feed 2 channels to a second UNet Model
-
 4. Use both unets to reconstruct the test data
 
 Results:
-
-After first UNet Avg PSNR 37.69669481448519
-
-After second UNet AVG PSNR 37.73871974685735
+After first UNet:    Avg PSNR 37.69669481448519
+After second UNet:   AVG PSNR 37.73871974685735
 
 The results were not very promising. Planning to improve on it.
 
