@@ -11,14 +11,22 @@ categories: update
 
 ##### Didn't produce promising results
 The idea was that we use 2 UNet models.
-1. We train one first
-2. cancatenate training data with denoised data from the first UNet
+1. We train first UNet
+
+2. Cancatenate training data with denoised data from the first UNet
+
 3. Feed 2 channels to a second UNet Model
+
 4. Use both unets to reconstruct the test data
+
 Results:
+
 After first UNet Avg PSNR 37.69669481448519
+
 After second UNet AVG PSNR 37.73871974685735
+
 The results were not very promising. Planning to improve on it.
+
 
 
 
@@ -353,23 +361,23 @@ history=unet_model.fit(ldct_train, ndct_train, validation_split=0.1, batch_size=
 ```
 
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1033: The name tf.assign_add is deprecated. Please use tf.compat.v1.assign_add instead.
-    
+
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:1020: The name tf.assign is deprecated. Please use tf.compat.v1.assign instead.
-    
+
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:3005: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
-    
+
     Train on 3240 samples, validate on 360 samples
     Epoch 1/100
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:190: The name tf.get_default_session is deprecated. Please use tf.compat.v1.get_default_session instead.
-    
+
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:197: The name tf.ConfigProto is deprecated. Please use tf.compat.v1.ConfigProto instead.
-    
+
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:207: The name tf.global_variables is deprecated. Please use tf.compat.v1.global_variables instead.
-    
+
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:216: The name tf.is_variable_initialized is deprecated. Please use tf.compat.v1.is_variable_initialized instead.
-    
+
     WARNING:tensorflow:From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:223: The name tf.variables_initializer is deprecated. Please use tf.compat.v1.variables_initializer instead.
-    
+
     3240/3240 [==============================] - 52s 16ms/step - loss: 7.7048e-04 - tf_psnr: 31.4804 - val_loss: 4.3303e-04 - val_tf_psnr: 33.7088
     Epoch 2/100
     3240/3240 [==============================] - 34s 11ms/step - loss: 3.8901e-04 - tf_psnr: 34.1393 - val_loss: 3.2031e-04 - val_tf_psnr: 35.0171
