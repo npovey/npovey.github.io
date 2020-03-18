@@ -9,7 +9,7 @@ categories: update
 
 **A Sparse-View CT Reconstruction Method Based on 2 UNET models**
 
-##### Didn't produce promising results
+Didn't produce promising results
 The idea was that we use 2 UNet models.
 1. We train first UNet
 2. Cancatenate training data with denoised data from the first UNet
@@ -18,6 +18,7 @@ The idea was that we use 2 UNet models.
 
 Results:
 After first UNet:    Avg PSNR 37.69669481448519
+
 After second UNet:   AVG PSNR 37.73871974685735
 
 The results were not very promising. Planning to improve on it.
