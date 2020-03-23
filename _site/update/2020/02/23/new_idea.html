@@ -47,19 +47,19 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p><strong>A Sparse-View CT Reconstruction Method Based on 2 UNET models</strong></p>
 
-<h5 id="didnt-produce-promising-results">Didn’t produce promising results</h5>
+<p>Didn’t produce promising results
+The idea was that we use 2 UNet models.</p>
+<ol>
+  <li>We train first UNet</li>
+  <li>Cancatenate training data with denoised data from the first UNet</li>
+  <li>Feed 2 channels to a second UNet Model</li>
+  <li>Use both unets to reconstruct the test data</li>
+</ol>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">The</span> <span class="n">idea</span> <span class="n">was</span> <span class="n">that</span> <span class="n">we</span> <span class="n">use</span> <span class="mi">2</span> <span class="n">UNet</span> <span class="n">models</span><span class="o">.</span>
-<span class="mf">1.</span> <span class="n">We</span> <span class="n">train</span> <span class="n">one</span> <span class="n">first</span>
-<span class="mf">2.</span> <span class="n">cancatenate</span> <span class="n">training</span> <span class="n">data</span> <span class="k">with</span> <span class="n">denoised</span> <span class="n">data</span> <span class="k">from</span> <span class="n">the</span> <span class="n">first</span> <span class="n">UNet</span>
-<span class="mf">3.</span> <span class="n">Feed</span> <span class="mi">2</span> <span class="n">channels</span> <span class="n">to</span> <span class="n">a</span> <span class="n">second</span> <span class="n">UNet</span> <span class="n">Model</span>
-<span class="mf">4.</span> <span class="n">Use</span> <span class="n">both</span> <span class="n">unets</span> <span class="n">to</span> <span class="n">reconstruct</span> <span class="n">the</span> <span class="n">test</span> <span class="n">data</span>
-<span class="n">Results</span><span class="p">:</span>
-    <span class="n">After</span> <span class="n">first</span> <span class="n">UNet</span> <span class="n">Avg</span> <span class="n">PSNR</span> <span class="mf">37.69669481448519</span>
-    <span class="n">After</span> <span class="n">second</span> <span class="n">UNet</span> <span class="n">AVG</span> <span class="n">PSNR</span> <span class="mf">37.73871974685735</span>
-<span class="n">The</span> <span class="n">results</span> <span class="n">were</span> <span class="ow">not</span> <span class="n">very</span> <span class="n">promising</span><span class="o">.</span> <span class="n">Planning</span> <span class="n">to</span> <span class="n">improve</span> <span class="n">on</span> <span class="n">it</span><span class="o">.</span>
+<p>The results were not very promising. Planning to improve on it.</p>
 
-
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>After first UNet:    Avg PSNR 37.69669481448519
+After second UNet:   AVG PSNR 37.73871974685735
 </code></pre></div></div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">drive</span>
