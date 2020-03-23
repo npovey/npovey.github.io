@@ -10,17 +10,17 @@ categories: update
 
 Youtube links
 
-Website explanation tour <https://youtu.be/vOiLUxaxc8k.html>
+Website explanation tour <https://youtu.be/vOiLUxaxc8k>
 
-How to deploy the flask application  <https://youtu.be/67obIkAPmNs.html>
+How to deploy the flask application  <https://youtu.be/67obIkAPmNs>
 
 Ho to upload data from guthub <https://youtu.be/vTPN0FltBKA>
 
 #### 1. Location of the URL for our site
 
-```bash
-http://flask-covid19-env.eba-wgnwr7pr.us-west-2.elasticbeanstalk.com/
-```
+<http://flask-covid19-env.eba-wgnwr7pr.us-west-2.elasticbeanstalk.com/>
+
+
 
 ![Screen Shot 2020-03-13 at 6.12.26 PM](/2020-03-22-aws-flask-app/site.png)
 
@@ -53,13 +53,9 @@ Flask application was deployed to an AWS Elastic Beanstalk environment. S3 bucke
 
 This apllication was developed by using the following tutorial on AWS site.
 
-```html
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-flask.html
-```
+<https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-flask.html>
 
 **Figure 1: Flow chart for the front page.**
-
-
 
 
 
