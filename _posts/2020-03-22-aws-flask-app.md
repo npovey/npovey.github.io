@@ -10,11 +10,11 @@ categories: update
 
 Youtube links
 
-Website explanation tour https://youtu.be/vOiLUxaxc8k
+Website explanation tour https://youtu.be/vOiLUxaxc8k.html
 
-How to deploy the flask application  https://youtu.be/67obIkAPmNs
+How to deploy the flask application  https://youtu.be/67obIkAPmNs.html
 
-Ho to upload data from guthub https://youtu.be/vTPN0FltBKA
+Ho to upload data from guthub https://youtu.be/vTPN0FltBKA.html
 
 #### 1. Location of the URL for our site
 

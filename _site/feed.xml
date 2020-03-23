@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-03-22T17:04:11-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Deploying a flask application to Elastic Beanstalk</title><link href="http://localhost:4000/update/2020/03/22/aws-flask-app.html" rel="alternate" type="text/html" title="Deploying a flask application to Elastic Beanstalk" /><published>2020-03-22T14:34:33-07:00</published><updated>2020-03-22T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/03/22/aws-flask-app</id><content type="html" xml:base="http://localhost:4000/update/2020/03/22/aws-flask-app.html">&lt;h3 id=&quot;covid-2019-news-and-updates&quot;&gt;COVID 2019 News and Updates&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-03-22T17:06:51-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Deploying a flask application to Elastic Beanstalk</title><link href="http://localhost:4000/update/2020/03/22/aws-flask-app.html" rel="alternate" type="text/html" title="Deploying a flask application to Elastic Beanstalk" /><published>2020-03-22T14:34:33-07:00</published><updated>2020-03-22T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/03/22/aws-flask-app</id><content type="html" xml:base="http://localhost:4000/update/2020/03/22/aws-flask-app.html">&lt;h3 id=&quot;covid-2019-news-and-updates&quot;&gt;COVID 2019 News and Updates&lt;/h3&gt;
 
 &lt;p&gt;Youtube links&lt;/p&gt;
 
-&lt;p&gt;Website explanation tour https://youtu.be/vOiLUxaxc8k&lt;/p&gt;
+&lt;p&gt;Website explanation tour https://youtu.be/vOiLUxaxc8k.html&lt;/p&gt;
 
-&lt;p&gt;How to deploy the flask application  https://youtu.be/67obIkAPmNs&lt;/p&gt;
+&lt;p&gt;How to deploy the flask application  https://youtu.be/67obIkAPmNs.html&lt;/p&gt;
 
-&lt;p&gt;Ho to upload data from guthub https://youtu.be/vTPN0FltBKA&lt;/p&gt;
+&lt;p&gt;Ho to upload data from guthub https://youtu.be/vTPN0FltBKA.html&lt;/p&gt;
 
 &lt;h4 id=&quot;1-location-of-the-url-for-our-site&quot;&gt;1. Location of the URL for our site&lt;/h4&gt;
 
