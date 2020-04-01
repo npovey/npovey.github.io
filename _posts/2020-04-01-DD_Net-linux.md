@@ -13,9 +13,9 @@ DD-Net always peformed similar to UNet and DnCNN. The training time was the long
 
 my implementation  <https://github.com/npovey/DD-Net>
 
-paper: https://ieeexplore.ieee.org/document/8331861
+paper: <https://ieeexplore.ieee.org/document/8331861>
 
-original paper github: https://github.com/zzc623/DD_Net
+original paper github: <https://github.com/zzc623/DD_Net>
 
 Authors write "The DD-Net was trained by the Adam algorithm [54].
 The learning rate was initially set at 10−4 and slowly decreased
