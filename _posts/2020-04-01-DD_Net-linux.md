@@ -1,7 +1,6 @@
 ---
-
 layout: post
-title:  "A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution"
+title:  "DD-Net: Combination of DenseNet and Deconvolution (linux)"
 date:   2020-04-01 14:34:33 -0700
 categories: update
 ---
