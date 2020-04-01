@@ -1,17 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-03-22T17:08:42-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Deploying a flask application to Elastic Beanstalk</title><link href="http://localhost:4000/update/2020/03/22/aws-flask-app.html" rel="alternate" type="text/html" title="Deploying a flask application to Elastic Beanstalk" /><published>2020-03-22T14:34:33-07:00</published><updated>2020-03-22T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/03/22/aws-flask-app</id><content type="html" xml:base="http://localhost:4000/update/2020/03/22/aws-flask-app.html">&lt;h3 id=&quot;covid-2019-news-and-updates&quot;&gt;COVID 2019 News and Updates&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-01T02:49:42-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Deploying a flask application to Elastic Beanstalk</title><link href="http://localhost:4000/update/2020/03/22/aws-flask-app.html" rel="alternate" type="text/html" title="Deploying a flask application to Elastic Beanstalk" /><published>2020-03-22T14:34:33-07:00</published><updated>2020-03-22T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/03/22/aws-flask-app</id><content type="html" xml:base="http://localhost:4000/update/2020/03/22/aws-flask-app.html">&lt;h3 id=&quot;covid-2019-news-and-updates&quot;&gt;COVID 2019 News and Updates&lt;/h3&gt;
 
 &lt;p&gt;Youtube links&lt;/p&gt;
 
-&lt;p&gt;Website explanation tour &lt;a href=&quot;https://youtu.be/vOiLUxaxc8k.html&quot;&gt;https://youtu.be/vOiLUxaxc8k.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Website explanation tour &lt;a href=&quot;https://youtu.be/vOiLUxaxc8k&quot;&gt;https://youtu.be/vOiLUxaxc8k&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;How to deploy the flask application  &lt;a href=&quot;https://youtu.be/67obIkAPmNs.html&quot;&gt;https://youtu.be/67obIkAPmNs.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;How to deploy the flask application  &lt;a href=&quot;https://youtu.be/67obIkAPmNs&quot;&gt;https://youtu.be/67obIkAPmNs&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Ho to upload data from guthub &lt;a href=&quot;https://youtu.be/vTPN0FltBKA&quot;&gt;https://youtu.be/vTPN0FltBKA&lt;/a&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;1-location-of-the-url-for-our-site&quot;&gt;1. Location of the URL for our site&lt;/h4&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://flask-covid19-env.eba-wgnwr7pr.us-west-2.elasticbeanstalk.com/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href=&quot;http://flask-covid19-env.eba-wgnwr7pr.us-west-2.elasticbeanstalk.com/&quot;&gt;http://flask-covid19-env.eba-wgnwr7pr.us-west-2.elasticbeanstalk.com/&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/2020-03-22-aws-flask-app/site.png&quot; alt=&quot;Screen Shot 2020-03-13 at 6.12.26 PM&quot; /&gt;&lt;/p&gt;
 
@@ -46,8 +45,7 @@
 
 &lt;p&gt;This apllication was developed by using the following tutorial on AWS site.&lt;/p&gt;
 
-&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-flask.html
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-flask.html&quot;&gt;https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-flask.html&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Figure 1: Flow chart for the front page.&lt;/strong&gt;&lt;/p&gt;
 
