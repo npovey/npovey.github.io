@@ -5,7 +5,7 @@ date:   2020-09-09 14:34:33 -0700
 categories: update
 ---
 
-KALDI speech processing example
+KALDI speech processing interpolation example
 
 ```bash
 
