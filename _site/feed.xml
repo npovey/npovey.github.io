@@ -1,4 +1,570 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-01T02:54:29-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Deploying a flask application to Elastic Beanstalk</title><link href="http://localhost:4000/update/2020/03/22/aws-flask-app.html" rel="alternate" type="text/html" title="Deploying a flask application to Elastic Beanstalk" /><published>2020-03-22T14:34:33-07:00</published><updated>2020-03-22T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/03/22/aws-flask-app</id><content type="html" xml:base="http://localhost:4000/update/2020/03/22/aws-flask-app.html">&lt;h3 id=&quot;covid-2019-news-and-updates&quot;&gt;COVID 2019 News and Updates&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-09T23:03:48-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">girls can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Kaldi interpolate</title><link href="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html" rel="alternate" type="text/html" title="Kaldi interpolate" /><published>2020-09-09T14:34:33-07:00</published><updated>2020-09-09T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/09/kaldi-interpolate</id><content type="html" xml:base="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html">&lt;p&gt;KALDI speech processing example&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+1. &lt;span class=&quot;c&quot;&gt;# ngram path added to the path&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./path.sh
+
+2. &lt;span class=&quot;c&quot;&gt;# make directory to put the interpolated arpa file&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; data/srilm_interp
+
+3. &lt;span class=&quot;c&quot;&gt;# interpolate from 2 LMs, can try different lambda values for interpolation&lt;/span&gt;
+ngram &lt;span class=&quot;nt&quot;&gt;-lm&lt;/span&gt; data/local/lm_26_98/3gram-mincount/lm_unpruned.gz  &lt;span class=&quot;nt&quot;&gt;-mix-lm&lt;/span&gt; data/local/lm_29_29/3gram-mincount/lm_unpruned.gz &lt;span class=&quot;nt&quot;&gt;-lambda&lt;/span&gt; 0.5 &lt;span class=&quot;nt&quot;&gt;-write-lm&lt;/span&gt; data/srilm_interp/lm.0.5.gz
+
+4. &lt;span class=&quot;c&quot;&gt;# convert new LM to G.fst and put it in lang_test&lt;/span&gt;
+utils/format_lm.sh data/lang data/srilm_interp/lm.0.5.gz data/local/dict/lexicon.txt data/lang_test
+
+5. &lt;span class=&quot;c&quot;&gt;# build graph ~1hour 1pm&lt;/span&gt;
+utils/mkgraph.sh &lt;span class=&quot;nt&quot;&gt;--self-loop-scale&lt;/span&gt; 1.0 data/lang_test exp/tdnn_7b_chain_online exp/tdnn_7b_chain_online/graph_pp
+
+6. &lt;span class=&quot;c&quot;&gt;# decode ~5hours&lt;/span&gt;
+
+7. &lt;span class=&quot;c&quot;&gt;# get results&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;WER  exp/tdnn_7b_chain_online/decode_test/wer_&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; | utils/best_wer.sh
+
+8. &lt;span class=&quot;c&quot;&gt;# see results&lt;/span&gt;
+less exp/tdnn_7b_chain_online/decode_test/log/decode.&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Step 6: Decode&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./path.sh
+&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./cmd.sh
+&lt;span class=&quot;c&quot;&gt;# allow down sampling&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--allow-downsample=true&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; conf/mfcc_hires.conf
+&lt;span class=&quot;c&quot;&gt;# create features&lt;/span&gt;
+steps/make_mfcc.sh &lt;span class=&quot;nt&quot;&gt;--mfcc-config&lt;/span&gt; conf/mfcc_hires.conf data/test
+&lt;span class=&quot;c&quot;&gt;# decode, 5 cpus used but can increase number of cpus&lt;/span&gt;
+steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt; utils/run.pl &lt;span class=&quot;nt&quot;&gt;--nj&lt;/span&gt; 5 &lt;span class=&quot;nt&quot;&gt;--acwt&lt;/span&gt; 1.0 &lt;span class=&quot;nt&quot;&gt;--post-decode-acwt&lt;/span&gt; 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Results&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LM1 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 26.98
+LM2 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 29.29
+LM3 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Interpolated model] WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 27.12
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">KALDI speech processing example</summary></entry><entry><title type="html">DD-Net: Combination of DenseNet and Deconvolution (linux)</title><link href="http://localhost:4000/update/2020/04/01/DD_Net-linux.html" rel="alternate" type="text/html" title="DD-Net: Combination of DenseNet and Deconvolution (linux)" /><published>2020-04-01T14:34:33-07:00</published><updated>2020-04-01T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/04/01/DD_Net-linux</id><content type="html" xml:base="http://localhost:4000/update/2020/04/01/DD_Net-linux.html">&lt;h1 id=&quot;densenet-and-deconvolution-linux&quot;&gt;DenseNet and Deconvolution (linux)&lt;/h1&gt;
+
+&lt;p&gt;DD-Net always peformed similar to UNet and DnCNN. The training time was the longest out of other 2 models. It took aprox. 24 hours to train the network.&lt;/p&gt;
+
+&lt;p&gt;my implementation  &lt;a href=&quot;https://github.com/npovey/DD-Net&quot;&gt;https://github.com/npovey/DD-Net&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;paper: &lt;a href=&quot;https://ieeexplore.ieee.org/document/8331861&quot;&gt;https://ieeexplore.ieee.org/document/8331861&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;original paper github: &lt;a href=&quot;https://github.com/zzc623/DD_Net&quot;&gt;https://github.com/zzc623/DD_Net&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Authors write “The DD-Net was trained by the Adam algorithm [54].
+The learning rate was initially set at 10−4 and slowly decreased
+continuously down to 10−5. The size of mini-batch was 5. DD-
+Net was implemented using Tensorflow [55] on a personal
+workstation with Intel Core i5-7400 CPU and 16GB RAM.
+A GPU card (Nvidia GTX Titan X) accelerated the training
+process. All the convolution and deconvolution filters were
+initialized with random Gaussian distributions with zero mean
+and 0.01 standard deviation.”&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/2020-04-01-DD-Net-linux/ddnet_paper.png&quot; alt=&quot;ddnet_paper&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Results&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The average PSNR and SSIM values over 354 test images are displayed in the table below.&lt;/p&gt;
+
+&lt;p&gt;Learning rate 10^-4&lt;/p&gt;
+
+&lt;p&gt;40 epochs&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Low Dose Image&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;UNet&lt;/th&gt;
+      &lt;th&gt;DnCNN&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;DDNet&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;sparseview_60&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Avg PSNR: 33.28	                        Avg SSIM: 0.8858&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Avg PSNR: 32.30               Avg SSIM: 0.8560&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Avg PSNR: 32.96	Avg SSIM: 0.8797&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;sparseview_90&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Avg PSNR: 35.42	                     Avg SSIM: 0.9038&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Avg PSNR: 35.13               Avg SSIM: 0.8892&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Avg PSNR: 35.29	Avg SSIM: 0.9011&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;sparseview_180&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Avg PSNR: 39.48	                    Avg SSIM: 0.9319&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;Avg PSNR: 39.77               Avg SSIM: 0.9341&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Avg PSNR: 39.55	Avg SSIM: 0.9322&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ldct_7e4&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Avg PSNR: 41.78	                     Avg SSIM: 0.9429&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;Avg PSNR: 42.00	            Avg SSIM: 0.9444&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Avg PSNR: 41.84	Avg SSIM: 0.9431&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ldct_1e5&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Avg PSNR: 42.11	                    Avg SSIM: 0.9441&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;Avg PSNR: 42.32	            Avg SSIM: 0.9456&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Avg PSNR: 42.23	Avg SSIM: 0.9448&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ldct_2e5&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Avg PSNR: 42.69	                     Avg SSIM: 0.9466&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;Avg PSNR: 42.87	            Avg SSIM: 0.9477&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Avg PSNR: 42.77	Avg SSIM: 0.9471&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def denseblock&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;input&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+  &lt;span class=&quot;c&quot;&gt;# - L1&lt;/span&gt;
+  num_filters &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 16
+  d2_1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;input&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;4, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2_1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;input, d2_1]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;c&quot;&gt;# - L2&lt;/span&gt;
+  d2_2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2_1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;4, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2_2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;input, d2_1, d2_2]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;c&quot;&gt;# - L3&lt;/span&gt;
+  d2_3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2_2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;4, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2_3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;input, d2_1, d2_2, d2_3]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;c&quot;&gt;# - L4&lt;/span&gt;
+  d2_4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2_3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;4, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2_4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;d2_4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  d2_4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filters, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;d2_4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+  d2_4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;input, d2_1, d2_2, d2_3, d2_4]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;d2_4
+
+def dd_net&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ldct_img, &lt;span class=&quot;nv&quot;&gt;is_training&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; True&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+    net &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; ldct_img
+    num_filter &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 16
+    &lt;span class=&quot;c&quot;&gt;# ---A1 Layer-----------------------&lt;/span&gt;
+    h_conv1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;7, 7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))(&lt;/span&gt;net&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    a1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; MaxPooling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;3, 3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;h_conv1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 256 X 256&lt;/span&gt;
+    d1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; denseblock&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    a1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    a1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;a1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    h_conv1_T &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;# ----A2 Layer---------------------&lt;/span&gt;
+    a2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; MaxPooling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,strides&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;h_conv1_T&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 128 X 128 d&lt;/span&gt;
+    d2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; denseblock&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    a2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    a2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;a2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    h_conv2_T &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 128 X 128&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;# # ----A3 Layer----------------------&lt;/span&gt;
+    a3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; MaxPooling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;h_conv2_T&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 64 X 64&lt;/span&gt;
+    d3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; denseblock&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    a3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    a3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;a3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    h_conv3_T &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;# ----A4 Layer----------------------&lt;/span&gt;
+    a4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; MaxPooling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;h_conv3_T&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 32 X 3&lt;/span&gt;
+    d4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; denseblock&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    a4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;d4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    a4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;a4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    h_conv4_T &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2D&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;use_bias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;True&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;# #----B1 Layer-----------------------&lt;/span&gt;
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; UpSampling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;interpolation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nearest&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;h_conv4_T&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 64 X 64&lt;/span&gt;
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;b1, h_conv3_T]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filter&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;2, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;b1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;b1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;b1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;b1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;# #----B2 Layer-----------------------&lt;/span&gt;
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; UpSampling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;interpolation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nearest&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 128 X 128&lt;/span&gt;
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;b2, h_conv2_T]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filter&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;2, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;b2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;b2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;b2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;b2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;#----B3 Layer------------------------conv6&lt;/span&gt;
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; UpSampling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,interpolation&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nearest&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 256 X 256&lt;/span&gt;
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;b3, h_conv1_T]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filter&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;2, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;b3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;b3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;b3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; BatchNormalization&lt;span class=&quot;o&quot;&gt;()(&lt;/span&gt;b3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;#----B4 Layer-------------------------&lt;/span&gt;
+    b4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; UpSampling2D&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;2, 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,interpolation&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nearest&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# images 512 X 512&lt;/span&gt;
+    b4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; concatenate&lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;b4, h_conv1]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;num_filter&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;2, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5, 5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,padding&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'same'&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    b4 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Activation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'relu'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)(&lt;/span&gt;b4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# b4 = BatchNormalization()(b4)&lt;/span&gt;
+
+    output_img &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Conv2DTranspose&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;1, 1&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;b4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# output_img = Activation('relu')(output_img) # in paper but DIDN'T CONVERGE&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# ------ end B4 layer&lt;/span&gt;
+
+    denoised_image &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Subtract&lt;span class=&quot;o&quot;&gt;()([&lt;/span&gt;net, output_img]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;denoised_image
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Each training process took approximately 24 hours.&lt;/p&gt;
+
+&lt;h4 id=&quot;how-to-create-a-python-environment-and-train&quot;&gt;How to create a python environment and train&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;(base) [npovey@ka ~]$ conda create -n keras-gpu python=3.6 numpy scipy keras-gpu
+(base) [npovey@ka unet4]$ conda activate keras-gpu
+(keras-gpu) [npovey@ka unet4]$ pip install pandas
+(keras-gpu) [npovey@ka unet4]$ pip install Pillow
+(keras-gpu) [npovey@ka unet4]$ pip install matplotlib
+(keras-gpu) [npovey@ka unet4]$ python main.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;how-to-train&quot;&gt;How to train&lt;/h4&gt;
+
+&lt;p&gt;In main.py  (line 77)  use train.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#parser.add_argument('--phase', dest='phase', default='test', help='test')
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--phase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'phase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'train'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'train'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;how-to-test&quot;&gt;How to test&lt;/h4&gt;
+
+&lt;p&gt;Change from train to test in main.py  line 77&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#parser.add_argument('--phase', dest='phase', default='test', help='test')
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--phase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'phase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'train'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'train'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;other-useful-info&quot;&gt;Other useful info&lt;/h4&gt;
+
+&lt;p&gt;Sign in into remote linux machines&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nps-MacBook-Air-2:Desktop np&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh npovey@ka...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls
+&lt;/span&gt;main.py  model.py  model.py~  utils.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Got  core dumped problem as all GPUs were taken&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Aborted &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;core dumped&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check available GPUs&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;nvidia-smi &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;
+GPU 0: Quadro RTX 5000 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UUID: GPU-1f923d52-ea64-f463-96a4-3bece2719a8b&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+GPU 1: Quadro RTX 5000 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UUID: GPU-20947179-1907-5468-1325-a3fc16f5a54e&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;nvidia-smi
+Fri Mar  6 14:25:38 2020       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 418.87.00    Driver Version: 418.87.00    CUDA Version: 10.1     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|&lt;span class=&quot;o&quot;&gt;===============================&lt;/span&gt;+&lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt;+&lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt;|
+|   0  Quadro RTX 5000     Off  | 00000000:67:00.0 Off |                  Off |
+| 43%   68C    P2   212W / 230W |  15871MiB / 16095MiB |     94%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  Quadro RTX 5000     Off  | 00000000:68:00.0 Off |                  Off |
+| 55%   78C    P2   221W / 230W |  15869MiB / 16092MiB |     96%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|&lt;span class=&quot;o&quot;&gt;=============================================================================&lt;/span&gt;|
+|    0     78799      C   python                                     15861MiB |
+|    1     26617      C   python                                     15859MiB |
++-----------------------------------------------------------------------------+
+WARNING: infoROM is corrupted at gpu 0000:67:00.0
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Looks like both GPUs are taken&lt;/p&gt;
+
+&lt;p&gt;Trying a little bit later&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;nvidia-smi
+Fri Mar  6 20:23:45 2020       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 418.87.00    Driver Version: 418.87.00    CUDA Version: 10.1     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|&lt;span class=&quot;o&quot;&gt;===============================&lt;/span&gt;+&lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt;+&lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt;|
+|   0  Quadro RTX 5000     Off  | 00000000:67:00.0 Off |                  Off |
+| 43%   65C    P2    74W / 230W |  15871MiB / 16095MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  Quadro RTX 5000     Off  | 00000000:68:00.0 Off |                  Off |
+| 35%   35C    P0    N/A /  N/A |      0MiB / 16092MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|&lt;span class=&quot;o&quot;&gt;=============================================================================&lt;/span&gt;|
+|    0     78799      C   python                                     15861MiB |
++-----------------------------------------------------------------------------+
+WARNING: infoROM is corrupted at gpu 0000:67:00.0
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ~]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can observe that GPU1 is free to run our code.&lt;/p&gt;
+
+&lt;p&gt;Run the code on the remote linux machine&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka data]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;dd_net/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As the code takes long time to run I recommend running it using screen&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;press ctlr+A, D to detach from screen&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;detached from 6921.dd_net1]
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To copy result to a local machine and view them&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nps-MacBook-Air-2:Desktop np&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;scp &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; npovey@ka:/home/npovey/data/dd_net/output_dd_net_60.txt DD_Net/
+npovey@ka&lt;span class=&quot;s1&quot;&gt;'s password:
+output_dd_net_60.txt                          100%   32KB 321.5KB/s   00:00    
+nps-MacBook-Air-2:Desktop np$
+
+
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;run-sparseview_60&quot;&gt;run sparseview_60&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dncnn1]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_60.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;run-sparseview_90&quot;&gt;run sparseview_90&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_90.txt
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Got good results:&lt;/p&gt;
+
+&lt;h5 id=&quot;run-sparseview_180&quot;&gt;run sparseview_180&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_180.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;run-ldcd_7e4&quot;&gt;run ldcd_7e4&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_ldct_7e4.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Epoch 1/50 Avg PSNR: 40.91373649562122&lt;/p&gt;
+
+&lt;p&gt;Epoch 2/50 Avg PSNR: 41.007181141963734&lt;/p&gt;
+
+&lt;p&gt;Epoch 3/50 Avg PSNR: 32.428249836375585&lt;/p&gt;
+
+&lt;p&gt;Epoch 4/50 Avg PSNR: 32.42561434856395&lt;/p&gt;
+
+&lt;p&gt;……&lt;/p&gt;
+
+&lt;p&gt;Epoch 50/50 Avg PSNR: 32.427569692000205&lt;/p&gt;
+
+&lt;p&gt;#####run ldcd_2e5&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_ldct_2e5.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Epoch 0: Avg PSNR: 41.967376293118136&lt;/p&gt;
+
+&lt;p&gt;Epoch 1: Avg PSNR: 37.859690812973035&lt;/p&gt;
+
+&lt;p&gt;Epoch 2: Avg PSNR: 39.812348874868206&lt;/p&gt;
+
+&lt;p&gt;Epoch 9: Avg PSNR: 41.398334420237376&lt;/p&gt;
+
+&lt;h5 id=&quot;delete-old-data-before-training-on-a-new-dataset&quot;&gt;Delete old data before training on a new dataset&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ps aux &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;text.txt
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;kill&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-KILL&lt;/span&gt; 10371
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; logs/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; checkpoints
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; ndct_train.tfrecord
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; ldct_train.tfrecord
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; ndct_test.tfrecord
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; ldct_test.tfrecord
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; __pycache__/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; output_samples/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;/
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_60_2.txt
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;train&quot;&gt;Train&lt;/h5&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dd_net]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka dncnn1]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_60.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_ldct_7e4.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;copy to local desktop&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nps-MacBook-Air-2:Desktop np&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;scp &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; npovey@ka:/home/npovey/data/ddnet2/main.py &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+npovey@ka&lt;span class=&quot;s1&quot;&gt;'s password:
+main.py                                       100% 7690   305.0KB/s   00:00    
+nps-MacBook-Air-2:Desktop np$ scp -r npovey@ka:/home/npovey/data/ddnet2/model.py .
+npovey@ka'&lt;/span&gt;s password:
+model.py                                                                                                               100%   33KB 562.2KB/s   00:00    
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; nps-MacBook-Air-2:Desktop np&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_ldct_2e5.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_ldct_1e5.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_ldct_2e5.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_sparseview_60.txt
+CTRL+A D &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;screens mode
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_sparseview_90.txt
+CTRL+A D &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;screens mode
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;screen &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; dd_net1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; output_ddnet_sparseview_180.txt
+CTRL+A D &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;screens mode
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;to-test&quot;&gt;To test&lt;/h5&gt;
+
+&lt;p&gt;Change from train to test in main.py  line 77&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#parser.add_argument('--phase', dest='phase', default='test', help='test')
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--phase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'phase'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'train'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'train'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; test_180.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; test_90.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; test_7e4.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; test_1e5.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda activate keras-gpu
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;keras-gpu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;npovey@ka ddnet2]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python main.py &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; test_2e5.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">DenseNet and Deconvolution (linux)</summary></entry><entry><title type="html">Deploying a flask application to Elastic Beanstalk</title><link href="http://localhost:4000/update/2020/03/22/aws-flask-app.html" rel="alternate" type="text/html" title="Deploying a flask application to Elastic Beanstalk" /><published>2020-03-22T14:34:33-07:00</published><updated>2020-03-22T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/03/22/aws-flask-app</id><content type="html" xml:base="http://localhost:4000/update/2020/03/22/aws-flask-app.html">&lt;h3 id=&quot;covid-2019-news-and-updates&quot;&gt;COVID 2019 News and Updates&lt;/h3&gt;
 
 &lt;p&gt;Youtube links&lt;/p&gt;
 
@@ -4449,176 +5015,4 @@ Epoch 40/40
 
 &lt;p&gt;&lt;img src=&quot;/2020-02-19-unet/sparseview_60_test_unet_15_99.png&quot; alt=&quot;sparseview_60_test_unet_15_99&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/2020-02-19-unet/reconstructed_unet_15_99.png&quot; alt=&quot;reconstructed_unet_15_99&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Unet model to remove artifacts from the sparseview images.</summary></entry><entry><title type="html">Backup and Restore a Directory from/to AWS S3 bucket</title><link href="http://localhost:4000/update/2020/02/18/aws-backup-restore.html" rel="alternate" type="text/html" title="Backup and Restore a Directory from/to AWS S3 bucket" /><published>2020-02-18T13:34:33-08:00</published><updated>2020-02-18T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/18/aws-backup-restore</id><content type="html" xml:base="http://localhost:4000/update/2020/02/18/aws-backup-restore.html">&lt;p&gt;####Directory Back up and Restore for the cloud&lt;/p&gt;
-
-&lt;p&gt;[TOC]&lt;/p&gt;
-
-&lt;p&gt;Youtube video for the project:  &lt;a href=&quot;https://youtu.be/4Q544dIqClA&quot;&gt;https://youtu.be/4Q544dIqClA&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;GitHub link: &lt;a href=&quot;https://github.com/npovey/aws/tree/master/backup_AWS_S3&quot;&gt;https://github.com/npovey/aws/tree/master/backup_AWS_S3&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;The project consists of two python programs. Backup.py and Restore.py One backs up and the other one restores the given directory. Must use python3 (not python).&lt;/p&gt;
-
-&lt;p&gt;#### Assumptions&lt;/p&gt;
-
-&lt;p&gt;The user already set up it’s keys and can connect to AWS and Azure from his/her computer. The program has backet hard coded “npovey2”. Directories allways backed up to “npovey2”&lt;/p&gt;
-
-&lt;h4 id=&quot;backup&quot;&gt;Backup&lt;/h4&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Navigate to the directory with program3&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;2020&lt;/span&gt;			&lt;span class=&quot;n&quot;&gt;Programs&lt;/span&gt;		&lt;span class=&quot;n&quot;&gt;aws&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mov&lt;/span&gt;			&lt;span class=&quot;n&quot;&gt;npovey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;AWS&lt;/span&gt;			&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;			&lt;span class=&quot;n&quot;&gt;backup_AWS_S3&lt;/span&gt;		&lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Run the Backup.py file&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backup_AWS_S3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Output&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backup_AWS_S3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cover_letter_2020_npovey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pdf&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cover_letter_2019&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resume_2020&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DS_Store&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resume_2020_povey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pdf&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Output&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backup_AWS_S3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cover_letter_2020_npovey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pdf&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cover_letter_2019&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resume_2020&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DS_Store&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resume_2020_povey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pdf&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;restore&quot;&gt;Restore&lt;/h4&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Navigate to the directory with program3 folder&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;2020&lt;/span&gt;			&lt;span class=&quot;n&quot;&gt;Programs&lt;/span&gt;		&lt;span class=&quot;n&quot;&gt;aws&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mov&lt;/span&gt;			&lt;span class=&quot;n&quot;&gt;npovey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;AWS&lt;/span&gt;			&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;			&lt;span class=&quot;n&quot;&gt;backup_AWS_S3&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Run Restore.py&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backup_AWS_S3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Restore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Output&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backup_AWS_S3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Restore&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DS_Store&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cover_letter_2019&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cover_letter_2020_npovey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pdf&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resume_2020&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resume&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resume_2020_povey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pdf&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;dependencies&quot;&gt;Dependencies&lt;/h4&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Python&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;3.7.6&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Darwin&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;2.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;18.7.0&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Darwin&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Kernel&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Version&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;18.7.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Tue&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Aug&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;57&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PDT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2019&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xnu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;4903.271.2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RELEASE_X86_64&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x86_64&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# use boto3 to connect to AWS
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;testing-on-local-computer-macos&quot;&gt;Testing on local computer MacOS&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images_2020_17/before.png&quot; alt=&quot;before&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Ran the Backup.py from outside the program3 folder&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;program3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DS_Store&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;makefile&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;README&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;md&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;texts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;virus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;texts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Untitled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Created&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Notice that npovey2 folder appeared.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images_2020_17/after.png&quot; alt=&quot;after&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Ran the same command the second time&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;program3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DS_Store&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;makefile&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;README&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;md&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;texts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;virus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;texts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Untitled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Edit Backup.py and try again&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images_2020_17/local_folder.png&quot; alt=&quot;local_folder&quot; /&gt;&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;program3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Rewrote&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Backup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Rewrote&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DS_Store&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;makefile&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;README&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;md&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;texts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;virus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;texts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Untitled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Backed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Up&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;nps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MacBook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Air&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">####Directory Back up and Restore for the cloud</summary></entry><entry><title type="html">DD-Net on Sparse-View Data</title><link href="http://localhost:4000/update/2020/02/16/ddnet.html" rel="alternate" type="text/html" title="DD-Net on Sparse-View Data" /><published>2020-02-16T13:34:33-08:00</published><updated>2020-02-16T13:34:33-08:00</updated><id>http://localhost:4000/update/2020/02/16/ddnet</id><content type="html" xml:base="http://localhost:4000/update/2020/02/16/ddnet.html">&lt;p&gt;&lt;strong&gt;A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;The plan is to try the DD-Net on our sparse-view data.
-The original paper: &lt;a href=&quot;https://ieeexplore.ieee.org/document/8331861&quot;&gt;https://ieeexplore.ieee.org/document/8331861&lt;/a&gt;
-The original project GitHub page: &lt;a href=&quot;https://github.com/zzc623/DD_Net&quot;&gt;https://github.com/zzc623/DD_Net&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;What is deconvolution?&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Convolution is when we take the image and try to shrink it. Deconvolution is basically the same as a convolution layer, except instead of subsampling we do upsampling and the ‘stride’ is interpreted oppositely. So stride=2 would do upsampling by 2 (output has twice more things) instead of downsampling by 2. Example below is for deconvolution in python.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;u6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Conv2DTranspose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strides&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'same'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c51&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">A Sparse-View CT Reconstruction Method Based on Combination of DenseNet and Deconvolution.</summary></entry></feed>
+&lt;p&gt;&lt;img src=&quot;/2020-02-19-unet/reconstructed_unet_15_99.png&quot; alt=&quot;reconstructed_unet_15_99&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Unet model to remove artifacts from the sparseview images.</summary></entry></feed>
