@@ -11,7 +11,7 @@ categories: update
 3. [Results 1](#e3)
 4. [Remove \<unk\> and rescore again](#e4)
 5. [Results 2](#e5)
-6. [Note](#e6)
+6. [Note: score.sh -> ../steps/score_kaldi.sh](#e6)
 
 **Basic decoding steps** <a name="e1"></a>
 
