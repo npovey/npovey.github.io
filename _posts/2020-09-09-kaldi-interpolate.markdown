@@ -5,7 +5,7 @@ date:   2020-09-09 14:34:33 -0700
 categories: update
 ---
 
-KALDI speech processing interpolation example
+KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/
 
 ```bash
 

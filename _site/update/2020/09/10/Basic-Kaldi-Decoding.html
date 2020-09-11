@@ -3,19 +3,19 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Kaldi interpolate | can code</title>
+<title>Basic Kaldi Decoding | can code</title>
 <meta name="generator" content="Jekyll v3.8.6" />
-<meta property="og:title" content="Kaldi interpolate" />
+<meta property="og:title" content="Basic Kaldi Decoding" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="KALDI speech processing interpolation example. Read up on ngram here http://www.speech.sri.com/projects/srilm/" />
-<meta property="og:description" content="KALDI speech processing interpolation example. Read up on ngram here http://www.speech.sri.com/projects/srilm/" />
-<link rel="canonical" href="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html" />
-<meta property="og:url" content="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html" />
+<meta name="description" content="Basic decoding steps." />
+<meta property="og:description" content="Basic decoding steps." />
+<link rel="canonical" href="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html" />
+<meta property="og:url" content="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html" />
 <meta property="og:site_name" content="can code" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-09-09T14:34:33-07:00" />
+<meta property="article:published_time" content="2020-09-10T14:34:33-07:00" />
 <script type="application/ld+json">
-{"headline":"Kaldi interpolate","description":"KALDI speech processing interpolation example. Read up on ngram here http://www.speech.sri.com/projects/srilm/","datePublished":"2020-09-09T14:34:33-07:00","dateModified":"2020-09-09T14:34:33-07:00","@type":"BlogPosting","url":"http://localhost:4000/update/2020/09/09/kaldi-interpolate.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/09/09/kaldi-interpolate.html"},"@context":"https://schema.org"}</script>
+{"headline":"Basic Kaldi Decoding","description":"Basic decoding steps.","datePublished":"2020-09-10T14:34:33-07:00","dateModified":"2020-09-10T14:34:33-07:00","@type":"BlogPosting","url":"http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="can code" /></head>
 <body><header class="site-header" role="banner">
@@ -38,60 +38,93 @@
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Kaldi interpolate</h1>
+    <h1 class="post-title p-name" itemprop="name headline">Basic Kaldi Decoding</h1>
     <p class="post-meta">
-      <time class="dt-published" datetime="2020-09-09T14:34:33-07:00" itemprop="datePublished">Sep 9, 2020
+      <time class="dt-published" datetime="2020-09-10T14:34:33-07:00" itemprop="datePublished">Sep 10, 2020
       </time></p>
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/</p>
+    <p>Basic decoding steps.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-1. <span class="c"># ngram path added to the path</span>
-<span class="nb">.</span> ./path.sh
+<p>The example is about decoding. Didn’t train model. For trained models check kaldi website.</p>
 
-2. <span class="c"># make directory to put the interpolated arpa file</span>
-<span class="nb">mkdir</span> <span class="nt">-p</span> data/srilm_interp
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0. <span class="c"># create text file</span>
+<span class="c"># text must be put inside train_all folder [4.4M lines of text]</span>
+<span class="c"># i would recommend to find text sample closer to the decoding audio</span>
+<span class="c"># important to add foo to the begining of each line. adding foo only works for decoding</span>
+<span class="c"># for training the procedure will be different</span>
+<span class="nb">awk</span> <span class="s1">'{print "foo", $0}'</span> &lt; output_31600.txt <span class="o">&gt;</span> text
 
-3. <span class="c"># interpolate from 2 LMs, can try different lambda values for interpolation</span>
-ngram <span class="nt">-lm</span> data/local/lm_26_98/3gram-mincount/lm_unpruned.gz  <span class="nt">-mix-lm</span> data/local/lm_29_29/3gram-mincount/lm_unpruned.gz <span class="nt">-lambda</span> 0.5 <span class="nt">-write-lm</span> data/srilm_interp/lm.0.5.gz
+1. <span class="c"># prepare_dictionary</span>
+<span class="nb">local</span>/fisher_prepare_dict.sh
 
-4. <span class="c"># convert new LM to G.fst and put it in lang_test</span>
-utils/format_lm.sh data/lang data/srilm_interp/lm.0.5.gz data/local/dict/lexicon.txt data/lang_test
+2. <span class="c"># preapare lang</span>
+utils/prepare_lang.sh data/local/dict <span class="s2">"&lt;unk&gt;"</span> data/local/lang data/lang
+
+3. <span class="c"># train 20m</span>
+<span class="nb">local</span>/fisher_train_lms.sh
+
+4. <span class="c"># This script formats ARPA LM into G.fst. ~15 min</span>
+<span class="nb">local</span>/fisher_create_test_lang.sh
 
 5. <span class="c"># build graph ~1hour 1pm</span>
 utils/mkgraph.sh <span class="nt">--self-loop-scale</span> 1.0 data/lang_test exp/tdnn_7b_chain_online exp/tdnn_7b_chain_online/graph_pp
 
-6. <span class="c"># decode ~5hours</span>
+6. <span class="c"># decode see below</span>
 
 7. <span class="c"># get results</span>
 <span class="nb">grep </span>WER  exp/tdnn_7b_chain_online/decode_test/wer_<span class="k">*</span> | utils/best_wer.sh
 
 8. <span class="c"># see results</span>
 less exp/tdnn_7b_chain_online/decode_test/log/decode.<span class="k">*</span>.log
+
 </code></pre></div></div>
 
-<p>Step 6: Decode</p>
+<p>Decode</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span> ./path.sh
 <span class="nb">.</span> ./cmd.sh
 <span class="c"># allow down sampling</span>
 <span class="nb">echo</span> <span class="s2">"--allow-downsample=true"</span> <span class="o">&gt;&gt;</span> conf/mfcc_hires.conf
-<span class="c"># create features (not sure if this step is needed for interpolation)</span>
+<span class="c"># create features</span>
 steps/make_mfcc.sh <span class="nt">--mfcc-config</span> conf/mfcc_hires.conf data/test
 <span class="c"># decode, 5 cpus used but can increase number of cpus</span>
 steps/online/nnet3/decode.sh <span class="nt">--cmd</span> utils/run.pl <span class="nt">--nj</span> 5 <span class="nt">--acwt</span> 1.0 <span class="nt">--post-decode-acwt</span> 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
 </code></pre></div></div>
 
-<p>Results</p>
+<p>Results 1</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LM1 WER <span class="o">=</span> 26.98
-LM2 WER <span class="o">=</span> 29.29
-LM3 <span class="o">[</span>Interpolated model] WER <span class="o">=</span> 27.12
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%WER 26.72 <span class="o">[</span> 55196 / 206597, 6730 ins, 18273 del, 30193 sub <span class="o">]</span>
 </code></pre></div></div>
 
-  </div><a class="u-url" href="/update/2020/09/09/kaldi-interpolate.html" hidden></a>
+<p>Change scoring by using local/wer_hyp_filter</p>
+
+<p>Goal: remove  &lt;unk&gt; from decoded test before scoring</p>
+
+<p>Create a “local/wer_hyp_filter” / “wer_hyp_filter.sh” would not work</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sed</span> <span class="s1">'s/&lt;unk&gt;//g;'</span>
+</code></pre></div></div>
+
+<p>Run score script:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">local</span>/score.sh <span class="nt">--cmd</span> utils/run.pl data/test exp/tdnn_7b_chain_online/graph_pp exp/tdnn_7b_chain_online/decode_test
+</code></pre></div></div>
+
+<p>Results 2:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%WER 26.54 <span class="o">[</span> 54823 / 206597, 6371 ins, 19471 del, 28981 sub <span class="o">]</span>
+</code></pre></div></div>
+
+<p>As expected scoring improved very slightly</p>
+
+<p>Note: my scoring script score.sh points to score_kaldi.sh</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>score.sh -&gt; ../steps/score_kaldi.sh
+</code></pre></div></div>
+
+  </div><a class="u-url" href="/update/2020/09/10/Basic-Kaldi-Decoding.html" hidden></a>
 </article>
 
       </div>
