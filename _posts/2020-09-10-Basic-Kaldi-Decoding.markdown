@@ -17,6 +17,7 @@ categories: update
 
 
 The example is about decoding. Didn't train model. For trained models check kaldi website.
+<http://kaldi-asr.org/models.html>
 
 ```bash
 0. # create text file
@@ -99,7 +100,7 @@ As expected scoring improved very slightly
 
 **Note** <a name="e6"></a>
 
-My scoring script score.sh points to score_kaldi.sh. Always use score_kaldi.sh as a scoring script, as it gives lots of ways to troubleshoot the problem and improve on decoding. 
+My scoring script score.sh points to score_kaldi.sh. Always use score_kaldi.sh as a scoring script, as it gives lots of ways to troubleshoot the problem and improve on decoding.
 
 ```bash
 score.sh -> ../steps/score_kaldi.sh
