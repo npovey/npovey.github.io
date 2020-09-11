@@ -2,7 +2,7 @@
 
 layout: post
 title:  "Basic Kaldi Decoding"
-date:   2020-09-10 14:34:33 -0700
+date:   2020-09-08 14:34:33 -0700
 categories: update
 ---
 # Table of Contents

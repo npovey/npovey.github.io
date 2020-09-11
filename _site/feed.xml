@@ -1,4 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-10T23:47:15-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Basic Kaldi Decoding</title><link href="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html" rel="alternate" type="text/html" title="Basic Kaldi Decoding" /><published>2020-09-10T14:34:33-07:00</published><updated>2020-09-10T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding</id><content type="html" xml:base="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html">&lt;h1 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-10T23:49:16-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Kaldi interpolate</title><link href="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html" rel="alternate" type="text/html" title="Kaldi interpolate" /><published>2020-09-09T14:34:33-07:00</published><updated>2020-09-09T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/09/kaldi-interpolate</id><content type="html" xml:base="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html">&lt;p&gt;KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+1. &lt;span class=&quot;c&quot;&gt;# ngram path added to the path&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./path.sh
+
+2. &lt;span class=&quot;c&quot;&gt;# make directory to put the interpolated arpa file&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; data/srilm_interp
+
+3. &lt;span class=&quot;c&quot;&gt;# interpolate from 2 LMs, can try different lambda values for interpolation&lt;/span&gt;
+ngram &lt;span class=&quot;nt&quot;&gt;-lm&lt;/span&gt; data/local/lm_26_98/3gram-mincount/lm_unpruned.gz  &lt;span class=&quot;nt&quot;&gt;-mix-lm&lt;/span&gt; data/local/lm_29_29/3gram-mincount/lm_unpruned.gz &lt;span class=&quot;nt&quot;&gt;-lambda&lt;/span&gt; 0.5 &lt;span class=&quot;nt&quot;&gt;-write-lm&lt;/span&gt; data/srilm_interp/lm.0.5.gz
+
+4. &lt;span class=&quot;c&quot;&gt;# convert new LM to G.fst and put it in lang_test&lt;/span&gt;
+utils/format_lm.sh data/lang data/srilm_interp/lm.0.5.gz data/local/dict/lexicon.txt data/lang_test
+
+5. &lt;span class=&quot;c&quot;&gt;# build graph ~1hour 1pm&lt;/span&gt;
+utils/mkgraph.sh &lt;span class=&quot;nt&quot;&gt;--self-loop-scale&lt;/span&gt; 1.0 data/lang_test exp/tdnn_7b_chain_online exp/tdnn_7b_chain_online/graph_pp
+
+6. &lt;span class=&quot;c&quot;&gt;# decode ~5hours&lt;/span&gt;
+
+7. &lt;span class=&quot;c&quot;&gt;# get results&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;WER  exp/tdnn_7b_chain_online/decode_test/wer_&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; | utils/best_wer.sh
+
+8. &lt;span class=&quot;c&quot;&gt;# see results&lt;/span&gt;
+less exp/tdnn_7b_chain_online/decode_test/log/decode.&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Step 6: Decode&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./path.sh
+&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./cmd.sh
+&lt;span class=&quot;c&quot;&gt;# allow down sampling&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--allow-downsample=true&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; conf/mfcc_hires.conf
+&lt;span class=&quot;c&quot;&gt;# create features (not sure if this step is needed for interpolation)&lt;/span&gt;
+steps/make_mfcc.sh &lt;span class=&quot;nt&quot;&gt;--mfcc-config&lt;/span&gt; conf/mfcc_hires.conf data/test
+&lt;span class=&quot;c&quot;&gt;# decode, 5 cpus used but can increase number of cpus&lt;/span&gt;
+steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt; utils/run.pl &lt;span class=&quot;nt&quot;&gt;--nj&lt;/span&gt; 5 &lt;span class=&quot;nt&quot;&gt;--acwt&lt;/span&gt; 1.0 &lt;span class=&quot;nt&quot;&gt;--post-decode-acwt&lt;/span&gt; 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Results&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LM1 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 26.98
+LM2 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 29.29
+LM3 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Interpolated model] WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 27.12
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">KALDI speech processing interpolation example. Read up on ngram here http://www.speech.sri.com/projects/srilm/</summary></entry><entry><title type="html">Basic Kaldi Decoding</title><link href="http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html" rel="alternate" type="text/html" title="Basic Kaldi Decoding" /><published>2020-09-08T14:34:33-07:00</published><updated>2020-09-08T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding</id><content type="html" xml:base="http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html">&lt;h1 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h1&gt;
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;#e1&quot;&gt;Basic decoding steps&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#e2&quot;&gt;Decode&lt;/a&gt;&lt;/li&gt;
@@ -88,51 +132,7 @@ steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt;
 &lt;p&gt;My scoring script score.sh points to score_kaldi.sh. Always use score_kaldi.sh as a scoring script, as it gives lots of ways to troubleshoot the problem and improve on decoding.&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;score.sh -&amp;gt; ../steps/score_kaldi.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Table of Contents Basic decoding steps Decode Results 1 Remove &amp;lt;unk&amp;gt; and rescore again Results 2 Note</summary></entry><entry><title type="html">Kaldi interpolate</title><link href="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html" rel="alternate" type="text/html" title="Kaldi interpolate" /><published>2020-09-09T14:34:33-07:00</published><updated>2020-09-09T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/09/kaldi-interpolate</id><content type="html" xml:base="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html">&lt;p&gt;KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-1. &lt;span class=&quot;c&quot;&gt;# ngram path added to the path&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./path.sh
-
-2. &lt;span class=&quot;c&quot;&gt;# make directory to put the interpolated arpa file&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; data/srilm_interp
-
-3. &lt;span class=&quot;c&quot;&gt;# interpolate from 2 LMs, can try different lambda values for interpolation&lt;/span&gt;
-ngram &lt;span class=&quot;nt&quot;&gt;-lm&lt;/span&gt; data/local/lm_26_98/3gram-mincount/lm_unpruned.gz  &lt;span class=&quot;nt&quot;&gt;-mix-lm&lt;/span&gt; data/local/lm_29_29/3gram-mincount/lm_unpruned.gz &lt;span class=&quot;nt&quot;&gt;-lambda&lt;/span&gt; 0.5 &lt;span class=&quot;nt&quot;&gt;-write-lm&lt;/span&gt; data/srilm_interp/lm.0.5.gz
-
-4. &lt;span class=&quot;c&quot;&gt;# convert new LM to G.fst and put it in lang_test&lt;/span&gt;
-utils/format_lm.sh data/lang data/srilm_interp/lm.0.5.gz data/local/dict/lexicon.txt data/lang_test
-
-5. &lt;span class=&quot;c&quot;&gt;# build graph ~1hour 1pm&lt;/span&gt;
-utils/mkgraph.sh &lt;span class=&quot;nt&quot;&gt;--self-loop-scale&lt;/span&gt; 1.0 data/lang_test exp/tdnn_7b_chain_online exp/tdnn_7b_chain_online/graph_pp
-
-6. &lt;span class=&quot;c&quot;&gt;# decode ~5hours&lt;/span&gt;
-
-7. &lt;span class=&quot;c&quot;&gt;# get results&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;WER  exp/tdnn_7b_chain_online/decode_test/wer_&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; | utils/best_wer.sh
-
-8. &lt;span class=&quot;c&quot;&gt;# see results&lt;/span&gt;
-less exp/tdnn_7b_chain_online/decode_test/log/decode.&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.log
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Step 6: Decode&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./path.sh
-&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./cmd.sh
-&lt;span class=&quot;c&quot;&gt;# allow down sampling&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--allow-downsample=true&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; conf/mfcc_hires.conf
-&lt;span class=&quot;c&quot;&gt;# create features (not sure if this step is needed for interpolation)&lt;/span&gt;
-steps/make_mfcc.sh &lt;span class=&quot;nt&quot;&gt;--mfcc-config&lt;/span&gt; conf/mfcc_hires.conf data/test
-&lt;span class=&quot;c&quot;&gt;# decode, 5 cpus used but can increase number of cpus&lt;/span&gt;
-steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt; utils/run.pl &lt;span class=&quot;nt&quot;&gt;--nj&lt;/span&gt; 5 &lt;span class=&quot;nt&quot;&gt;--acwt&lt;/span&gt; 1.0 &lt;span class=&quot;nt&quot;&gt;--post-decode-acwt&lt;/span&gt; 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Results&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LM1 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 26.98
-LM2 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 29.29
-LM3 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Interpolated model] WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 27.12
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">KALDI speech processing interpolation example. Read up on ngram here http://www.speech.sri.com/projects/srilm/</summary></entry><entry><title type="html">DD-Net: Combination of DenseNet and Deconvolution (linux)</title><link href="http://localhost:4000/update/2020/04/01/DD_Net-linux.html" rel="alternate" type="text/html" title="DD-Net: Combination of DenseNet and Deconvolution (linux)" /><published>2020-04-01T14:34:33-07:00</published><updated>2020-04-01T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/04/01/DD_Net-linux</id><content type="html" xml:base="http://localhost:4000/update/2020/04/01/DD_Net-linux.html">&lt;h1 id=&quot;densenet-and-deconvolution-linux&quot;&gt;DenseNet and Deconvolution (linux)&lt;/h1&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Table of Contents Basic decoding steps Decode Results 1 Remove &amp;lt;unk&amp;gt; and rescore again Results 2 Note</summary></entry><entry><title type="html">DD-Net: Combination of DenseNet and Deconvolution (linux)</title><link href="http://localhost:4000/update/2020/04/01/DD_Net-linux.html" rel="alternate" type="text/html" title="DD-Net: Combination of DenseNet and Deconvolution (linux)" /><published>2020-04-01T14:34:33-07:00</published><updated>2020-04-01T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/04/01/DD_Net-linux</id><content type="html" xml:base="http://localhost:4000/update/2020/04/01/DD_Net-linux.html">&lt;h1 id=&quot;densenet-and-deconvolution-linux&quot;&gt;DenseNet and Deconvolution (linux)&lt;/h1&gt;
 
 &lt;p&gt;DD-Net always peformed similar to UNet and DnCNN. The training time was the longest out of other 2 models. It took aprox. 24 hours to train the network.&lt;/p&gt;
 
