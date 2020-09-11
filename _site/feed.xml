@@ -1,4 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-10T23:10:57-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Basic Kaldi Decoding</title><link href="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html" rel="alternate" type="text/html" title="Basic Kaldi Decoding" /><published>2020-09-10T14:34:33-07:00</published><updated>2020-09-10T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding</id><content type="html" xml:base="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html">&lt;p&gt;Basic decoding steps.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-10T23:44:53-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Basic Kaldi Decoding</title><link href="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html" rel="alternate" type="text/html" title="Basic Kaldi Decoding" /><published>2020-09-10T14:34:33-07:00</published><updated>2020-09-10T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding</id><content type="html" xml:base="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html">&lt;h1 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h1&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;#e1&quot;&gt;Basic decoding steps&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#e2&quot;&gt;Decode&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#e3&quot;&gt;Results 1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#e4&quot;&gt;Remove &amp;lt;unk&amp;gt; and rescore again&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#e5&quot;&gt;Results 2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#e6&quot;&gt;Note&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;Basic decoding steps&lt;/strong&gt; &lt;a name=&quot;e1&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;The example is about decoding. Didn’t train model. For trained models check kaldi website.&lt;/p&gt;
 
@@ -34,7 +44,7 @@ less exp/tdnn_7b_chain_online/decode_test/log/decode.&lt;span class=&quot;k&quot
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Decode&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Decode&lt;/strong&gt;  &lt;a name=&quot;e2&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./path.sh
 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; ./cmd.sh
@@ -46,12 +56,12 @@ steps/make_mfcc.sh &lt;span class=&quot;nt&quot;&gt;--mfcc-config&lt;/span&gt; c
 steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt; utils/run.pl &lt;span class=&quot;nt&quot;&gt;--nj&lt;/span&gt; 5 &lt;span class=&quot;nt&quot;&gt;--acwt&lt;/span&gt; 1.0 &lt;span class=&quot;nt&quot;&gt;--post-decode-acwt&lt;/span&gt; 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Results 1&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Results 1&lt;/strong&gt;  &lt;a name=&quot;e3&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;%WER 26.72 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; 55196 / 206597, 6730 ins, 18273 del, 30193 sub &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Change scoring by using local/wer_hyp_filter&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Remove &amp;lt;unk&amp;gt; and rescore again&lt;/strong&gt; &lt;a name=&quot;e4&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Goal: remove  &amp;lt;unk&amp;gt; from decoded test before scoring&lt;/p&gt;
 
@@ -65,17 +75,19 @@ steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;local&lt;/span&gt;/score.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt; utils/run.pl data/test exp/tdnn_7b_chain_online/graph_pp exp/tdnn_7b_chain_online/decode_test
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Results 2:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Results 2&lt;/strong&gt;  &lt;a name=&quot;e5&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;%WER 26.54 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; 54823 / 206597, 6371 ins, 19471 del, 28981 sub &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;As expected scoring improved very slightly&lt;/p&gt;
 
-&lt;p&gt;Note: my scoring script score.sh points to score_kaldi.sh&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt; &lt;a name=&quot;e6&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;My scoring script score.sh points to score_kaldi.sh. Always use score_kaldi.sh as a scoring script, as it gives lots of ways to troubleshoot the problem and improve on decoding.&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;score.sh -&amp;gt; ../steps/score_kaldi.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Basic decoding steps.</summary></entry><entry><title type="html">Kaldi interpolate</title><link href="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html" rel="alternate" type="text/html" title="Kaldi interpolate" /><published>2020-09-09T14:34:33-07:00</published><updated>2020-09-09T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/09/kaldi-interpolate</id><content type="html" xml:base="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html">&lt;p&gt;KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Table of Contents Basic decoding steps Decode Results 1 Remove &amp;lt;unk&amp;gt; and rescore again Results 2 Note</summary></entry><entry><title type="html">Kaldi interpolate</title><link href="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html" rel="alternate" type="text/html" title="Kaldi interpolate" /><published>2020-09-09T14:34:33-07:00</published><updated>2020-09-09T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/09/kaldi-interpolate</id><content type="html" xml:base="http://localhost:4000/update/2020/09/09/kaldi-interpolate.html">&lt;p&gt;KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
 1. &lt;span class=&quot;c&quot;&gt;# ngram path added to the path&lt;/span&gt;

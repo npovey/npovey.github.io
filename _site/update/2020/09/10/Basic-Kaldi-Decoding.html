@@ -7,15 +7,15 @@
 <meta name="generator" content="Jekyll v3.8.6" />
 <meta property="og:title" content="Basic Kaldi Decoding" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Basic decoding steps." />
-<meta property="og:description" content="Basic decoding steps." />
+<meta name="description" content="Table of Contents Basic decoding steps Decode Results 1 Remove &lt;unk&gt; and rescore again Results 2 Note" />
+<meta property="og:description" content="Table of Contents Basic decoding steps Decode Results 1 Remove &lt;unk&gt; and rescore again Results 2 Note" />
 <link rel="canonical" href="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html" />
 <meta property="og:url" content="http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html" />
 <meta property="og:site_name" content="can code" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-09-10T14:34:33-07:00" />
 <script type="application/ld+json">
-{"headline":"Basic Kaldi Decoding","description":"Basic decoding steps.","datePublished":"2020-09-10T14:34:33-07:00","dateModified":"2020-09-10T14:34:33-07:00","@type":"BlogPosting","url":"http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html"},"@context":"https://schema.org"}</script>
+{"headline":"Basic Kaldi Decoding","description":"Table of Contents Basic decoding steps Decode Results 1 Remove &lt;unk&gt; and rescore again Results 2 Note","datePublished":"2020-09-10T14:34:33-07:00","dateModified":"2020-09-10T14:34:33-07:00","@type":"BlogPosting","url":"http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/09/10/Basic-Kaldi-Decoding.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="can code" /></head>
 <body><header class="site-header" role="banner">
@@ -45,7 +45,17 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>Basic decoding steps.</p>
+    <h1 id="table-of-contents">Table of Contents</h1>
+<ol>
+  <li><a href="#e1">Basic decoding steps</a></li>
+  <li><a href="#e2">Decode</a></li>
+  <li><a href="#e3">Results 1</a></li>
+  <li><a href="#e4">Remove &lt;unk&gt; and rescore again</a></li>
+  <li><a href="#e5">Results 2</a></li>
+  <li><a href="#e6">Note</a></li>
+</ol>
+
+<p><strong>Basic decoding steps</strong> <a name="e1"></a></p>
 
 <p>The example is about decoding. Didn’t train model. For trained models check kaldi website.</p>
 
@@ -81,7 +91,7 @@ less exp/tdnn_7b_chain_online/decode_test/log/decode.<span class="k">*</span>.lo
 
 </code></pre></div></div>
 
-<p>Decode</p>
+<p><strong>Decode</strong>  <a name="e2"></a></p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span> ./path.sh
 <span class="nb">.</span> ./cmd.sh
@@ -93,12 +103,12 @@ steps/make_mfcc.sh <span class="nt">--mfcc-config</span> conf/mfcc_hires.conf da
 steps/online/nnet3/decode.sh <span class="nt">--cmd</span> utils/run.pl <span class="nt">--nj</span> 5 <span class="nt">--acwt</span> 1.0 <span class="nt">--post-decode-acwt</span> 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
 </code></pre></div></div>
 
-<p>Results 1</p>
+<p><strong>Results 1</strong>  <a name="e3"></a></p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%WER 26.72 <span class="o">[</span> 55196 / 206597, 6730 ins, 18273 del, 30193 sub <span class="o">]</span>
 </code></pre></div></div>
 
-<p>Change scoring by using local/wer_hyp_filter</p>
+<p><strong>Remove &lt;unk&gt; and rescore again</strong> <a name="e4"></a></p>
 
 <p>Goal: remove  &lt;unk&gt; from decoded test before scoring</p>
 
@@ -112,14 +122,16 @@ steps/online/nnet3/decode.sh <span class="nt">--cmd</span> utils/run.pl <span cl
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">local</span>/score.sh <span class="nt">--cmd</span> utils/run.pl data/test exp/tdnn_7b_chain_online/graph_pp exp/tdnn_7b_chain_online/decode_test
 </code></pre></div></div>
 
-<p>Results 2:</p>
+<p><strong>Results 2</strong>  <a name="e5"></a></p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%WER 26.54 <span class="o">[</span> 54823 / 206597, 6371 ins, 19471 del, 28981 sub <span class="o">]</span>
 </code></pre></div></div>
 
 <p>As expected scoring improved very slightly</p>
 
-<p>Note: my scoring script score.sh points to score_kaldi.sh</p>
+<p><strong>Note</strong> <a name="e6"></a></p>
+
+<p>My scoring script score.sh points to score_kaldi.sh. Always use score_kaldi.sh as a scoring script, as it gives lots of ways to troubleshoot the problem and improve on decoding.</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>score.sh -&gt; ../steps/score_kaldi.sh
 </code></pre></div></div>

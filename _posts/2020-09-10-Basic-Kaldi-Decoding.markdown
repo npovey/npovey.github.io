@@ -5,9 +5,15 @@ title:  "Basic Kaldi Decoding"
 date:   2020-09-10 14:34:33 -0700
 categories: update
 ---
+# Table of Contents
+1. [Basic decoding steps](#e1)
+2. [Decode](#e2)
+3. [Results 1](#e3)
+4. [Remove \<unk\> and rescore again](#e4)
+5. [Results 2](#e5)
+6. [Note](#e6)
 
-
-Basic decoding steps.
+**Basic decoding steps** <a name="e1"></a>
 
 
 The example is about decoding. Didn't train model. For trained models check kaldi website.
@@ -45,7 +51,7 @@ less exp/tdnn_7b_chain_online/decode_test/log/decode.*.log
 
 ```
 
-Decode
+**Decode**  <a name="e2"></a>
 
 ```bash
 . ./path.sh
@@ -58,7 +64,7 @@ steps/make_mfcc.sh --mfcc-config conf/mfcc_hires.conf data/test
 steps/online/nnet3/decode.sh --cmd utils/run.pl --nj 5 --acwt 1.0 --post-decode-acwt 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
 ```
 
-Results 1
+**Results 1**  <a name="e3"></a>
 
 ```bash
 %WER 26.72 [ 55196 / 206597, 6730 ins, 18273 del, 30193 sub ]
@@ -67,8 +73,7 @@ Results 1
 
 
 
-
-Change scoring by using local/wer_hyp_filter
+**Remove \<unk\> and rescore again** <a name="e4"></a>
 
 Goal: remove  \<unk\> from decoded test before scoring
 
@@ -84,7 +89,7 @@ Run score script:
 local/score.sh --cmd utils/run.pl data/test exp/tdnn_7b_chain_online/graph_pp exp/tdnn_7b_chain_online/decode_test
 ```
 
-Results 2:
+**Results 2**  <a name="e5"></a>
 
 ```bash
 %WER 26.54 [ 54823 / 206597, 6371 ins, 19471 del, 28981 sub ]
@@ -92,7 +97,9 @@ Results 2:
 
 As expected scoring improved very slightly
 
-Note: my scoring script score.sh points to score_kaldi.sh
+**Note** <a name="e6"></a>
+
+My scoring script score.sh points to score_kaldi.sh. Always use score_kaldi.sh as a scoring script, as it gives lots of ways to troubleshoot the problem and improve on decoding. 
 
 ```bash
 score.sh -> ../steps/score_kaldi.sh
