@@ -113,6 +113,11 @@ steps/online/nnet3/decode.sh <span class="nt">--cmd</span> utils/run.pl <span cl
 
 <p>Goal: remove  &lt;unk&gt; from decoded test before scoring</p>
 
+<p>TODO:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>strip out the &lt;unk&gt; by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x...), and will probably have a sed or perl command inside it, like: sed 's/&lt;unk&gt;//g;'
+</code></pre></div></div>
+
 <p>Create a “local/wer_hyp_filter” / “wer_hyp_filter.sh” would not work</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sed</span> <span class="s1">'s/&lt;unk&gt;//g;'</span>

@@ -78,6 +78,14 @@ steps/online/nnet3/decode.sh --cmd utils/run.pl --nj 5 --acwt 1.0 --post-decode-
 
 Goal: remove  \<unk\> from decoded test before scoring
 
+TODO:
+
+```text
+strip out the <unk> by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x...), and will probably have a sed or perl command inside it, like: sed 's/<unk>//g;'
+```
+
+
+
 Create a "local/wer_hyp_filter" / "wer_hyp_filter.sh" would not work
 
 ```bash

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Kaldi interpolate"
+title:  "Kaldi: interpolate using SRILM"
 date:   2020-09-09 14:34:33 -0700
 categories: update
 ---
