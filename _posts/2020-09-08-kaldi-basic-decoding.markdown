@@ -5,7 +5,10 @@ title:  "Basic Kaldi Decoding"
 date:   2020-09-08 14:34:33 -0700
 categories: update
 ---
+![basic](/2020-09-08-basic-kaldi-decoding/basic_kaldi_decoding.png)
+
 # Table of Contents
+
 1. [Basic decoding steps](#e1)
 2. [Decode](#e2)
 3. [Results 1](#e3)
@@ -14,7 +17,6 @@ categories: update
 6. [Note: score.sh -> ../steps/score_kaldi.sh](#e6)
 
 **Basic decoding steps** <a name="e1"></a>
-
 
 The example is about decoding. Didn't train model. For trained models check kaldi website.
 <http://kaldi-asr.org/models.html>
@@ -78,11 +80,11 @@ steps/online/nnet3/decode.sh --cmd utils/run.pl --nj 5 --acwt 1.0 --post-decode-
 
 Goal: remove  \<unk\> from decoded test before scoring
 
-TODO:
 
-```text
-strip out the <unk> by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x...), and will probably have a sed or perl command inside it, like: sed 's/<unk>//g;'
-```
+
+>
+TODO:
+strip out the \<unk\> by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x...), and will probably have a sed or perl command inside it, like: sed 's/\<unk\>//g;'
 
 
 

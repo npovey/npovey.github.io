@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-11T03:37:03-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Kaldi: interpolate using SRILM</title><link href="http://localhost:4000/update/2020/09/09/kaldi-interpolate-using-srilm.html" rel="alternate" type="text/html" title="Kaldi: interpolate using SRILM" /><published>2020-09-09T14:34:33-07:00</published><updated>2020-09-09T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/09/kaldi-interpolate-using-srilm</id><content type="html" xml:base="http://localhost:4000/update/2020/09/09/kaldi-interpolate-using-srilm.html">&lt;p&gt;KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-20T05:06:09-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">can code</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Kaldi: interpolate using SRILM</title><link href="http://localhost:4000/update/2020/09/09/kaldi-interpolate-using-srilm.html" rel="alternate" type="text/html" title="Kaldi: interpolate using SRILM" /><published>2020-09-09T14:34:33-07:00</published><updated>2020-09-09T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/09/kaldi-interpolate-using-srilm</id><content type="html" xml:base="http://localhost:4000/update/2020/09/09/kaldi-interpolate-using-srilm.html">&lt;p&gt;&lt;img src=&quot;/2020-09-09-interpolate-srilm/kaldi_interpolate.jpg&quot; alt=&quot;jpeg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;KALDI speech processing interpolation example. Read up on ngram here  http://www.speech.sri.com/projects/srilm/&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
 1. &lt;span class=&quot;c&quot;&gt;# ngram path added to the path&lt;/span&gt;
@@ -42,7 +44,10 @@ steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;LM1 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 26.98
 LM2 WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 29.29
 LM3 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Interpolated model] WER &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 27.12
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">KALDI speech processing interpolation example. Read up on ngram here http://www.speech.sri.com/projects/srilm/</summary></entry><entry><title type="html">Basic Kaldi Decoding</title><link href="http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html" rel="alternate" type="text/html" title="Basic Kaldi Decoding" /><published>2020-09-08T14:34:33-07:00</published><updated>2020-09-08T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding</id><content type="html" xml:base="http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html">&lt;h1 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h1&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html"></summary></entry><entry><title type="html">Basic Kaldi Decoding</title><link href="http://localhost:4000/update/2020/09/08/kaldi-basic-decoding.html" rel="alternate" type="text/html" title="Basic Kaldi Decoding" /><published>2020-09-08T14:34:33-07:00</published><updated>2020-09-08T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/09/08/kaldi-basic-decoding</id><content type="html" xml:base="http://localhost:4000/update/2020/09/08/kaldi-basic-decoding.html">&lt;p&gt;&lt;img src=&quot;/2020-09-08-basic-kaldi-decoding/basic_kaldi_decoding.png&quot; alt=&quot;basic&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h1&gt;
+
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;#e1&quot;&gt;Basic decoding steps&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#e2&quot;&gt;Decode&lt;/a&gt;&lt;/li&gt;
@@ -110,10 +115,11 @@ steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt;
 
 &lt;p&gt;Goal: remove  &amp;lt;unk&amp;gt; from decoded test before scoring&lt;/p&gt;
 
-&lt;p&gt;TODO:&lt;/p&gt;
+&lt;blockquote&gt;
 
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;strip out the &amp;lt;unk&amp;gt; by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x...), and will probably have a sed or perl command inside it, like: sed 's/&amp;lt;unk&amp;gt;//g;'
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;p&gt;TODO:
+strip out the &amp;lt;unk&amp;gt; by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x…), and will probably have a sed or perl command inside it, like: sed ‘s/&amp;lt;unk&amp;gt;//g;’&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;Create a “local/wer_hyp_filter” / “wer_hyp_filter.sh” would not work&lt;/p&gt;
 
@@ -137,7 +143,7 @@ steps/online/nnet3/decode.sh &lt;span class=&quot;nt&quot;&gt;--cmd&lt;/span&gt;
 &lt;p&gt;My scoring script score.sh points to score_kaldi.sh. Always use score_kaldi.sh as a scoring script, as it gives lots of ways to troubleshoot the problem and improve on decoding.&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;score.sh -&amp;gt; ../steps/score_kaldi.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Table of Contents Basic decoding steps Decode Results 1 Remove &amp;lt;unk&amp;gt; and rescore again Results 2 Note: score.sh -&amp;gt; ../steps/score_kaldi.sh</summary></entry><entry><title type="html">DD-Net: Combination of DenseNet and Deconvolution (linux)</title><link href="http://localhost:4000/update/2020/04/01/DD_Net-linux.html" rel="alternate" type="text/html" title="DD-Net: Combination of DenseNet and Deconvolution (linux)" /><published>2020-04-01T14:34:33-07:00</published><updated>2020-04-01T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/04/01/DD_Net-linux</id><content type="html" xml:base="http://localhost:4000/update/2020/04/01/DD_Net-linux.html">&lt;h1 id=&quot;densenet-and-deconvolution-linux&quot;&gt;DenseNet and Deconvolution (linux)&lt;/h1&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html"></summary></entry><entry><title type="html">DD-Net: Combination of DenseNet and Deconvolution (linux)</title><link href="http://localhost:4000/update/2020/04/01/DD_Net-linux.html" rel="alternate" type="text/html" title="DD-Net: Combination of DenseNet and Deconvolution (linux)" /><published>2020-04-01T14:34:33-07:00</published><updated>2020-04-01T14:34:33-07:00</updated><id>http://localhost:4000/update/2020/04/01/DD_Net-linux</id><content type="html" xml:base="http://localhost:4000/update/2020/04/01/DD_Net-linux.html">&lt;h1 id=&quot;densenet-and-deconvolution-linux&quot;&gt;DenseNet and Deconvolution (linux)&lt;/h1&gt;
 
 &lt;p&gt;DD-Net always peformed similar to UNet and DnCNN. The training time was the longest out of other 2 models. It took aprox. 24 hours to train the network.&lt;/p&gt;
 

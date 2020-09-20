@@ -7,15 +7,15 @@
 <meta name="generator" content="Jekyll v3.8.6" />
 <meta property="og:title" content="Basic Kaldi Decoding" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Table of Contents Basic decoding steps Decode Results 1 Remove &lt;unk&gt; and rescore again Results 2 Note: score.sh -&gt; ../steps/score_kaldi.sh" />
-<meta property="og:description" content="Table of Contents Basic decoding steps Decode Results 1 Remove &lt;unk&gt; and rescore again Results 2 Note: score.sh -&gt; ../steps/score_kaldi.sh" />
-<link rel="canonical" href="http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html" />
-<meta property="og:url" content="http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html" />
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<link rel="canonical" href="http://localhost:4000/update/2020/09/08/kaldi-basic-decoding.html" />
+<meta property="og:url" content="http://localhost:4000/update/2020/09/08/kaldi-basic-decoding.html" />
 <meta property="og:site_name" content="can code" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-09-08T14:34:33-07:00" />
 <script type="application/ld+json">
-{"headline":"Basic Kaldi Decoding","description":"Table of Contents Basic decoding steps Decode Results 1 Remove &lt;unk&gt; and rescore again Results 2 Note: score.sh -&gt; ../steps/score_kaldi.sh","datePublished":"2020-09-08T14:34:33-07:00","dateModified":"2020-09-08T14:34:33-07:00","@type":"BlogPosting","url":"http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/09/08/Basic-Kaldi-Decoding.html"},"@context":"https://schema.org"}</script>
+{"headline":"Basic Kaldi Decoding","description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","datePublished":"2020-09-08T14:34:33-07:00","dateModified":"2020-09-08T14:34:33-07:00","@type":"BlogPosting","url":"http://localhost:4000/update/2020/09/08/kaldi-basic-decoding.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/09/08/kaldi-basic-decoding.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="can code" /></head>
 <body><header class="site-header" role="banner">
@@ -45,7 +45,10 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <h1 id="table-of-contents">Table of Contents</h1>
+    <p><img src="/2020-09-08-basic-kaldi-decoding/basic_kaldi_decoding.png" alt="basic" /></p>
+
+<h1 id="table-of-contents">Table of Contents</h1>
+
 <ol>
   <li><a href="#e1">Basic decoding steps</a></li>
   <li><a href="#e2">Decode</a></li>
@@ -113,10 +116,11 @@ steps/online/nnet3/decode.sh <span class="nt">--cmd</span> utils/run.pl <span cl
 
 <p>Goal: remove  &lt;unk&gt; from decoded test before scoring</p>
 
-<p>TODO:</p>
+<blockquote>
 
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>strip out the &lt;unk&gt; by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x...), and will probably have a sed or perl command inside it, like: sed 's/&lt;unk&gt;//g;'
-</code></pre></div></div>
+  <p>TODO:
+strip out the &lt;unk&gt; by setting up the file local/wer_filter (or better, local/wer_hyp_filter, it will just filter the hypothesis).  check score_kaldi.sh for what it accepts.  Should be a shell script, executable (chmod +x…), and will probably have a sed or perl command inside it, like: sed ‘s/&lt;unk&gt;//g;’</p>
+</blockquote>
 
 <p>Create a “local/wer_hyp_filter” / “wer_hyp_filter.sh” would not work</p>
 
@@ -142,7 +146,7 @@ steps/online/nnet3/decode.sh <span class="nt">--cmd</span> utils/run.pl <span cl
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>score.sh -&gt; ../steps/score_kaldi.sh
 </code></pre></div></div>
 
-  </div><a class="u-url" href="/update/2020/09/08/Basic-Kaldi-Decoding.html" hidden></a>
+  </div><a class="u-url" href="/update/2020/09/08/kaldi-basic-decoding.html" hidden></a>
 </article>
 
       </div>
