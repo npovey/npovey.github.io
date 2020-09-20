@@ -48,6 +48,7 @@ steps/make_mfcc.sh --mfcc-config conf/mfcc_hires.conf data/test
 steps/online/nnet3/decode.sh --cmd utils/run.pl --nj 5 --acwt 1.0 --post-decode-acwt 10.0 exp/tdnn_7b_chain_online/graph_pp data/test exp/tdnn_7b_chain_online/decode_test
 ```
 
+
 Results
 
 ```bash
