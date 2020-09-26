@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "Basic Kaldi Decoding"
+title:  "Kaldi: Decoding with Pre-trained Aspire Model"
 date:   2020-09-08 14:34:33 -0700
 categories: update
 ---
