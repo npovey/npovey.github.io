@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Kaldi: Uniform Segmentation | can code</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Kaldi: Uniform Segmentation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<link rel="canonical" href="http://localhost:4000/update/2020/09/10/kaldi-segmentation.html" />
+<meta property="og:url" content="http://localhost:4000/update/2020/09/10/kaldi-segmentation.html" />
+<meta property="og:site_name" content="can code" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-09-10T14:34:33-07:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/update/2020/09/10/kaldi-segmentation.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/update/2020/09/10/kaldi-segmentation.html"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Kaldi: Uniform Segmentation","dateModified":"2020-09-10T14:34:33-07:00","datePublished":"2020-09-10T14:34:33-07:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="can code" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">can code</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Kaldi: Uniform Segmentation</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-09-10T14:34:33-07:00" itemprop="datePublished">Sep 10, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><img src="/2020-09-10-segmentation/uniform_segmentation.png" alt="jpeg" /></p>
+
+<p><strong>Goal</strong></p>
+
+<p>When decoding with pre-trained Aspire model I noticed that the audio with background noise gave us high error rate. When I looked at decoded text many words simply where missing. It was shown before that uniform segmentation can improve decoding results on long audio files that were decoded with Aspire model. I wanted to test that observation on our audio files, as our audio files are around 1 hour long.</p>
+
+<p><strong>Training data/test data/ pre-tained model</strong></p>
+
+<p>For testing I used captions from approximately 30K youtube videos [57,592,182 words]. I noticed that the text has approximately 200K duplicate lines.</p>
+
+<p><strong>Expected outcome</strong></p>
+
+<p>I am expecting to see some improvements in decoded text.</p>
+
+<p><strong>Results</strong></p>
+
+<p>I tested only on a single file that was 1 hour long. The file has very loud music in the background in the beginning and at the end of the recording. I observed ~7 point improvement in the final results.</p>
+
+<p><em>What I Learned: Even when the model is trained with background noise it still can have a hard time with decoding audios with background noise and segmentation helps on long audio files.</em></p>
+
+<p>KALDI: Notes on decoding with uniform segmentation:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. <span class="c"># create by hand utt2spk</span>
+
+2. <span class="c"># create spk2utt file</span>
+utils/utt2spk_to_spk2utt.pl utt2spk <span class="o">&gt;</span> spk2utt
+
+3. <span class="c"># create text and wav.scp</span>
+
+4. <span class="c"># get segments</span>
+utils/data/get_segments_for_data.sh  data/test <span class="o">&gt;</span> data/test/segments
+
+5. <span class="c"># copy text into a new folder</span>
+<span class="nb">cp test</span>/text test_segmented
+
+6.
+utils/data/get_uniform_subsegments.py <span class="nt">--max-segment-duration</span><span class="o">=</span>30 <span class="nt">--overlap-duration</span><span class="o">=</span>5 <span class="nt">--max-remaining-duration</span><span class="o">=</span>15 data/test/segments <span class="o">&gt;</span> data/test/uniform_sub_segments
+
+7. <span class="c"># create features</span>
+steps/make_mfcc.sh <span class="nt">--nj</span> 1 <span class="nt">--mfcc-config</span> conf/mfcc_hires.conf data/test
+
+8.
+utils/data/subsegment_data_dir.sh data/test/ data/test/uniform_sub_segments data/test_segmented
+
+9. <span class="c"># assumes one has a language model and graph</span>
+<span class="c"># https://npovey.github.io/update/2020/09/08/kaldi-basic-decoding.html</span>
+
+10. <span class="c"># decode</span>
+steps/online/nnet3/decode.sh <span class="nt">--cmd</span> utils/run.pl <span class="nt">--nj</span> 1 <span class="nt">--acwt</span> 1.0 <span class="nt">--post-decode-acwt</span> 10.0 exp/tdnn_7b_chain_online/graph_pp data/test_segmented exp/tdnn_7b_chain_online/decode_test
+
+
+11. <span class="c"># splices the broken-up pieces together</span>
+<span class="c"># --frame-shift 0.01 or --frame-shift 0.03 all producing the same results</span>
+steps/get_ctm_fast.sh <span class="nt">--cmd</span> utils/run.pl <span class="nt">--frame-shift</span> 0.01 data/test_segmented exp/tdnn_7b_chain_online/graph_pp exp/tdnn_7b_chain_online/decode_test exp/tdnn_7b_chain_online/decode_test/score_10_0.0
+
+12. <span class="c"># create "reco2file_and_channel" file</span>
+<span class="nb">touch </span>reco2file_and_channel
+pico reco2file_and_channel
+<span class="c"># 13 13 0</span>
+
+13. <span class="c"># concatenates the pieces of text and resolves bits that overlap in time...</span>
+utils/ctm/resolve_ctm_overlaps.py data/test_segmented/segments exp/tdnn_7b_chain_online/decode_test/score_10_0.0/ctm - | utils/convert_ctm.pl
+data/test_segmented/segments data/test_segmented/reco2file_and_channel <span class="o">&gt;</span> exp/tdnn_7b_chain_online/decode_test/score_10_0.0/no_segments.ctm
+
+
+14. <span class="c"># don't remember but this shouldn't work</span>
+<span class="c">#local/score.sh --cmd utils/run.pl data/test_segmented exp/tdnn_7b_chain_online/graph_pp exp/tdnn_7b_chain_online/decode_test</span>
+
+15. <span class="c"># write a script to convert ctm-&gt;text</span>
+<span class="nb">cat </span>no_segments.ctm | <span class="nb">awk</span> <span class="s1">'{$1 = ""; $2 = ""; $3 = ""; $4 = ""; print $0}'</span> <span class="o">&gt;</span> z.txt
+<span class="nb">cat </span>z.txt | <span class="nb">tr</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">" "</span> <span class="o">&gt;</span> z2.txt
+
+16. <span class="c">#score</span>
+<span class="c"># You must slightly edit "z2.txt" to match the data/text</span>
+<span class="c"># remove word test at the top and add the matching file name as in data/text</span>
+<span class="nb">.</span> ./path.sh
+compute-wer <span class="nt">--text</span> <span class="nt">--mode</span><span class="o">=</span>present ark:data/test/text ark:exp/tdnn_7b_chain_online/decode_test/score_10_0.0/z2.txt
+<span class="c">#%WER 35.51 [ 3060 / 8617, 391 ins, 1030 del, 1639 sub ]</span>
+
+<span class="c">#or</span>
+compute-wer-bootci <span class="nt">--mode</span><span class="o">=</span>present ark:data/test/text ark:exp/tdnn_7b_chain_online/decode_test/score_10_0.0/z5.txt
+
+17. <span class="c"># pipe through hyp_filter to remove "unk"</span>
+./wer_hyp_filter &lt; exp/tdnn_7b_chain_online/decode_test/score_10_0.0/z2.txt <span class="o">&gt;</span> removed_unk.txt
+
+
+18. score again
+compute-wer <span class="nt">--text</span> <span class="nt">--mode</span><span class="o">=</span>present ark:data/test/text ark:exp/tdnn_7b_chain_online/decode_test/score_10_0.0/removed_unk.txt
+<span class="c">#%WER 35.27 [ 3039 / 8617, 364 ins, 1116 del, 1559 sub ]</span>
+<span class="c">#%SER 100.00 [ 1 / 1 ]</span>
+<span class="c">#Scored 1 sentences, 0 not present in hyp.</span>
+</code></pre></div></div>
+
+  </div><a class="u-url" href="/update/2020/09/10/kaldi-segmentation.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">can code</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">can code</li><li><a class="u-email" href="mailto:npovey2atgmail">npovey2atgmail</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
