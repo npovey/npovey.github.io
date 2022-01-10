@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>AWS &amp; Kaldi Installation | speech processing</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="AWS &amp; Kaldi Installation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Step 1: Choose an instance on AWS Step 2: Download Kaldi from GitHub Step 3: Read the Kaldi installation instructions and follow Option 1 Step 3: Go to tools/ and follow INSTALL instructions there. Step 4: go to src/ and follow INSTALL instructions there." />
+<meta property="og:description" content="Step 1: Choose an instance on AWS Step 2: Download Kaldi from GitHub Step 3: Read the Kaldi installation instructions and follow Option 1 Step 3: Go to tools/ and follow INSTALL instructions there. Step 4: go to src/ and follow INSTALL instructions there." />
+<link rel="canonical" href="http://localhost:4000/jekyll/update/2022/01/02/AWS-Kaldi-Installation.html" />
+<meta property="og:url" content="http://localhost:4000/jekyll/update/2022/01/02/AWS-Kaldi-Installation.html" />
+<meta property="og:site_name" content="speech processing" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-02T00:07:21-08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AWS &amp; Kaldi Installation" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/jekyll/update/2022/01/02/AWS-Kaldi-Installation.html","headline":"AWS &amp; Kaldi Installation","dateModified":"2022-01-02T00:07:21-08:00","datePublished":"2022-01-02T00:07:21-08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2022/01/02/AWS-Kaldi-Installation.html"},"description":"Step 1: Choose an instance on AWS Step 2: Download Kaldi from GitHub Step 3: Read the Kaldi installation instructions and follow Option 1 Step 3: Go to tools/ and follow INSTALL instructions there. Step 4: go to src/ and follow INSTALL instructions there.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="speech processing" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">speech processing</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">AWS &amp; Kaldi Installation</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2022-01-02T00:07:21-08:00" itemprop="datePublished">Jan 2, 2022
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul>
+  <li><a href="#step-1-choose-an-instance-on-aws">Step 1: Choose an instance on AWS</a></li>
+  <li><a href="#step-2-download-kaldi-from-github">Step 2: Download Kaldi from GitHub</a></li>
+  <li><a href="#step-3-read-the-kaldi-installation-instructions-and-follow-option-1">Step 3: Read the Kaldi installation instructions and follow Option 1</a></li>
+  <li><a href="#step-3-go-to-tools--and-follow-install-instructions-there">Step 3: Go to tools/  and follow INSTALL instructions there.</a></li>
+  <li><a href="#step-4-go-to-src-and-follow-install-instructions-there">Step 4: go to src/ and follow INSTALL instructions there.</a></li>
+</ul>
+
+<p>YouTube Tutorial Install Kaldi AWS Ubuntu:
+<a href="https://youtu.be/NuB2BTYNosE">https://youtu.be/NuB2BTYNosE</a></p>
+<h3 id="step-1-choose-an-instance-on-aws">Step 1: Choose an instance on AWS</h3>
+
+<p><img src="/Export_aws/AWS_Kaldi_Installation/aws.png" alt="png" /></p>
+
+<p>Select the <code class="highlighter-rouge">g4dn.2xlarge</code> instance as it has 8 vCPUs and 1 GPU, and its 75 cents per hour, so make sure to pause the instance when you’re not using it. Need 10 days of training. For Step 3, select a specific subnet. This is optional since it defaults to a random region. For Step 4, disable the “Delete on Termination” setting and change the Root’s size to 600 GB. From personal experience, 400GB isn’t going to be enough. Then, you can skip to step 7, review the instance settings, and launch the instance. I’m creating a key pair but you can use an existing one.</p>
+
+<h3 id="step-2-download-kaldi-from-github">Step 2: Download Kaldi from GitHub</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/kaldi-asr/kaldi.git kaldi <span class="nt">--origin</span> upstream
+<span class="nb">cd </span>kaldi
+git pull
+</code></pre></div></div>
+
+<h3 id="step-3-read-the-kaldi-installation-instructions-and-follow-option-1">Step 3: Read the Kaldi installation instructions and follow Option 1</h3>
+
+<p><a href="https://github.com/kaldi-asr/kaldi/blob/master/INSTALL">https://github.com/kaldi-asr/kaldi/blob/master/INSTALL</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nano INSTALL
+
+This is the official Kaldi INSTALL. Look also at INSTALL.md <span class="k">for </span>the git mirror installation.
+<span class="o">[</span>Option 1 <span class="k">in </span>the following does not apply to native Windows <span class="nb">install</span>, see windows/INSTALL or following Option 2]
+
+Option 1 <span class="o">(</span>bash + makefile<span class="o">)</span>:
+
+  Steps:
+    <span class="o">(</span>1<span class="o">)</span>
+    go to tools/  and follow INSTALL instructions there.
+
+    <span class="o">(</span>2<span class="o">)</span>
+    go to src/ and follow INSTALL instructions there.
+
+Option 2 <span class="o">(</span>cmake<span class="o">)</span>:
+
+    Go to cmake/ and follow INSTALL.md instructions there.
+    Note, it may not be well tested and some features are missing currently.
+</code></pre></div></div>
+
+<h3 id="step-3-go-to-tools--and-follow-install-instructions-there">Step 3: Go to tools/  and follow INSTALL instructions there.</h3>
+
+<p><a href="https://github.com/kaldi-asr/kaldi/blob/master/tools/INSTALL">https://github.com/kaldi-asr/kaldi/blob/master/tools/INSTALL</a></p>
+
+<p>Check for dependencies using one of the provided lines and install anything that isn’t downloaded yet.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CXX</span><span class="o">=</span>g++-4.8 extras/check_dependencies.sh
+</code></pre></div></div>
+
+<p>Installed the following packages but you might need more, keep checking for dependencies using the line above.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>g++ sox subversion
+<span class="nb">sudo </span>apt-get <span class="nb">install </span>g++
+extras/install_mkl.sh
+make <span class="nt">-j</span> 8
+</code></pre></div></div>
+
+<p>When that’s done running, I saw the warning that IRSTLM is not installed, so I’m running the provided line to have it installed.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extras/install_irstlm.sh
+</code></pre></div></div>
+
+<p>If you recall the original installation steps we found, you’ll remember that when we’re done in the tools folder we should head to the source folder.</p>
+
+<h3 id="step-4-go-to-src-and-follow-install-instructions-there">Step 4: go to src/ and follow INSTALL instructions there.</h3>
+
+<p>[ubuntu@ip-172-31-6-113 src]$ nano INSTALL</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>src
+<span class="o">[</span>ubuntu@ip-172-31-6-113 src]<span class="nv">$ </span>nano INSTALL
+./configure <span class="nt">--shared</span>
+make depend <span class="nt">-j</span> 8
+make <span class="nt">-j</span> 8
+</code></pre></div></div>
+
+<p><strong>You’re Done!</strong></p>
+
+<hr />
+
+<p>Transcript for tutorial on YouTube:</p>
+
+<p>Today we’re going to set up an AWS instance and install Kaldi on it.  First, open your AWS account and find the EC2 instances page. Click launch instance, scroll down to the “<strong>Deep Learning AMI (Ubuntu 18.04)”</strong> and select it. For Step 2, select the g4dn.2xlarge instance as it has 8 vCPUs and 1 GPU, and its 75 cents per hour, so make sure to pause the instance when you’re not using it. For Step 3, select a specific subnet. This is optional since it defaults to a random region. For Step 4, disable the “Delete on Termination” setting and change the Root’s size to 600 GB. From personal experience, 400GB isn’t going to be enough. Then, you can skip to step 7, review the instance settings, and launch the instance. I’m creating a key pair but you can use an existing one.</p>
+
+<p>Now its time to open your terminal and login into your AWS instance. The address you’ll be ssh-ing into is ubuntu “at” your instance’s public IP address. If you’re using a new key .pem file, make sure to change its privacy settings by using the command “chmod 400” with your file name. Once you successfully ssh into your instance, it is time to install Kaldi.</p>
+
+<p>The initial downloading steps can be found on the official Kaldi webpage. Just copy and paste the first two commands on this page into your terminal and you should be set. Next, open and read the INSTALL file in the Kaldi directory, and follow Option 1. This means you should change to the tools directory and follow the directions in the INSTALL file there. Check for dependencies using one of the provided lines and install anything that isn’t downloaded yet. There’s a bug for one dependency where even if you download it, the check dependencies command will still say its uninstalled. You can just ignore this warning if you have already installed it. Now we’re going to run make with the last option in the installation instruction, since it uses multiple CPUs. When that’s done running, I saw the warning that IRSTLM is not installed, so I’m running the provided line to have it installed.</p>
+
+<p>If you recall the original installation steps we found, you’ll remember that when we’re done in the tools folder we should head to the source folder. Here we can open the installation file and follow the three simple commands.</p>
+
+<p>And that was it! You’re all done installing Kaldi. Thanks for watching, and hopefully his was helpful.</p>
+
+<p>history.txt</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    1  LS
+    2  <span class="nb">ls
+    </span>3  tree <span class="nt">-l</span>
+    4  tree <span class="nt">-L</span>
+    5  get-apt <span class="nb">install </span>tree
+    6  apt-get <span class="nb">install </span>tree
+    7  <span class="nb">ls
+    </span>8  tree -
+    9  tree <span class="nt">-L</span> 2
+   10  <span class="nb">exit
+   </span>11  <span class="nb">ls
+   </span>12  tree <span class="nt">-L</span> 2
+   13  <span class="nb">sudo </span>apt  <span class="nb">install </span>tree
+   14  tree <span class="nt">-L</span> 2
+   15  git clone https://github.com/kaldi-asr/kaldi.git kaldi <span class="nt">--origin</span> upstream
+   16  <span class="nb">cd </span>kaldi
+   17  <span class="nb">ls
+   </span>18  nano INSTALL
+   19  <span class="nb">cd </span>tools/
+   20  nano INSTALL
+   21  <span class="nv">CXX</span><span class="o">=</span>g++-4.8 extras/check_dependencies.sh
+   22  <span class="nb">sudo </span>apt-get <span class="nb">install </span>g++ sox subversion
+   23  <span class="nv">CXX</span><span class="o">=</span>g++-4.8 extras/check_dependencies.sh
+   24  <span class="nb">sudo </span>apt-get <span class="nb">install </span>g++
+   25  <span class="nv">CXX</span><span class="o">=</span>g++-4.8 extras/check_dependencies.sh
+   26  extras/install_mkl.sh
+   27  <span class="nv">CXX</span><span class="o">=</span>g++-4.8 extras/check_dependencies.sh
+   28  nano INSTALL
+   29  make <span class="nt">-j</span> 8
+   30  extras/install_irstlm.sh
+   31  <span class="nb">ls
+   </span>32  <span class="nb">cd</span> ..
+   33  <span class="nb">cd </span>src
+   34  <span class="nb">ls
+   </span>35  <span class="nb">cd</span> ..
+   36  nano INSTALL
+   37  <span class="nb">cd </span>src/
+   38  <span class="nb">ls
+   </span>39  nano INSTALL
+   40  ./configure <span class="nt">--shared</span>
+   41  nano INSTALL
+   42  make depend <span class="nt">-j</span> 8
+   43  nano INSTALL
+   44 make <span class="nt">-j</span> 8
+   45  <span class="nb">cd</span> ..
+   46  tree <span class="nt">-L</span> 2
+   47  tree <span class="nt">-L</span> 1
+   48  tree <span class="nt">-L</span> 2
+   49  <span class="nb">df</span> <span class="nt">-hT</span>
+   50  lsblk
+   51  <span class="nb">ls
+   </span>52  <span class="nb">cd </span>egs
+   53  <span class="nb">ls
+   </span>54  <span class="nb">cd </span>librispeech/
+   55  <span class="nb">ls
+   </span>56  <span class="nb">cd </span>s5
+   57  <span class="nb">ls
+   </span>58  <span class="nb">sudo </span>apt <span class="nb">install </span>flac
+   59  <span class="nb">ls
+   </span>60  nano cmd.sh
+   61  <span class="nb">ls
+   </span>62  <span class="nb">cp </span>run.sh run_edited.sh
+   63  <span class="nb">ls
+   </span>64  nano run_edited.sh
+   65  nvidia-smi
+   66  nvidia-smi <span class="nt">-c</span> 3
+   67  <span class="nb">sudo </span>nvidia-smi <span class="nt">-c</span> 3
+   68  nano run_edited.sh
+   69  nano <span class="nb">local</span>/chain/run_tdnn.sh
+   70  screen <span class="nt">-S</span> libri
+   71  top
+   72  <span class="nb">history</span> <span class="o">&gt;</span> history.txt
+</code></pre></div></div>
+
+<!-- 
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: [https://disqus.com/admin/universalcode/#configuration-variables](https://disqus.com/admin/universalcode/#configuration-variables)    */
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '[https://https-npovey-github-io.disqus.com/embed.js](https://https-npovey-github-io.disqus.com/embed.js)';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="[https://disqus.com/?ref_noscript](https://disqus.com/?ref_noscript)">comments powered by Disqus.</a></noscript>
+
+ -->
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+this.page.url = "https://npovey.github.io/jekyll/update/2022/01/02/AWS-Kaldi-Installation.html"; // <--- use canonical URL
+this.page.identifier = "/jekyll/update/2022/01/02/AWS-Kaldi-Installation";
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//https-npovey-github-io.disqus.com/embed.js'; // <--- use Disqus shortname
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+  </div><a class="u-url" href="/jekyll/update/2022/01/02/AWS-Kaldi-Installation.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">speech processing</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">speech processing</li><li><a class="u-email" href="mailto:npovey2atgmail">npovey2atgmail</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

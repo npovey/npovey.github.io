@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>LibriSpeech training | speech processing</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="LibriSpeech training" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Step 0: Make a copy of run.sh Step 1: Install flac Step 2: Change cmd.sh Step 3: Needed if only one GPU is used Step 4: Create a screen to run the script. Step 5: Run run_edited.sh" />
+<meta property="og:description" content="Step 0: Make a copy of run.sh Step 1: Install flac Step 2: Change cmd.sh Step 3: Needed if only one GPU is used Step 4: Create a screen to run the script. Step 5: Run run_edited.sh" />
+<link rel="canonical" href="http://localhost:4000/jekyll/update/2022/01/10/L.html" />
+<meta property="og:url" content="http://localhost:4000/jekyll/update/2022/01/10/L.html" />
+<meta property="og:site_name" content="speech processing" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-10T00:07:21-08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="LibriSpeech training" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/jekyll/update/2022/01/10/L.html","headline":"LibriSpeech training","dateModified":"2022-01-10T00:07:21-08:00","datePublished":"2022-01-10T00:07:21-08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2022/01/10/L.html"},"description":"Step 0: Make a copy of run.sh Step 1: Install flac Step 2: Change cmd.sh Step 3: Needed if only one GPU is used Step 4: Create a screen to run the script. Step 5: Run run_edited.sh","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="speech processing" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">speech processing</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">LibriSpeech training</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2022-01-10T00:07:21-08:00" itemprop="datePublished">Jan 10, 2022
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul>
+  <li><a href="#step-0-make-a-copy-of-runsh">Step 0: Make a copy of run.sh</a></li>
+  <li><a href="#step-1-install-flac">Step 1: Install flac</a></li>
+  <li><a href="#step-2--change-cmdsh">Step 2:  Change cmd.sh</a></li>
+  <li><a href="#step-3-needed-if-only-one-gpu-is-used">Step 3: Needed if only one GPU is used</a></li>
+  <li><a href="#step-4-create-a-screen-to-run-the-script">Step 4: Create a screen to run the script.</a></li>
+  <li><a href="#step-5-run-run_editedsh">Step 5: Run run_edited.sh</a></li>
+</ul>
+
+<p>LibriSpeech training will need at least one GPU and 400GB storage space. The tutorial below was created using AWS instance.</p>
+
+<h3 id="step-0-make-a-copy-of-runsh">Step 0: Make a copy of run.sh</h3>
+
+<p>Normally I copy the <a href="http://run.sh">run.sh</a> to new file that I can edit. But we can edit original run.sh if wanted.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp </span>run.sh run_edited.sh
+</code></pre></div></div>
+
+<p>Need to edit path to where we want to put all downloaded folders</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano run_edited.sh
+</code></pre></div></div>
+
+<p>Edit the new version. Add few lines after line 7. Pick a data folder location that you want. I chose the one below.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> nadira/data
+<span class="nv">data</span><span class="o">=</span>nadira/data
+</code></pre></div></div>
+
+<p>Line 17 was <code class="highlighter-rouge">data=/export/a15/vpanayotov/data</code> , If you don’t have that folder you can create it, or just make a data folder.</p>
+
+<p><code class="highlighter-rouge">run_edited.sh</code> top few lines:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env bash</span>
+
+<span class="c"># Set this to somewhere where you want to put your data, or where</span>
+<span class="c"># someone else has already put it.  You'll want to change this</span>
+<span class="c"># if you're not on the CLSP grid.</span>
+<span class="c"># data=/export/a15/vpanayotov/data</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> nadira/data <span class="c"># &lt;--- added</span>
+<span class="nv">data</span><span class="o">=</span>nadira/data <span class="c"># &lt;--- added</span>
+<span class="c"># base url for downloads.</span>
+<span class="nv">data_url</span><span class="o">=</span>www.openslr.org/resources/12
+<span class="nv">lm_url</span><span class="o">=</span>www.openslr.org/resources/11
+</code></pre></div></div>
+
+<h3 id="step-1-install-flac">Step 1: Install flac</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ubuntu@ip-172-31-6-144:~/kaldi/egs/librispeech/s5<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>flac
+</code></pre></div></div>
+
+<h3 id="step-2--change-cmdsh">Step 2:  Change cmd.sh</h3>
+
+<p>Comment out the last 3 lines and add three lines that you see below. As AWS doesn’t have qsub package we can’t use the last 3 lines.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># you can change cmd.sh depending on what type of queue you are using.</span>
+<span class="c"># If you have no queueing system and want to run on a local machine, you</span>
+<span class="c"># can change all instances 'queue.pl' to run.pl (but be careful and run</span>
+<span class="c"># commands one by one: most recipes will exhaust the memory on your</span>
+<span class="c"># machine).  queue.pl works with GridEngine (qsub).  slurm.pl works</span>
+<span class="c"># with slurm.  Different queues are configured differently, with different</span>
+<span class="c"># queue names and different ways of specifying things like memory;</span>
+<span class="c"># to account for these differences you can create and edit the file</span>
+<span class="c"># conf/queue.conf to match your queue's configuration.  Search for</span>
+<span class="c"># conf/queue.conf in http://kaldi-asr.org/doc/queue.html for more information,</span>
+<span class="c"># or search for the string 'default_config' in utils/queue.pl or utils/slurm.pl.</span>
+
+<span class="c"># comment out line below as we don't have qsub on AWS</span>
+<span class="c"># export train_cmd="queue.pl --mem 2G"</span>
+<span class="c"># export decode_cmd="queue.pl --mem 4G"</span>
+<span class="c"># export mkgraph_cmd="queue.pl --mem 8G"</span>
+
+<span class="c"># my instance has 8 vCPUs</span>
+<span class="nb">export </span><span class="nv">train_cmd</span><span class="o">=</span><span class="s2">"run.pl --max-jobs-run 8"</span>
+<span class="nb">export </span><span class="nv">decode_cmd</span><span class="o">=</span><span class="s2">"run.pl --max-jobs-run 8"</span>
+<span class="nb">export </span><span class="nv">mkgraph_cmd</span><span class="o">=</span><span class="s2">"run.pl --max-jobs-run 8"</span>
+</code></pre></div></div>
+
+<h3 id="step-3-needed-if-only-one-gpu-is-used">Step 3: Needed if only one GPU is used</h3>
+
+<p>Need to change the option for nvidia-smi otherwise it will assume that we have multiple GPUs. My AWS instance only has one GPU.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>nvidia-smi <span class="nt">-c</span> 3
+</code></pre></div></div>
+
+<p>ubuntu@ip-172-31-6-144:~/kaldi/egs/librispeech/s5$ pico local/chain/run_tdnn.sh</p>
+
+<p>add <code class="highlighter-rouge">--use-gpu=wait \</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>steps/nnet3/chain/train.py <span class="nt">--stage</span> <span class="nv">$train_stage</span> <span class="se">\</span>
+    <span class="nt">--cmd</span> <span class="s2">"</span><span class="nv">$decode_cmd</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--use-gpu</span><span class="o">=</span><span class="nb">wait</span> <span class="se">\</span>
+    <span class="nt">--feat</span>.online-ivector-dir <span class="nv">$train_ivector_dir</span> <span class="se">\</span>
+    <span class="nt">--feat</span>.cmvn-opts <span class="s2">"--norm-means=false --norm-vars=false"</span> <span class="se">\</span>
+    <span class="nt">--chain</span>.xent-regularize <span class="nv">$xent_regularize</span> <span class="se">\</span>
+    <span class="nt">--chain</span>.leaky-hmm-coefficient 0.1 <span class="se">\</span>
+    <span class="nt">--chain</span>.l2-regularize 0.0 <span class="se">\</span>
+    <span class="nt">--chain</span>.apply-deriv-weights <span class="nb">false</span> <span class="se">\</span>
+    <span class="nt">--chain</span>.lm-opts<span class="o">=</span><span class="s2">"--num-extra-lm-states=2000"</span> <span class="se">\</span>
+    <span class="nt">--egs</span>.dir <span class="s2">"</span><span class="nv">$common_egs_dir</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--egs</span>.stage <span class="nv">$get_egs_stage</span> <span class="se">\</span>
+    <span class="nt">--egs</span>.opts <span class="s2">"--frames-overlap-per-eg 0 --constrained false"</span> <span class="se">\</span>
+    <span class="nt">--egs</span>.chunk-width <span class="nv">$frames_per_eg</span> <span class="se">\</span>
+    <span class="nt">--trainer</span>.dropout-schedule <span class="nv">$dropout_schedule</span> <span class="se">\</span>
+    <span class="nt">--trainer</span>.add-option<span class="o">=</span><span class="s2">"--optimization.memory-compression-level=2"</span> <span class="se">\</span>
+    <span class="nt">--trainer</span>.num-chunk-per-minibatch 64 <span class="se">\</span>
+    <span class="nt">--trainer</span>.frames-per-iter 2500000 <span class="se">\</span>
+    <span class="nt">--trainer</span>.num-epochs 4 <span class="se">\</span>
+    <span class="nt">--trainer</span>.optimization.num-jobs-initial 3 <span class="se">\</span>
+    <span class="nt">--trainer</span>.optimization.num-jobs-final 16 <span class="se">\</span>
+    <span class="nt">--trainer</span>.optimization.initial-effective-lrate 0.00015 <span class="se">\</span>
+    <span class="nt">--trainer</span>.optimization.final-effective-lrate 0.000015 <span class="se">\</span>
+    <span class="nt">--trainer</span>.max-param-change 2.0 <span class="se">\</span>
+    <span class="nt">--cleanup</span>.remove-egs <span class="nv">$remove_egs</span> <span class="se">\</span>
+    <span class="nt">--feat-dir</span> <span class="nv">$train_data_dir</span> <span class="se">\</span>
+    <span class="nt">--tree-dir</span> <span class="nv">$tree_dir</span> <span class="se">\</span>
+    <span class="nt">--lat-dir</span> <span class="nv">$lat_dir</span> <span class="se">\</span>
+    <span class="nt">--dir</span> <span class="nv">$dir</span>  <span class="o">||</span> <span class="nb">exit </span>1<span class="p">;</span>
+</code></pre></div></div>
+
+<p>If step 3 is not done when using only one GPU we will get error below:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ERROR <span class="o">(</span>nnet3-chain-train[5.5.997~1-054af]:AllocateNewRegion<span class="o">()</span>:cu-allocator.cc:491<span class="o">)</span> Failed to allocate a memory region of 12582912 bytes.  Possibly this is due to sharing the GPU.  Try switching the GPUs to exclusive mode <span class="o">(</span>nvidia-smi <span class="nt">-c</span> 3<span class="o">)</span> and using the option <span class="nt">--use-gpu</span><span class="o">=</span><span class="nb">wait </span>to scripts like steps/nnet3/chain/train.py.  Memory info: free:10M, used:15099M, total:15109M, free/total:0.000711461 CUDA error: <span class="s1">'out of memory'</span>
+</code></pre></div></div>
+
+<h3 id="step-4-create-a-screen-to-run-the-script">Step 4: Create a screen to run the script.</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>screen <span class="nt">-S</span> libri
+
+</code></pre></div></div>
+
+<h3 id="step-5-run-run_editedsh">Step 5: Run run_edited.sh</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run_edited.sh <span class="o">&gt;</span> output.txt
+</code></pre></div></div>
+
+<p>The following results can be observed after 10 days of training. My instance has 8 vCPUs and 1GPU.</p>
+
+<p>Training is completed. We can find final Neural Net system in <code class="highlighter-rouge">exp/chain_cleaned/tdnn_1d_sp/final.mdl</code></p>
+
+<p>and graph in <code class="highlighter-rouge">exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall/HCLG.fst</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2022-01-09 02:15:39,486 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 496/520   Jobs: 15   Epoch: 3.67/4.0 <span class="o">(</span>91.8% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000272
+2022-01-09 02:50:23,893 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 497/520   Jobs: 15   Epoch: 3.68/4.0 <span class="o">(</span>92.1% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000270
+2022-01-09 03:25:41,148 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 498/520   Jobs: 15   Epoch: 3.69/4.0 <span class="o">(</span>92.4% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000268
+2022-01-09 04:01:32,203 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 499/520   Jobs: 15   Epoch: 3.71/4.0 <span class="o">(</span>92.7% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000266
+2022-01-09 04:37:38,180 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 500/520   Jobs: 15   Epoch: 3.72/4.0 <span class="o">(</span>93.0% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000264
+2022-01-09 05:14:40,809 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 501/520   Jobs: 16   Epoch: 3.73/4.0 <span class="o">(</span>93.3% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000280
+2022-01-09 05:53:18,670 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 502/520   Jobs: 16   Epoch: 3.74/4.0 <span class="o">(</span>93.6% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000278
+2022-01-09 06:31:05,279 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 503/520   Jobs: 16   Epoch: 3.76/4.0 <span class="o">(</span>93.9% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000276
+2022-01-09 07:08:46,082 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 504/520   Jobs: 16   Epoch: 3.77/4.0 <span class="o">(</span>94.2% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000274
+2022-01-09 07:47:07,220 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 505/520   Jobs: 16   Epoch: 3.78/4.0 <span class="o">(</span>94.6% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000272
+2022-01-09 08:23:57,390 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 506/520   Jobs: 16   Epoch: 3.80/4.0 <span class="o">(</span>94.9% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000270
+2022-01-09 09:02:17,142 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 507/520   Jobs: 16   Epoch: 3.81/4.0 <span class="o">(</span>95.2% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000268
+2022-01-09 09:40:52,534 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 508/520   Jobs: 16   Epoch: 3.82/4.0 <span class="o">(</span>95.5% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000266
+2022-01-09 10:18:47,231 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 509/520   Jobs: 16   Epoch: 3.83/4.0 <span class="o">(</span>95.9% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000264
+2022-01-09 10:57:05,727 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 510/520   Jobs: 16   Epoch: 3.85/4.0 <span class="o">(</span>96.2% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000262
+2022-01-09 11:35:18,583 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 511/520   Jobs: 16   Epoch: 3.86/4.0 <span class="o">(</span>96.5% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000260
+2022-01-09 12:12:56,573 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 512/520   Jobs: 16   Epoch: 3.87/4.0 <span class="o">(</span>96.8% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000258
+2022-01-09 12:51:06,920 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 513/520   Jobs: 16   Epoch: 3.89/4.0 <span class="o">(</span>97.2% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000256
+2022-01-09 13:29:19,736 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 514/520   Jobs: 16   Epoch: 3.90/4.0 <span class="o">(</span>97.5% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000254
+2022-01-09 14:07:52,940 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 515/520   Jobs: 16   Epoch: 3.91/4.0 <span class="o">(</span>97.8% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000252
+2022-01-09 14:46:16,641 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 516/520   Jobs: 16   Epoch: 3.92/4.0 <span class="o">(</span>98.1% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000251
+2022-01-09 15:24:13,838 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 517/520   Jobs: 16   Epoch: 3.94/4.0 <span class="o">(</span>98.4% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000249
+2022-01-09 16:01:52,900 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 518/520   Jobs: 16   Epoch: 3.95/4.0 <span class="o">(</span>98.8% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000247
+2022-01-09 16:40:28,511 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 519/520   Jobs: 16   Epoch: 3.96/4.0 <span class="o">(</span>99.1% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000245
+2022-01-09 17:18:47,249 <span class="o">[</span>steps/nnet3/chain/train.py:529 - train - INFO <span class="o">]</span> Iter: 520/520   Jobs: 16   Epoch: 3.98/4.0 <span class="o">(</span>99.4% <span class="nb">complete</span><span class="o">)</span>   lr: 0.000240
+2022-01-09 17:58:31,315 <span class="o">[</span>steps/nnet3/chain/train.py:585 - train - INFO <span class="o">]</span> Doing final combination to produce final.mdl
+2022-01-09 17:58:31,315 <span class="o">[</span>steps/libs/nnet3/train/chain_objf/acoustic_model.py:571 - combine_models - INFO <span class="o">]</span> Combining <span class="nb">set</span><span class="o">([</span>512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511]<span class="o">)</span> models.
+2022-01-09 17:59:36,259 <span class="o">[</span>steps/nnet3/chain/train.py:614 - train - INFO <span class="o">]</span> Cleaning up the experiment directory exp/chain_cleaned/tdnn_1d_sp
+tree-info exp/chain_cleaned/tdnn_1d_sp/tree
+tree-info exp/chain_cleaned/tdnn_1d_sp/tree
+fstcomposecontext <span class="nt">--context-size</span><span class="o">=</span>2 <span class="nt">--central-position</span><span class="o">=</span>1 <span class="nt">--read-disambig-syms</span><span class="o">=</span>data/lang_test_tgsmall/phones/disambig.int <span class="nt">--write-disambig-syms</span><span class="o">=</span>data/lang_test_tgsmall/tmp/disambig_ilabels_2_1.int data/lang_test_tgsmall/tmp/ilabels_2_1.2242 data/lang_test_tgsmall/tmp/LG.fst
+fstisstochastic data/lang_test_tgsmall/tmp/CLG_2_1.fst
+make-h-transducer <span class="nt">--disambig-syms-out</span><span class="o">=</span>exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall/disambig_tid.int <span class="nt">--transition-scale</span><span class="o">=</span>1.0 data/lang_test_tgsmall/tmp/ilabels_2_1 exp/chain_cleaned/tdnn_1d_sp/tree exp/chain_cleaned/tdnn_1d_sp/final.mdl
+fstrmsymbols exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall/disambig_tid.int
+fstminimizeencoded
+fstrmepslocal
+fsttablecompose exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall/Ha.fst <span class="s1">'fstrmsymbols --remove-arcs=true --apply-to-output=true data/lang_test_tgsmall/oov.int data/lang_test_tgsmall/tmp/CLG_2_1.fst|'</span>
+fstdeterminizestar <span class="nt">--use-log</span><span class="o">=</span><span class="nb">true
+</span>fstrmsymbols <span class="nt">--remove-arcs</span><span class="o">=</span><span class="nb">true</span> <span class="nt">--apply-to-output</span><span class="o">=</span><span class="nb">true </span>data/lang_test_tgsmall/oov.int data/lang_test_tgsmall/tmp/CLG_2_1.fst
+fstisstochastic exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall/HCLGa.fst
+add-self-loops <span class="nt">--self-loop-scale</span><span class="o">=</span>1.0 <span class="nt">--reorder</span><span class="o">=</span><span class="nb">true </span>exp/chain_cleaned/tdnn_1d_sp/final.mdl exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall/HCLGa.fst
+fstisstochastic exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall/HCLG.fst
+fstrmsymbols data/lang_test_tgmed/phones/disambig.int
+fstdeterminizestar
+fstrmsymbols data/lang_test_tgmed/phones/disambig.int
+fstdeterminizestar
+fstdeterminizestar
+fstrmsymbols data/lang_test_tgmed/phones/disambig.int
+fstrmsymbols data/lang_test_tgmed/phones/disambig.int
+fstdeterminizestar
+ubuntu@ip-172-31-6-144:~/kaldi/egs/librispeech/s5<span class="err">$</span>
+</code></pre></div></div>
+
+<p>graph folder:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ubuntu@ip-172-31-6-144:~/kaldi/egs/librispeech/s5/exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall<span class="nv">$ </span><span class="nb">ls
+</span>HCLG.fst  disambig_tid.int  num_pdfs  phones  phones.txt  words.txt
+ubuntu@ip-172-31-6-144:~/kaldi/egs/librispeech/s5/exp/chain_cleaned/tdnn_1d_sp/graph_tgsmall<span class="err">$</span>
+</code></pre></div></div>
+
+<!-- 
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: [https://disqus.com/admin/universalcode/#configuration-variables](https://disqus.com/admin/universalcode/#configuration-variables)    */
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '[https://https-npovey-github-io.disqus.com/embed.js](https://https-npovey-github-io.disqus.com/embed.js)';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="[https://disqus.com/?ref_noscript](https://disqus.com/?ref_noscript)">comments powered by Disqus.</a></noscript>
+
+ -->
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+this.page.url = "https://npovey.github.io/jekyll/update/2022/01/10/L.html"; // <--- use canonical URL
+this.page.identifier = "/jekyll/update/2022/01/10/L";
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//https-npovey-github-io.disqus.com/embed.js'; // <--- use Disqus shortname
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+  </div><a class="u-url" href="/jekyll/update/2022/01/10/L.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">speech processing</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">speech processing</li><li><a class="u-email" href="mailto:npovey2atgmail">npovey2atgmail</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

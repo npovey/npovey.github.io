@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Install Kaldi: Red Hat | speech processing</title>
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="Install Kaldi: Red Hat" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Step1: Install git on AWS Instance Step 2: Download Kaldi from GitHub Step 3: Read the Kaldi installation instructions and follow Option 1 Step 4: go to tools/ and follow INSTALL instructions there. Step 5: go to src/ and follow INSTALL instructions there." />
+<meta property="og:description" content="Step1: Install git on AWS Instance Step 2: Download Kaldi from GitHub Step 3: Read the Kaldi installation instructions and follow Option 1 Step 4: go to tools/ and follow INSTALL instructions there. Step 5: go to src/ and follow INSTALL instructions there." />
+<link rel="canonical" href="http://localhost:4000/jekyll/update/2022/01/01/Install-Kaldi-Red-Hat.html" />
+<meta property="og:url" content="http://localhost:4000/jekyll/update/2022/01/01/Install-Kaldi-Red-Hat.html" />
+<meta property="og:site_name" content="speech processing" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-01T00:07:21-08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Install Kaldi: Red Hat" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/jekyll/update/2022/01/01/Install-Kaldi-Red-Hat.html","headline":"Install Kaldi: Red Hat","dateModified":"2022-01-01T00:07:21-08:00","datePublished":"2022-01-01T00:07:21-08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2022/01/01/Install-Kaldi-Red-Hat.html"},"description":"Step1: Install git on AWS Instance Step 2: Download Kaldi from GitHub Step 3: Read the Kaldi installation instructions and follow Option 1 Step 4: go to tools/ and follow INSTALL instructions there. Step 5: go to src/ and follow INSTALL instructions there.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="speech processing" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">speech processing</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Install Kaldi: Red Hat</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2022-01-01T00:07:21-08:00" itemprop="datePublished">Jan 1, 2022
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul>
+  <li><a href="#step1-install-git-on-aws-instance">Step1: Install git on AWS Instance</a></li>
+  <li><a href="#step-2-download-kaldi-from-github">Step 2: Download Kaldi from GitHub</a></li>
+  <li><a href="#step-3-read-the-kaldi-installation-instructions-and-follow-option-1">Step 3: Read the Kaldi installation instructions and follow Option 1</a></li>
+  <li><a href="#step-4-go-to-tools--and-follow-install-instructions-there">Step 4: go to tools/  and follow INSTALL instructions there.</a></li>
+  <li><a href="#step-5-go-to-src-and-follow-install-instructions-there">Step 5: go to src/ and follow INSTALL instructions there.</a></li>
+</ul>
+
+<p>YouTube
+<a href="https://youtu.be/YR_kcw6FOd0">https://youtu.be/YR_kcw6FOd0</a>
+How to Install Kaldi Red Hat| Tutorial</p>
+
+<p>Note: I’ll be using an AWS EC2 instance for the installation but you can do this directly on a linux machine.</p>
+
+<h3 id="step1-install-git-on-aws-instance">Step1: Install git on AWS Instance</h3>
+
+<p>(Keep in mind that the yum install is only for red hat, for debian/ubuntu it would be apt-get install.)</p>
+
+<p><a href="https://cloudaffaire.com/how-to-install-git-in-aws-ec2-instance/">https://cloudaffaire.com/how-to-install-git-in-aws-ec2-instance/</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>yum update <span class="nt">-y</span>
+<span class="nb">sudo </span>yum <span class="nb">install </span>git <span class="nt">-y</span>
+</code></pre></div></div>
+
+<h3 id="step-2-download-kaldi-from-github">Step 2: Download Kaldi from GitHub</h3>
+
+<p><a href="https://kaldi-asr.org/doc/install.html">https://kaldi-asr.org/doc/install.html</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/kaldi-asr/kaldi.git kaldi <span class="nt">--origin</span> upstream
+<span class="nb">cd </span>kaldi
+git pull
+</code></pre></div></div>
+
+<h3 id="step-3-read-the-kaldi-installation-instructions-and-follow-option-1">Step 3: Read the Kaldi installation instructions and follow Option 1</h3>
+
+<p><a href="https://github.com/kaldi-asr/kaldi/blob/master/INSTALL">https://github.com/kaldi-asr/kaldi/blob/master/INSTALL</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-6-113 kaldi]<span class="nv">$ </span>nano INSTALL
+
+This is the official Kaldi INSTALL. Look also at INSTALL.md <span class="k">for </span>the git mirror installation.
+<span class="o">[</span>Option 1 <span class="k">in </span>the following does not apply to native Windows <span class="nb">install</span>, see windows/INSTALL or following Option 2]
+
+Option 1 <span class="o">(</span>bash + makefile<span class="o">)</span>:
+
+  Steps:
+    <span class="o">(</span>1<span class="o">)</span>
+    go to tools/  and follow INSTALL instructions there.
+
+    <span class="o">(</span>2<span class="o">)</span>
+    go to src/ and follow INSTALL instructions there.
+
+Option 2 <span class="o">(</span>cmake<span class="o">)</span>:
+
+    Go to cmake/ and follow INSTALL.md instructions there.
+    Note, it may not be well tested and some features are missing currently.
+</code></pre></div></div>
+
+<h3 id="step-4-go-to-tools--and-follow-install-instructions-there">Step 4: go to tools/  and follow INSTALL instructions there.</h3>
+
+<p><a href="https://github.com/kaldi-asr/kaldi/blob/master/tools/INSTALL">https://github.com/kaldi-asr/kaldi/blob/master/tools/INSTALL</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>tools
+<span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span>nano INSTALL
+</code></pre></div></div>
+
+<p>Check for dependencies and install missing items</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span>./extras/check_dependencies.sh
+<span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install </span>gcc-c++ automake autoconf patch sox gcc-gfortran libtool subversion
+</code></pre></div></div>
+
+<p>Check for dependencies and install missing items</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span>./extras/check_dependencies.sh
+<span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install </span>zlib-devel
+</code></pre></div></div>
+
+<p>Check for dependencies and install missing items</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span>./extras/check_dependencies.sh
+./extras/check_dependencies.sh: Intel MKL does not seem to be installed.
+ ... Run extras/install_mkl.sh to <span class="nb">install </span>it. Some distros <span class="o">(</span>e.g., Ubuntu 20.04<span class="o">)</span> provide
+ ... a version of MKL via the package manager, but verify that it is up-to-date.
+ ... You can also use other matrix algebra libraries. For information, see:
+ ...   http://kaldi-asr.org/doc/matrixwrap.html
+<span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="err">$</span>
+</code></pre></div></div>
+
+<p>Run <code class="highlighter-rouge">make</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span>./extras/install_mkl.sh
+<span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="nv">$ </span>make
+</code></pre></div></div>
+
+<p>Install IRSTLM: can be useful for  interpolations when building LMs</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">***</span><span class="o">()</span> Installation of IRSTLM finished successfully
+<span class="k">***</span><span class="o">()</span> Please <span class="nb">source </span>the tools/env.sh <span class="k">in </span>your path.sh to <span class="nb">enable </span>it
+<span class="o">[</span>ec2-user@ip-172-31-6-113 tools]<span class="err">$</span>
+</code></pre></div></div>
+
+<h3 id="step-5-go-to-src-and-follow-install-instructions-there">Step 5: go to src/ and follow INSTALL instructions there.</h3>
+
+<p>[ec2-user@ip-172-31-6-113 src]$ nano INSTALL</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>src
+<span class="o">[</span>ec2-user@ip-172-31-6-113 src]<span class="nv">$ </span>nano INSTALL
+./configure <span class="nt">--shared</span>
+make depend <span class="nt">-j</span> 8
+make <span class="nt">-j</span> 8
+</code></pre></div></div>
+
+<p><strong>You’re Done!</strong></p>
+
+<p>history.txt</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1  <span class="nb">sudo </span>yum update <span class="nt">-y</span>
+2  <span class="nb">sudo </span>yum <span class="nb">install </span>git <span class="nt">-y</span>
+3  git clone https://github.com/kaldi-asr/kaldi.git kaldi <span class="nt">--origin</span> upstream
+4  <span class="nb">cd </span>kaldi
+5  git pull
+6  nano INSTALL
+7  <span class="nb">cd </span>tools/
+8  nano INSTALL
+9  ./extras/check_dependencies.sh
+10  <span class="nb">sudo </span>yum <span class="nb">install </span>gcc-c++ automake autoconf patch sox gcc-gfortran libtool subversion
+11  ./extras/check_dependencies.sh
+12  <span class="nb">sudo </span>yum <span class="nb">install </span>zlib-devel
+13  ./extras/check_dependencies.sh
+14  ./extras/install_mkl.sh
+15  ./extras/check_dependencies.sh
+16  make <span class="nt">-j</span> 8
+17  ./extras/install_irstlm.sh
+18  <span class="nb">cd </span>src/
+19  ./configure <span class="nt">--shared</span>
+20  make depend <span class="nt">-j</span> 8
+21  make <span class="nt">-j</span> 8
+</code></pre></div></div>
+
+<p>Kaldi directory:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ubuntu@ip-172-31-6-144:~/kaldi<span class="nv">$ </span>tree <span class="nt">-L</span> 2
+<span class="nb">.</span>
+├── CMakeLists.txt
+├── COPYING
+├── INSTALL
+├── README.md
+├── cmake
+│   ├── FindBLAS.cmake
+│   ├── FindCUB.cmake
+│   ├── FindICU.cmake
+│   ├── FindLAPACK.cmake
+│   ├── FindNvToolExt.cmake
+│   ├── INSTALL.md
+│   ├── Utils.cmake
+│   ├── VersionHelper.cmake
+│   ├── gen_cmake_skeleton.py
+│   ├── kaldi-config.cmake.in
+│   └── third_party
+├── docker
+│   ├── README.md
+│   ├── debian10-cpu
+│   ├── debian9.8-cpu
+│   ├── ubuntu16.04-gpu
+│   └── ubuntu18.04-cuda10.0
+├── egs
+│   ├── README.txt
+│   ├── aidatatang_200zh
+│   ├── aishell
+│   ├── aishell2
+│   ├── ami
+│   ├── an4
+│   ├── apiai_decode
+│   ├── aspire
+│   ├── aurora4
+│   ├── babel
+│   ├── babel_multilang
+│   ├── bentham
+│   ├── bn_music_speech
+│   ├── callhome_diarization
+│   ├── callhome_egyptian
+│   ├── casia_hwdb
+│   ├── chime1
+│   ├── chime2
+│   ├── chime3
+│   ├── chime4
+│   ├── chime5
+│   ├── chime6
+│   ├── cifar
+│   ├── cmu_cslu_kids
+│   ├── cnceleb
+│   ├── commonvoice
+│   ├── csj
+│   ├── dihard_2018
+│   ├── fame
+│   ├── farsdat
+│   ├── fisher_callhome_spanish
+│   ├── fisher_english
+│   ├── fisher_swbd
+│   ├── formosa
+│   ├── gale_arabic
+│   ├── gale_mandarin
+│   ├── gigaspeech
+│   ├── gop_speechocean762
+│   ├── gp
+│   ├── heroico
+│   ├── hi_mia
+│   ├── hkust
+│   ├── hub4_english
+│   ├── hub4_spanish
+│   ├── iam
+│   ├── iban
+│   ├── icsi
+│   ├── ifnenit
+│   ├── libri_css
+│   ├── librispeech
+│   ├── lre
+│   ├── lre07
+│   ├── madcat_ar
+│   ├── madcat_zh
+│   ├── malach
+│   ├── mandarin_bn_bc
+│   ├── material
+│   ├── mgb2_arabic
+│   ├── mgb5
+│   ├── mini_librispeech
+│   ├── mobvoi
+│   ├── mobvoihotwords
+│   ├── multi_cn
+│   ├── multi_en
+│   ├── nsc
+│   ├── opensat20
+│   ├── ptb
+│   ├── reverb
+│   ├── rimes
+│   ├── <span class="nb">rm</span>
+│   ├── sad_rats
+│   ├── sitw
+│   ├── snips
+│   ├── spanish_dimex100
+│   ├── sprakbanken
+│   ├── sprakbanken_swe
+│   ├── sre08
+│   ├── sre10
+│   ├── sre16
+│   ├── svhn
+│   ├── swahili
+│   ├── swbd
+│   ├── tedlium
+│   ├── thchs30
+│   ├── tidigits
+│   ├── timit
+│   ├── tunisian_msa
+│   ├── uw3
+│   ├── voxceleb
+│   ├── voxforge
+│   ├── vystadial_cz
+│   ├── vystadial_en
+│   ├── wenetspeech
+│   ├── wsj
+│   ├── yesno
+│   ├── yomdle_fa
+│   ├── yomdle_korean
+│   ├── yomdle_russian
+│   ├── yomdle_tamil
+│   ├── yomdle_zh
+│   └── zeroth_korean
+├── misc
+│   ├── README.txt
+│   ├── htk_conversion
+│   ├── htk_decode_example
+│   ├── htk_graph_creation_example
+│   ├── logo
+│   ├── maintenance
+│   └── papers
+├── scripts
+│   ├── rnnlm
+│   └── wakeword
+├── src
+│   ├── Doxyfile
+│   ├── INSTALL
+│   ├── Makefile
+│   ├── NOTES
+│   ├── TODO
+│   ├── base
+│   ├── bin
+│   ├── chain
+│   ├── chainbin
+│   ├── configure
+│   ├── cudadecoder
+│   ├── cudadecoderbin
+│   ├── cudafeat
+│   ├── cudafeatbin
+│   ├── cudamatrix
+│   ├── decoder
+│   ├── doc
+│   ├── feat
+│   ├── featbin
+│   ├── fgmmbin
+│   ├── fstbin
+│   ├── fstext
+│   ├── gmm
+│   ├── gmmbin
+│   ├── gst-plugin
+│   ├── hmm
+│   ├── itf
+│   ├── ivector
+│   ├── ivectorbin
+│   ├── kaldi.mk
+│   ├── kws
+│   ├── kwsbin
+│   ├── lat
+│   ├── latbin
+│   ├── lib
+│   ├── lm
+│   ├── lmbin
+│   ├── makefiles
+│   ├── matrix
+│   ├── nnet
+│   ├── nnet2
+│   ├── nnet2bin
+│   ├── nnet3
+│   ├── nnet3bin
+│   ├── nnetbin
+│   ├── online
+│   ├── online2
+│   ├── online2bin
+│   ├── onlinebin
+│   ├── probe
+│   ├── rnnlm
+│   ├── rnnlmbin
+│   ├── sgmm2
+│   ├── sgmm2bin
+│   ├── tfrnnlm
+│   ├── tfrnnlmbin
+│   ├── transform
+│   ├── tree
+│   └── util
+├── tools
+│   ├── ATLAS_headers
+│   ├── CLAPACK
+│   ├── INSTALL
+│   ├── Makefile
+│   ├── config
+│   ├── cub -&gt; cub-1.8.0
+│   ├── cub-1.8.0
+│   ├── cub-1.8.0.tar.gz
+│   ├── env.sh
+│   ├── extras
+│   ├── install_pfile_utils.sh -&gt; extras/install_pfile_utils.sh
+│   ├── install_portaudio.sh -&gt; extras/install_portaudio.sh
+│   ├── install_speex.sh -&gt; extras/install_speex.sh
+│   ├── install_srilm.sh -&gt; extras/install_srilm.sh
+│   ├── irstlm
+│   ├── openfst -&gt; openfst-1.7.2
+│   ├── openfst-1.7.2
+│   ├── openfst-1.7.2.tar.gz
+│   ├── sctk -&gt; sctk-20159b5
+│   ├── sctk-20159b5
+│   ├── sctk-20159b5.tar.gz
+│   ├── sph2pipe -&gt; sph2pipe_v2.5
+│   ├── sph2pipe-2.5.tar.gz
+│   └── sph2pipe_v2.5
+└── windows
+    ├── INSTALL.atlas
+    ├── INSTALL.md
+    ├── INSTALL.mkl
+    ├── NewGuidCmd.exe
+    ├── NewGuidCmd.exe.config
+    ├── cuda_7.0.props
+    ├── generate_solution.pl
+    ├── get_version.pl
+    ├── kaldiwin_atlas.props
+    ├── kaldiwin_mkl.props
+    ├── kaldiwin_openblas.props
+    ├── kaldiwin_win32.props
+    ├── openfstwin_debug.props
+    ├── openfstwin_debug_win32.props
+    ├── openfstwin_release.props
+    ├── openfstwin_release_win32.props
+    ├── portaudio.props
+    ├── portaudio_debug.props
+    ├── portaudio_release.props
+    └── variables.props.dev
+
+186 directories, 55 files
+ubuntu@ip-172-31-6-144:~/kaldi<span class="err">$</span>
+</code></pre></div></div>
+
+<!-- 
+<div id="disqus_thread"></div>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: [https://disqus.com/admin/universalcode/#configuration-variables](https://disqus.com/admin/universalcode/#configuration-variables)    */
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '[https://https-npovey-github-io.disqus.com/embed.js](https://https-npovey-github-io.disqus.com/embed.js)';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="[https://disqus.com/?ref_noscript](https://disqus.com/?ref_noscript)">comments powered by Disqus.</a></noscript>
+
+ -->
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+this.page.url = "https://npovey.github.io/jekyll/update/2022/01/01/Install-Kaldi-Red-Hat.html"; // <--- use canonical URL
+this.page.identifier = "/jekyll/update/2022/01/01/Install-Kaldi-Red-Hat";
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//https-npovey-github-io.disqus.com/embed.js'; // <--- use Disqus shortname
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+  </div><a class="u-url" href="/jekyll/update/2022/01/01/Install-Kaldi-Red-Hat.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">speech processing</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">speech processing</li><li><a class="u-email" href="mailto:npovey2atgmail">npovey2atgmail</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
